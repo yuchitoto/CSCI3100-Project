@@ -1,4 +1,5 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper]{book}
+
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{subfiles}
@@ -6,7 +7,15 @@
 \usepackage{textcomp}
 \usepackage{indentfirst}
 
-\title{Code Block Online IDE}
+\title{  \begin{flushright}
+  \Huge{SOFTWARE REQUIREMENTS\\ SPECIFICATION}\\
+  for\\
+  Code Block Online IDE\\
+  ~\\
+  \LARGE{Version 1.0 DRAFT}\\
+  ~\\
+  CSCI3100 Group 18
+  \end{flushright}}
 \author{YU Chi To SID:1155110447}
 
 \begin{document}
@@ -18,5 +27,11 @@
   \pagenumbering{arabic}
 
   \subfile{Doc/Intro}
+  \newpage
+  \subfile{Doc/Background}
+  \newpage
+  \subfile{Doc/Spec}
+  \newpage
+  \subfile{Doc/Sys_Architecture}
 
 \end{document}
