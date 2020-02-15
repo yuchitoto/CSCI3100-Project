@@ -6,11 +6,26 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
 
 \title{\huge{Code Block Online IDE}\\
 ~\\
 \large{CSCI3100 Group 18}}
 \author{YU Chi To SID:1155110447}
+
+\titleformat{\chapter}[display]
+{\bfseries\Large}
+{\thechapter}
+{1ex}
+{\titlerule\vspace{1ex}\filleft}
+[\vspace{1ex}\titlerule]
+
+\pagestyle{fancy}
+\fancyhead[L]{Code Block Online IDE}
+\fancyhead[R]{\leftmark}
+
+\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{\thechapter.\ #1}}{}}
 
 \begin{document}
   \pagenumbering{gobble}
@@ -21,11 +36,8 @@
   \pagenumbering{arabic}
 
   \subfile{Doc/Intro}
-  \newpage
   \subfile{Doc/Background}
-  \newpage
   \subfile{Doc/Spec}
-  \newpage
   \subfile{Doc/Sys_Architecture}
 
 \end{document}
