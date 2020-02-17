@@ -2,7 +2,6 @@
 
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{subfiles}
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{indentfirst}
@@ -36,8 +35,8 @@
   \newpage
   \pagenumbering{arabic}
 
-  \subfile{Doc/Intro}
-  \subfile{Doc/Background}
+  \input{Doc/Intro}
+  \input{Doc/Background}
   \input{Doc/Spec}
   \input{Doc/Sys_Architecture}
 
