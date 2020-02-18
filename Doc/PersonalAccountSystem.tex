@@ -1,4 +1,4 @@
-The Personal Account System is a database system provided for all users to store the progress and share the data with others.
+The Personal Account System is a database system provided for all users to store the progress and share the data with others. The user will get permission according to identities provided.
 
 ~
 
@@ -7,6 +7,6 @@ This system contains the following functions:
 	\item Account Registration allows the new user to create a new account with an email address. The user needs to create a unique username and a password. The user needs to re-type the password again to avoid typing mistake. The password should have at least 8 characters. If all the inputs are valid, a new account will be created, or otherwise requests correct input from the user.
 	\item Account Login allows user login to the system to access the stored data in the server with permission. This function accepts a username or email address with a password from user input. The inputs will then be verified by comparing it with the data in the server. If the verification success, it logins as the identity presented, or otherwise requests correct input from the user.
 	\item Password Changing is for the user to set a new password. This function needs to perform in the login state. The user needs to enter a new password and a re-type of the new password to confirm the changing. The password requirement is the same as Account Registration.
-	\item Forget Password helps the user to reset the password without the current password. It requires the user to input the registered email address. If the email is registered, an email will be sent to that email address. A link will be provided for changing password. The requirement is the same as Password Changing.
+	\item Forget Password helps the user to reset the password without the current password. It requires the user to input the registered email address. If the email is registered, an email will be sent to that address. A link will be provided for changing password. The requirement is the same as Password Changing.
 	\item Account Logout is a function for the user to log out from the account. All the permission will be revoked after log out.
 \end{itemize}
