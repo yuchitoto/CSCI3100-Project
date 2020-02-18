@@ -1,6 +1,0 @@
-Code checking system
-Code checking system is a programming assistant system that helps students to create their very first program. Teachers can provides test cases and corresponding output and this system will help the students to revise their work.    
-
-1. Online compiling, which translates source code into a lower level language to create an executable program.
-2. Program input, which can be from files or keyboard which interacts with the executable program created.
-3. Output checking, which saves the previous output and highlight the differences.
