@@ -1,0 +1,20 @@
+
+The forum is providing a function for user to share the idea of their own which is using with the commenting system which includes grade, reply and delete function.
+
+\paragraph{Posting function}~
+
+The posting method of the forum, please follow the “commenting system” part. They are the same step. The only different of the posting is that it need to type in the title and add the keyword by “#”. For example, “#csci3310” or “#looping”.\par~
+
+For the professor, user can post some interesting topic for the student to make a project for just playing or homework which can with a standard output for the student to check the correctness. And also the professor can see the respond of his/her questions with the grading system which graded by the student and make a improvement of the question due to the respond of the student.\par~
+
+For the student, he/she can post the useful code to share. The other can provide a suggestion code of the code or share their point of view in the code.\par~
+
+The student and professor can interact with the student and the other professor to make a super big project.
+
+  \paragraph{Searching function}~
+
+There is a search bar for the user to search for the keyword of the code. Some of the high rank of most comment of the keyword in the forum in the below of the search bar is showing. The user can click the keyword to search.\par~
+
+After searching, the user can slide down and click into the box with the willing title. Then the search bar and searching boxes will showing in the left-hand side and the information will show in the rignt-hand side.
+ 
+ 
