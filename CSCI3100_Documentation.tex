@@ -4,7 +4,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{textcomp}
-\usepackage{indentfirst}
+%\usepackage{indentfirst}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 
@@ -26,12 +26,13 @@
 \fancyhead[L]{Code Block Online IDE}
 \fancyhead[R]{\leftmark}
 
+\setlength\parindent{0pt}
+
 \renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{\thechapter.\ #1}}{}}
 
 \begin{document}
   \pagenumbering{gobble}
   \maketitle
-  \newpage
   \tableofcontents
   \newpage
   \pagenumbering{arabic}
