@@ -2,6 +2,8 @@ const util = require('util');
 const {spawn} = require("child_process");
 const exec = util.promisify(require('child_process').exec);
 
+var myArgs = process.argv.slice(2);
+
 async function compile(filename, user) {
   const fln = 'g++ '+filename+' -o '+user;
   const {error, stderr} = await exec(fln);
@@ -48,6 +50,8 @@ async function run(filename, user) {
 }
 
 process.on('message', m => {
-  /*const result = run(filename, user);*/
-  process.send(m)
+  if(m==1) {
+    var result = run(myArgs[0], myArgs[1]);
+    process.send(result);
+  }
 });
