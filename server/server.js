@@ -1,13 +1,19 @@
+var http = require('http')
+var url = require('url')
+var fs = require('fs')
 
-const {fork} = require('child_process');
-
-function main() {
-  const run = fork('compAndRun.js');
-  run.send(1);
-  run.on('message', result => {
-    console.log(`result: ${result}`);
+var server = http.createServer( function(request, response) {
+  var q = url.parse(request.url, true);
+  var filename = "../html" + q.pathname;
+  console.log(filename);
+  fs.readFile(filename, function(err, data) {
+    if(err)
+    {
+      response.writeHead(404, {'Content-Type':'text/html'});
+      return response.end("404 Not Found");
+    }
+    response.writeHead(200, {'Content-Type':'text/html'});
+    response.write(data);
+    return response.end();
   });
-  return;
-}
-
-main()
+}).listen(8000);
