@@ -2,7 +2,7 @@ var http = require('http');
 var url = require('url');
 var fs = require('fs');
 var {fork} = require('child_process');
-var qs = require('querystring')
+var qs = require('querystring');
 
 var server = http.createServer( function(request, response) {
   var qurl = url.parse(request.url, true);
@@ -22,7 +22,7 @@ var server = http.createServer( function(request, response) {
     var data = '';
     request.on('user_info', function(user_info) {
         data += user_info;
-        request.on('end', function(in) {
+        request.on('end', function() {
           var user = qs.parse(data);
           const add_data = fork('connection_sql.js new_user');
           add_data.send(JSON.stringify(user));
