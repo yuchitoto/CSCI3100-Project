@@ -1,12 +1,13 @@
-var http = require('http')
-var url = require('url')
-var fs = require('fs')
+var http = require('http');
+var url = require('url');
+var fs = require('fs');
 
 var server = http.createServer( function(request, response) {
-  var q = url.parse(request.url, true);
-  var filename = "../html" + q.pathname;
-  console.log(filename);
-  fs.readFile(filename, function(err, data) {
+  var qurl = url.parse(request.url, true);
+  console.log(qurl.pathname);
+  var pthn = "./html"+qurl.pathname
+  /*if(qurl.pathname=='')*/
+  fs.readFile(pthn, function(err, data) {
     if(err)
     {
       response.writeHead(404, {'Content-Type':'text/html'});
