@@ -4,8 +4,10 @@ var app = express();
 var http = require('http');
 var url = require('url');
 var fs = require('fs');
-var {fork} = require('child_process');
+var fork = require('child_process');
 var qs = require('querystring');
+
+var execPHP = require('./php_parser.js')();
 
 app.get('/', function(req, res) {
   console.log(req);
@@ -61,6 +63,7 @@ app.get('/hello_world.html', function(req, res) {
   fs.readFile('./html/hello_world.html', function(err, data) {
     if(err)
     {
+      console.log(`error: ${err.message}`);
       res.writeHead(404, {'Content-Type':'text/html'});
       return res.end("404 Not Found");
     }
@@ -68,6 +71,14 @@ app.get('/hello_world.html', function(req, res) {
     res.write(data);
     return res.end();
   });
+});
+
+//from https://medium.com/@MartinMouritzen/how-to-run-php-in-node-js-and-why-you-probably-shouldnt-do-that-fb12abe955b0
+app.use('*.php',function(request,response,next) {
+	execPHP.parseFile(request.originalUrl,function(phpResult) {
+		response.write(phpResult);
+		response.end();
+	});
 });
 
 var server = app.listen(8000);
