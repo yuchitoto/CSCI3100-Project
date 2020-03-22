@@ -2,6 +2,7 @@ const fs = require('fs');
 
 const mysql = require('mysql');
 var myArgs = process.argv.slice(2);
+const qs = require('querystring');
 
 const connection = mysql.createConnection({
   "host":"sql12.freesqldatabase.com",
@@ -84,6 +85,35 @@ function fetch_code() {
   });
 }
 
+function new_user(data)
+{
+  const datan = qs.parse(data);
+  const query1 = "INSERT INTO USER SET ?",
+  values = {
+USERNAME:datan.USERNAME
+EMAIL:datan.EMAIL
+PASSWORD_HASH:datan.PASSWORD_HASH
+AC_TYPE:datan.AC_TYPE
+GROUP:datan.GROUP
+DESCRIPTION:datan.DESCRIPTION
+IS_PUBLIC:datan.IS_PUBLIC
+  };
+  const query2 = "SELECT ID FROM USER WHERE?";
+  connection.query(query1, values, function(err, num) {
+    if(err)
+    {
+      throw err;
+    }
+    connection.query(query2,values, function(error, data) {
+      if(error)
+      {
+        throw error;
+      }
+      return data[0];
+    })
+  });
+}
+
 process.on('message', m => {
   if(m=='save_code')
   {
@@ -99,7 +129,12 @@ process.on('message', m => {
   }
   else if(m=='fetch_code')
   {
-    var tmp_path = fetch_code()
-    process.send(tmp_path)
+    var tmp_path = fetch_code();
+    process.send(tmp_path);
+  }
+  else if(myArgs[0]=='new_user')
+  {
+    var id = new_user(m);
+    process.send(id);
   }
 })
