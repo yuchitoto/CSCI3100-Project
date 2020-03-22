@@ -22,7 +22,7 @@ var server = http.createServer( function(request, response) {
     var data = '';
     request.on('user_info', function(user_info) {
         data += user_info;
-        request.on('end', function(in) {
+        request.on('end', function() {
           var user = qs.parse(data);
           const add_data = fork('connection_sql.js new_user');
           add_data.send(JSON.stringify(user));
