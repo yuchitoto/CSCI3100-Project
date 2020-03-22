@@ -2,7 +2,7 @@ var http = require('http');
 var url = require('url');
 var fs = require('fs');
 var {fork} = require('child_process');
-var qs = require('querystring')
+var qs = require('querystring');
 
 var server = http.createServer( function(request, response) {
   var qurl = url.parse(request.url, true);
