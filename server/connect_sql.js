@@ -26,43 +26,40 @@ function validate_save() {
     if(err)
     {
       console.log(`error ${err.message}`);
-      return false;
+      return -1;
     }
-    if(result[0]>0)
+    if(result[0]>1)
     {
-      return false;
+      return -1;
     }
-    return true;
+    return result[0];
   })
 }
 
-function save_code(param, callback) {
+function save_code(param, num, callback) {
   const data = JSON.parse(param);
   var path = "../tmp_data/"+username+"__"+filename;
-  fs.open(path,'r', function(err, fd) {
-    if (err)
-    {
-      console.log(`error: ${err}`);
-      throw err;
-    }
-    var buf = new Buffer(getFilesizeInBytes('hello_world.cpp'));
-
-    fs.read(fd, buf, 0, buf.length, 0, function(err, num) {
-      var query = "INSERT INTO SRC_CODE SET?",
-      values = {
-        USER:data.username,
-        NAME:data.filename,
-        SRC:data.src,
-        SRC_SZ:data.src_sz,
-        BLK:data.blk,
-        BLK_SZ:data.blk_sz
-      };
-      connection.query(query,values, function(er, da) {
-        if(er) throw er;
-        return;
-      });
-    });
-  });
+  var values = {
+    USER:data.username,
+    NAME:data.filename,
+    SRC:data.src,
+    SRC_SZ:data.src_sz,
+    BLK:data.blk,
+    BLK_SZ:data.blk_sz
+  };
+  if(num==0)
+  {
+    const query = "INSERT INTO SRC_CODE SET?";
+    connection.query(query,values, function(er, da) {
+      callback(er, da);
+  }
+  else if(num==1)
+  {
+    const query = "UPDATE SRC_CODE WHERE ? AND ? SET ?, ?, ?, ?";
+    connection.query(query, values, function(er, da) {
+      callback(er, da);
+    })
+  }
 }
 
 function fetch_code(param, callback) {
@@ -74,6 +71,11 @@ function fetch_code(param, callback) {
   connection.query(sql, [username, filename], function (err, result) {
     callback(err, result[0]);
   });
+}
+
+function delete_code(param, callback)
+{
+  /*delete code also delete all posts related*/
 }
 
 function new_user(data, callback)
@@ -101,24 +103,67 @@ IS_PUBLIC:datan.IS_PUBLIC
         callback(0);
       }
       callback(data[0]);
-    })
+    });
   });
 }
+
+function new_post(param, callback)
+{
+  //assume take on userid, title, content, reply(0 for new post), code id
+  const data = JSON.parse(param);
+  const query2 = "INSERT INTO POST SET ?";
+  connection.query(query2, data, function(err, res) {
+    if(err)
+    {
+      callback(err, 0);
+    }
+    callback(err, res);
+}
+
+function fetch_post(param, callback)
+{
+  /*if id or reply = post id ret json array of post*/
+}
+
+function delete_post(param, callback)
+{
+  /*delete all post if is post head, else single*/
+}
+
+function search_post(param, callback)
+{
+  /*search post head*/
+}
+
+function userID(param, callback)
+{
+  /*ret user id*/
+}
+
+/*advanced
+function updateGrade(param, callback)
+{
+
+}*/
 
 process.on('message', m => {
   console.log(myArgs[0]);
   console.log(m);
   if(myArgs[0]=='save_code')
   {
-    if(validate_save())
-    {
-      save_code()
-      process.send("Save success");
-    }
-    else
-    {
-      process.send("Save failed");
-    }
+    validate_save(m, r => {
+      if(r<0)
+      {
+        return process.send('fail');
+      }
+      save_code(m, r, function(err, res) {
+        if(err)
+        {
+          return process.send('fail');
+        }
+        return process.send('success');
+      });
+    });
   }
   else if(myArgs[0]=='fetch_code')
   {

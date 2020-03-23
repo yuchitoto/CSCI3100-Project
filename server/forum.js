@@ -8,6 +8,11 @@ class Forum {
     sql.userID(JSON.stringify(user), res => {this.userid = res;});
   }
 
+  fetch(param, callback)
+  {
+    /*fetch json object list and parse it into html accepted format*/
+  }
+
   search(param, callback)
   {
     /*pase parameter*/
