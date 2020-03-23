@@ -117,7 +117,7 @@ function new_user(data)
 export function exist_name(data)
 {
   const datan = qs.parse(data);
-  const query; // contain same name in db?
+  const query = "SELECT USERNAME FROM USER WHERE ?";
 
   values = {USERNAME:datan.USERNAME};
 
@@ -132,7 +132,7 @@ export function exist_name(data)
 export function exist_email(data)
 {
   const datan = qs.parse(data);
-  const query; // contain same email in db?
+  const query = "SELECT EMAIL FROM USER WHERE ?";
 
   values = {EMAIL:datan.EMAIL};
 
