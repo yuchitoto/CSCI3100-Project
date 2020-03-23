@@ -114,11 +114,12 @@ function new_user(data)
   });
 }
 
-export function exist_name(data)
+function exist_name(data)
 {
+  const datan = qs.parse(data);
   const query = "SELECT USERNAME FROM USER WHERE ?";
 
-  values = {USERNAME:data.name};
+  values = {USERNAME:datan.name};
 
   connection.query(query, values, function(err, row, reply){
     if(err){
@@ -128,11 +129,12 @@ export function exist_name(data)
   });
 }
 
-export function exist_email(data)
+function exist_email(data)
 {
+  const datan = qs.parse(data);
   const query = "SELECT EMAIL FROM USER WHERE ?";
 
-  values = {EMAIL:data.email};
+  values = {EMAIL:datan.email};
 
   connection.query(query, values, function(err, row, reply){
     if(err){
@@ -159,6 +161,15 @@ process.on('message', m => {
   {
     var tmp_path = fetch_code();
     process.send(tmp_path);
+  }
+  else if(myArgs[0]=='exist_user')
+  {
+    if(exist_name(m) != 0){
+      process.send("Exist name");
+    }
+    if(exist_email(m) != 0){
+      process.send("Exist email");
+    }
   }
   else if(myArgs[0]=='new_user')
   {
