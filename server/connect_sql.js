@@ -90,13 +90,13 @@ function new_user(data)
   const datan = qs.parse(data);
   const query1 = "INSERT INTO USER SET ?",
   values = {
-USERNAME:datan.USERNAME
-EMAIL:datan.EMAIL
-PASSWORD_HASH:datan.PASSWORD_HASH
-AC_TYPE:datan.AC_TYPE
-GROUP:datan.GROUP
-DESCRIPTION:datan.DESCRIPTION
-IS_PUBLIC:datan.IS_PUBLIC
+    USERNAME:datan.USERNAME,
+    EMAIL:datan.EMAIL,
+    PASSWORD_HASH:datan.PASSWORD_HASH,
+    AC_TYPE:datan.AC_TYPE,
+    GROUP:datan.GROUP,
+    DESCRIPTION:datan.DESCRIPTION,
+    IS_PUBLIC:datan.IS_PUBLIC
   };
   const query2 = "SELECT ID FROM USER WHERE?";
   connection.query(query1, values, function(err, num) {
@@ -111,6 +111,36 @@ IS_PUBLIC:datan.IS_PUBLIC
       }
       return data[0];
     })
+  });
+}
+
+export function exist_name(data)
+{
+  const datan = qs.parse(data);
+  const query; // contain same name in db?
+
+  values = {USERNAME:datan.USERNAME};
+
+  connection.query(query, values, function(err, row, reply){
+    if(err){
+      throw err;
+    }
+    return row;
+  });
+}
+
+export function exist_email(data)
+{
+  const datan = qs.parse(data);
+  const query; // contain same email in db?
+
+  values = {EMAIL:datan.EMAIL};
+
+  connection.query(query, values, function(err, row, reply){
+    if(err){
+      throw err;
+    }
+    return row
   });
 }
 
