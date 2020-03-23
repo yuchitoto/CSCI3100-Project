@@ -36,9 +36,8 @@ function validate_save() {
   })
 }
 
-function save_code() {
-  const username = myArgs[0];
-  const filename = myArgs[1];
+function save_code(param, callback) {
+  const data = JSON.parse(param);
   var path = "../tmp_data/"+username+"__"+filename;
   fs.open(path,'r', function(err, fd) {
     if (err)
@@ -51,10 +50,12 @@ function save_code() {
     fs.read(fd, buf, 0, buf.length, 0, function(err, num) {
       var query = "INSERT INTO SRC_CODE SET?",
       values = {
-        USER:username,
-        NAME:filename,
-        SRC:buf,
-        SRC_SZ:buf.length
+        USER:data.username,
+        NAME:data.filename,
+        SRC:data.src,
+        SRC_SZ:data.src_sz,
+        BLK:data.blk,
+        BLK_SZ:data.blk_sz
       };
       connection.query(query,values, function(er, da) {
         if(er) throw er;
@@ -64,58 +65,50 @@ function save_code() {
   });
 }
 
-function fetch_code() {
-  const username = myArgs[0];
-  const filename = myArgs[1];
+function fetch_code(param, callback) {
+  const data = JSON.parse(param);
+  const username = data.username;
+  const filename = data.filename;
+  console.log(`param: ${username} ${filename}`);
   const sql = "SELECT * FROM SRC_CODE WHERE USER=? AND NAME=?";
   connection.query(sql, [username, filename], function (err, result) {
-    if(err)
-    {
-      console.log(`error: ${err.message}`);
-      return;
-    }
-    console.log(result);
-    var path = "../tmp_data/"+username+"__"+filename;
-    fs.open(path, "w", function (err, fd) {
-      fs.writeFile(fd, result[0].SRC, function (error) {
-        if (error) throw error;
-      });
-    });
-    return path;
+    callback(err, result[0]);
   });
 }
 
-function new_user(data)
+function new_user(data, callback)
 {
   const datan = qs.parse(data);
   const query1 = "INSERT INTO USER SET ?",
   values = {
-USERNAME:datan.USERNAME
-EMAIL:datan.EMAIL
-PASSWORD_HASH:datan.PASSWORD_HASH
-AC_TYPE:datan.AC_TYPE
-GROUP:datan.GROUP
-DESCRIPTION:datan.DESCRIPTION
+USERNAME:datan.USERNAME,
+EMAIL:datan.EMAIL,
+PASSWORD_HASH:datan.PASSWORD_HASH,
+AC_TYPE:datan.AC_TYPE,
+GROUP:datan.GROUP,
+DESCRIPTION:datan.DESCRIPTION,
 IS_PUBLIC:datan.IS_PUBLIC
   };
   const query2 = "SELECT ID FROM USER WHERE?";
   connection.query(query1, values, function(err, num) {
     if(err)
     {
-      throw err;
+      callback(0);
     }
     connection.query(query2,values, function(error, data) {
       if(error)
       {
-        throw error;
+        callback(0);
       }
-      return data[0];
+      callback(data[0]);
     })
   });
 }
 
 process.on('message', m => {
-  if(m=='save_code')
+  console.log(myArgs[0]);
+  console.log(m);
+  if(myArgs[0]=='save_code')
   {
     if(validate_save())
     {
@@ -127,14 +120,24 @@ process.on('message', m => {
       process.send("Save failed");
     }
   }
-  else if(m=='fetch_code')
+  else if(myArgs[0]=='fetch_code')
   {
-    var tmp_path = fetch_code();
-    process.send(tmp_path);
+    fetch_code(m, function(err, data) {
+      var result = JSON.stringify(data);
+      if(err){
+        console.log(err);
+        return process.send('fail');
+      }
+      return process.send(result);
+    });
   }
   else if(myArgs[0]=='new_user')
   {
-    var id = new_user(m);
-    process.send(id);
+    new_user(m, id => {
+      if(id==0){
+        return process.send('fail');
+      }
+      return process.send(id);
+    });
   }
 })
