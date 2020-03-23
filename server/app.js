@@ -7,6 +7,8 @@ var fs = require('fs');
 var fork = require('child_process');
 var qs = require('querystring');
 
+var forum = require('forum');
+
 var execPHP = require('./php_parser.js')();
 
 function get_not_found(callback) {
