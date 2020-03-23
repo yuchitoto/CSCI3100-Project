@@ -26,66 +26,59 @@ function validate_save() {
     if(err)
     {
       console.log(`error ${err.message}`);
-      return false;
+      return -1;
     }
-    if(result[0]>0)
+    if(result[0]>1)
     {
-      return false;
+      return -1;
     }
-    return true;
+    return result[0];
   })
 }
 
-function save_code() {
-  const username = myArgs[0];
-  const filename = myArgs[1];
+function save_code(param, num, callback) {
+  const data = JSON.parse(param);
   var path = "../tmp_data/"+username+"__"+filename;
-  fs.open(path,'r', function(err, fd) {
-    if (err)
-    {
-      console.log(`error: ${err}`);
-      throw err;
-    }
-    var buf = new Buffer(getFilesizeInBytes('hello_world.cpp'));
-
-    fs.read(fd, buf, 0, buf.length, 0, function(err, num) {
-      var query = "INSERT INTO SRC_CODE SET?",
-      values = {
-        USER:username,
-        NAME:filename,
-        SRC:buf,
-        SRC_SZ:buf.length
-      };
-      connection.query(query,values, function(er, da) {
-        if(er) throw er;
-        return;
-      });
-    });
-  });
+  var values = {
+    USER:data.username,
+    NAME:data.filename,
+    SRC:data.src,
+    SRC_SZ:data.src_sz,
+    BLK:data.blk,
+    BLK_SZ:data.blk_sz
+  };
+  if(num==0)
+  {
+    const query = "INSERT INTO SRC_CODE SET?";
+    connection.query(query,values, function(er, da) {
+      callback(er, da);
+  }
+  else if(num==1)
+  {
+    const query = "UPDATE SRC_CODE WHERE ? AND ? SET ?, ?, ?, ?";
+    connection.query(query, values, function(er, da) {
+      callback(er, da);
+    })
+  }
 }
 
-function fetch_code() {
-  const username = myArgs[0];
-  const filename = myArgs[1];
+function fetch_code(param, callback) {
+  const data = JSON.parse(param);
+  const username = data.username;
+  const filename = data.filename;
+  console.log(`param: ${username} ${filename}`);
   const sql = "SELECT * FROM SRC_CODE WHERE USER=? AND NAME=?";
   connection.query(sql, [username, filename], function (err, result) {
-    if(err)
-    {
-      console.log(`error: ${err.message}`);
-      return;
-    }
-    console.log(result);
-    var path = "../tmp_data/"+username+"__"+filename;
-    fs.open(path, "w", function (err, fd) {
-      fs.writeFile(fd, result[0].SRC, function (error) {
-        if (error) throw error;
-      });
-    });
-    return path;
+    callback(err, result[0]);
   });
 }
 
-function new_user(data)
+function delete_code(param, callback)
+{
+  /*delete code also delete all posts related*/
+}
+
+function new_user(data, callback)
 {
   const datan = qs.parse(data);
   const query1 = "INSERT INTO USER SET ?",
@@ -102,15 +95,15 @@ function new_user(data)
   connection.query(query1, values, function(err, num) {
     if(err)
     {
-      throw err;
+      callback(0);
     }
     connection.query(query2,values, function(error, data) {
       if(error)
       {
-        throw error;
+        callback(0);
       }
-      return data[0];
-    })
+      callback(data[0]);
+    });
   });
 }
 
@@ -143,24 +136,75 @@ function exist_email(data)
     return row
   });
 }
+  
+function new_post(param, callback)
+{
+  //assume take on userid, title, content, reply(0 for new post), code id
+  const data = JSON.parse(param);
+  const query2 = "INSERT INTO POST SET ?";
+  connection.query(query2, data, function(err, res) {
+    if(err)
+    {
+      callback(err, 0);
+    }
+    callback(err, res);
+}
+
+function fetch_post(param, callback)
+{
+  /*if id or reply = post id ret json array of post*/
+}
+
+function delete_post(param, callback)
+{
+  /*delete all post if is post head, else single*/
+}
+
+function search_post(param, callback)
+{
+  /*search post head*/
+}
+
+function userID(param, callback)
+{
+  /*ret user id*/
+}
+
+/*advanced
+function updateGrade(param, callback)
+{
+
+}*/
 
 process.on('message', m => {
-  if(m=='save_code')
+  console.log(myArgs[0]);
+  console.log(m);
+  if(myArgs[0]=='save_code')
   {
-    if(validate_save())
-    {
-      save_code()
-      process.send("Save success");
-    }
-    else
-    {
-      process.send("Save failed");
-    }
+    validate_save(m, r => {
+      if(r<0)
+      {
+        return process.send('fail');
+      }
+      save_code(m, r, function(err, res) {
+        if(err)
+        {
+          return process.send('fail');
+        }
+        return process.send('success');
+      });
+    });
   }
-  else if(m=='fetch_code')
+  else if(myArgs[0]=='fetch_code')
   {
-    var tmp_path = fetch_code();
-    process.send(tmp_path);
+    fetch_code(m, function(err, data) {
+      var result = JSON.stringify(data);
+      if(err){
+        console.log(err);
+        return process.send('fail');
+      }
+      return process.send(result);
+    });
   }
   else if(myArgs[0]=='exist_user')
   {
@@ -173,7 +217,11 @@ process.on('message', m => {
   }
   else if(myArgs[0]=='new_user')
   {
-    var id = new_user(m);
-    process.send(id);
+    new_user(m, id => {
+      if(id==0){
+        return process.send('fail');
+      }
+      return process.send(id);
+    });
   }
 })
