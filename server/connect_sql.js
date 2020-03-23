@@ -52,6 +52,7 @@ function save_code(param, num, callback) {
     const query = "INSERT INTO SRC_CODE SET?";
     connection.query(query,values, function(er, da) {
       callback(er, da);
+    })
   }
   else if(num==1)
   {
@@ -136,6 +137,19 @@ function exist_email(data)
     return row
   });
 }
+
+function find_user(user){
+  // find user id by username/email
+}
+
+function verify_password(user){
+  // verify password
+}
+
+function delete_user(id){
+  // delete given id in USER
+  // receive id
+}
   
 function new_post(param, callback)
 {
@@ -148,6 +162,7 @@ function new_post(param, callback)
       callback(err, 0);
     }
     callback(err, res);
+  })
 }
 
 function fetch_post(param, callback)
@@ -209,10 +224,13 @@ process.on('message', m => {
   else if(myArgs[0]=='exist_user')
   {
     if(exist_name(m) != 0){
-      process.send("Exist name");
+      process.send('exist_name');
     }
-    if(exist_email(m) != 0){
-      process.send("Exist email");
+    else if(exist_email(m) != 0){
+      process.send('exist_email');
+    }
+    else {
+      process.send('success');
     }
   }
   else if(myArgs[0]=='new_user')
