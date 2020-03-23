@@ -116,10 +116,9 @@ function new_user(data)
 
 export function exist_name(data)
 {
-  const datan = qs.parse(data);
   const query = "SELECT USERNAME FROM USER WHERE ?";
 
-  values = {USERNAME:datan.USERNAME};
+  values = {USERNAME:data.name};
 
   connection.query(query, values, function(err, row, reply){
     if(err){
@@ -131,10 +130,9 @@ export function exist_name(data)
 
 export function exist_email(data)
 {
-  const datan = qs.parse(data);
   const query = "SELECT EMAIL FROM USER WHERE ?";
 
-  values = {EMAIL:datan.EMAIL};
+  values = {EMAIL:data.email};
 
   connection.query(query, values, function(err, row, reply){
     if(err){
