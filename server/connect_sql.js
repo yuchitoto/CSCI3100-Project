@@ -83,13 +83,13 @@ function new_user(data, callback)
   const datan = qs.parse(data);
   const query1 = "INSERT INTO USER SET ?",
   values = {
-USERNAME:datan.USERNAME,
-EMAIL:datan.EMAIL,
-PASSWORD_HASH:datan.PASSWORD_HASH,
-AC_TYPE:datan.AC_TYPE,
-GROUP:datan.GROUP,
-DESCRIPTION:datan.DESCRIPTION,
-IS_PUBLIC:datan.IS_PUBLIC
+    USERNAME:datan.USERNAME,
+    EMAIL:datan.EMAIL,
+    PASSWORD_HASH:datan.PASSWORD_HASH,
+    AC_TYPE:datan.AC_TYPE,
+    GROUP:datan.GROUP,
+    DESCRIPTION:datan.DESCRIPTION,
+    IS_PUBLIC:datan.IS_PUBLIC
   };
   const query2 = "SELECT ID FROM USER WHERE?";
   connection.query(query1, values, function(err, num) {
@@ -107,6 +107,36 @@ IS_PUBLIC:datan.IS_PUBLIC
   });
 }
 
+function exist_name(data)
+{
+  const datan = qs.parse(data);
+  const query = "SELECT USERNAME FROM USER WHERE ?";
+
+  values = {USERNAME:datan.name};
+
+  connection.query(query, values, function(err, row, reply){
+    if(err){
+      throw err;
+    }
+    return row;
+  });
+}
+
+function exist_email(data)
+{
+  const datan = qs.parse(data);
+  const query = "SELECT EMAIL FROM USER WHERE ?";
+
+  values = {EMAIL:datan.email};
+
+  connection.query(query, values, function(err, row, reply){
+    if(err){
+      throw err;
+    }
+    return row
+  });
+}
+  
 function new_post(param, callback)
 {
   //assume take on userid, title, content, reply(0 for new post), code id
@@ -175,6 +205,15 @@ process.on('message', m => {
       }
       return process.send(result);
     });
+  }
+  else if(myArgs[0]=='exist_user')
+  {
+    if(exist_name(m) != 0){
+      process.send("Exist name");
+    }
+    if(exist_email(m) != 0){
+      process.send("Exist email");
+    }
   }
   else if(myArgs[0]=='new_user')
   {
