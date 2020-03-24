@@ -1,16 +1,52 @@
 const {fork} = require("child_process");
-const sql = require("connect_sql.js");
 
 class Forum {
-  constructor(user) {
-    this.username = user;
-    this.userid;
-    sql.userID(JSON.stringify(user), res => {this.userid = res;});
+  constructor(userid) {
+    this.userid = userid;
   }
 
-  fetch(param, callback)
+  fetch(postID, callback)
   {
-    /*fetch json object list and parse it into html accepted format*/
+    /*fetch json object list*/
+    var msg = {userID:this.userid, postID:postID};
+    const fetcher = fork("connect_sql.js", ["fetch_post"]);
+    const code = fork("connect_sql.js", ["fetch_code"]);
+    const user = fork("connect_sql.js", ["find_user"]);
+    fetcher.send(JSON.stringify(msg));
+    fetcher.on("message", m => {
+      console.log(m);
+      var post = JSON.parse(m);
+      if(m=='fail')
+      {
+        callback(1, m);
+      }
+      var msg2 = {ID:post[0].CODE};
+      console.log(msg2);
+      code.send(JSON.stringify(msg2));
+      code.on("message", n => {
+        var cod = JSON.parse(n);
+        if(n=="fail")
+        {
+          callback(1, m);
+        }
+        post[0].CODE = cod.SRC;
+        var flag = 0;
+        for(var i=0;i<post.length;i++)
+        {
+          user.send(JSON.stringify({ID:post[i].USER}));
+          user.on("message", l => {
+            var userdata = JSON.parse(l);
+            console.log(userdata.USERNAME);
+            post[i].USER = userdata.USERNAME;
+            flag += 1;
+          });
+        }
+        if(flag == post.length - 1)
+        {
+          callback(0, post);
+        }
+      });
+    });
   }
 
   search(param, callback)

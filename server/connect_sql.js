@@ -51,25 +51,35 @@ function save_code(param, num, callback) {
   {
     const query = "INSERT INTO SRC_CODE SET?";
     connection.query(query,values, function(er, da) {
-      callback(er, da);
-    })
+      callback(er, da);});
   }
   else if(num==1)
   {
     const query = "UPDATE SRC_CODE WHERE ? AND ? SET ?, ?, ?, ?";
     connection.query(query, values, function(er, da) {
       callback(er, da);
-    })
+    });
   }
 }
 
 function fetch_code(param, callback) {
   const data = JSON.parse(param);
-  const username = data.username;
-  const filename = data.filename;
-  console.log(`param: ${username} ${filename}`);
-  const sql = "SELECT * FROM SRC_CODE WHERE USER=? AND NAME=?";
-  connection.query(sql, [username, filename], function (err, result) {
+  var sql = "SELECT * FROM SRC_CODE WHERE ?";
+  var pr = [];
+  var tmp1 = Object.keys(data);
+  var tmp2 = Object.values(data);
+  for (var i=0;i<tmp1.length;i++)
+  {
+    if (i>0){
+      sql += " AND ?";
+    }
+    var tmp3 = tmp1[i];
+    var tmp4 = tmp2[i];
+    pr.push({[tmp3]:tmp4});
+  }
+  console.log(pr);
+  connection.query(sql, pr, function (err, result) {
+    result[0].SRC = result[0].SRC.toString('utf8');
     callback(err, result[0]);
   });
 }
@@ -138,8 +148,25 @@ function exist_email(data)
   });
 }
 
-function find_user(user){
-  // find user id by username/email
+function find_user(param, callback){
+  // find user from database
+  const data = JSON.parse(param);
+  var sql = "SELECT * FROM USER WHERE ?";
+  var pr = [];
+  const tmp1 = Object.keys(data);
+  const tmp2 = Object.values(data);
+  for(var i=0;i<tmp1.length;i++)
+  {
+    if(i>0)
+    {
+      sql += " AND ?";
+    }
+    pr.push({[tmp1[i]]:tmp2[i]});
+  }
+  connection.query(sql, pr, function(err, data) {
+    console.log(data[0]);
+    callback(err, data[0]);
+  });
 }
 
 function verify_password(user){
@@ -150,7 +177,7 @@ function delete_user(id){
   // delete given id in USER
   // receive id
 }
-  
+
 function new_post(param, callback)
 {
   //assume take on userid, title, content, reply(0 for new post), code id
@@ -168,6 +195,11 @@ function new_post(param, callback)
 function fetch_post(param, callback)
 {
   /*if id or reply = post id ret json array of post*/
+  const data = JSON.parse(param);
+  const query = "SELECT * FROM POST WHERE ? OR ?";
+  connection.query(query, [{ID:data.postID}, {REPLY:data.postID}], function(err, data) {
+    callback(err, data);
+  });
 }
 
 function delete_post(param, callback)
@@ -240,6 +272,25 @@ process.on('message', m => {
         return process.send('fail');
       }
       return process.send(id);
+    });
+  }
+  else if (myArgs[0]=='fetch_post') {
+    fetch_post(m, function(err, data) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return process.send('fail');
+      }
+      return process.send(JSON.stringify(data));
+    });
+  }
+  else if (myArgs[0]=='find_user') {
+    find_user(m, function(err, data) {
+      if(err)
+      {
+        return process.send('fail');
+      }
+      return process.send(JSON.stringify(data));
     });
   }
 })

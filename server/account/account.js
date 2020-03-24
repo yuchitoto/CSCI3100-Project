@@ -8,12 +8,12 @@ class Account {
 
     verify_password(){
       /* verify password and return id */
-      const check = fork("connect_sql.js", ["verify_password"]);
+      const check = fork("../connect_sql.js", ["verify_password"]);
       check.send(JSON.stringify(this.data));
 
       check.on("message", m => {
         // handle message
-      })
+      });
     }
 
     registor(callback){
@@ -43,7 +43,7 @@ class Account {
     delete_user(callback){
       var id = this.verify_password();
       if(id == 0){
-        
+
       }
       else{
         const del = fork("connect_sql.js", ["delete_user"]);
