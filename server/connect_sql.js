@@ -4,6 +4,192 @@ const mysql = require('mysql');
 var myArgs = process.argv.slice(2);
 const qs = require('querystring');
 
+/*
+methods use parsed data
+functions handles raw JSON
+*/
+
+class MySQLDatabase {
+  constructor(table) {
+    this.connection = mysql.createConnection({
+      "host":"sql12.freesqldatabase.com",
+      "port":3306,
+      "user":"sql12328565",
+      "password":"kQjmPhHsgA",
+      "database":"sql12328565"
+    });
+    this.table = table;
+  }
+
+  insert(values, callback) {
+    var query = "INSERT INTO ? SET ?";
+    this.connection.query(query, [this.table, values], function(err, data) {
+      callback(err, data);
+    });
+  }
+
+  select_when_all_true(params, callback) {
+    var query = "SELECT * FROM ? WHERE ?";
+    const key = Object.keys(params);
+    const value = Object.values(param);
+    var pr = [this.table];
+    for(var i=0; i<key.length;i++)
+    {
+      if(i>0) {
+        query += " AND ?";
+      }
+      pr.push({[key[i]]:value[i]});
+    }
+    this.connection.query(query, pr, function(err, data) {
+      callback(err, data);
+    });
+  }
+
+  delete_when_all_true(cond, callback) {
+    var query = "DELETE FROM ? WHERE ?";
+    const key = Object.keys(cond);
+    const value = Object.values(cond);
+    var pr = [this.table];
+    for(var i=0;i<key.length;i++)
+    {
+      if(i>0)
+      {
+        query += " AND ?";
+      }
+      pr.push({[key[i]]:value[i]});
+    }
+    this.connection.query(query, pr, function(err, data) {
+      callback(err, data);
+    });
+  }
+
+  update(val, cond, callback) {
+    var query = "UPDATE ? SET ? WHERE ?";
+    const key = Object.keys(cond);
+    const value = Object.values(cond);
+    var pr = [this.table, val];
+    for (var i=0;i<key.length;i++)
+    {
+      if(i>0)
+      {
+        query += " AND ?";
+      }
+      pr.push({[key[i]]:values[i]});
+    }
+    this.connection.query(query, pr, function(err, data) {
+      callback(err, data);
+    });
+  }
+}
+
+function getFilesizeInBytes(filename) {
+    var stats = fs.statSync(filename);
+    var fileSizeInBytes = stats["size"];
+    return fileSizeInBytes;
+}
+
+class SRC_CODE extends MySQLDatabase {
+  constructor() {
+    super(SRC_CODE);
+  }
+
+  validate_save(param, callback) {
+    const query = "SELECT COUNT(*) FROM SRC_CODE WHERE USRE=? AND NAME=?";
+    this.connection.query(query, [param.USER, param.NAME], function(err, data) {
+      if(err)
+      {
+        console.log(`error ${err.message}`);
+        return false;
+      }
+      if(result[0]>1)
+      {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  save_code(values, callback) {
+    this.insert(values, function(err, data) {
+      callback(err, data);
+    });
+  }
+
+  fetch_code(data, callback) {
+    this.select_when_all_true(data, function(err, data) {
+      callback(err, data);
+    });
+  }
+
+  delete_code(data, callback) {
+    /*use parsed data to delete*/
+  }
+}
+
+class USER extends MySQLDatabase {
+  constructor() {
+    super("USER");
+  }
+
+  new_user(data, callback) {
+    /*new user*/
+  }
+
+  exist_name(data, callback) {
+    /*check if exists same name*/
+  }
+
+  exist_email(data, callback) {
+    /*check if exists email*/
+  }
+
+  find_user(data, callback) {
+    //find user
+  }
+
+  verify_password(data, callback) {
+    //verify password
+  }
+
+  delete_user(data, callback) {
+    //remove user
+  }
+
+  userID(data, callback) {
+    //return userID on callback
+  }
+}
+
+class POST extends MySQLDatabase {
+  constructor() {
+    super("POST");
+  }
+
+  newPost(data, callback) {
+    //insert new post or reply
+  }
+
+  fetchPost(data, callback) {
+    //fetch post
+  }
+
+  deletePost(data, callback) {
+    //delete reply or post and replies
+  }
+
+  searchPost(data, callback) {
+    //parse keywords into sql database
+  }
+
+  /*updateGrade(data, callback) {
+    //update grade
+  }
+
+  calculateGrade(postID, callback) {
+    //calc grade for post
+  }*/
+}
+
 const connection = mysql.createConnection({
   "host":"sql12.freesqldatabase.com",
   "port":3306,
@@ -11,12 +197,6 @@ const connection = mysql.createConnection({
   "password":"kQjmPhHsgA",
   "database":"sql12328565"
 });
-
-function getFilesizeInBytes(filename) {
-    var stats = fs.statSync(filename);
-    var fileSizeInBytes = stats["size"];
-    return fileSizeInBytes;
-}
 
 function validate_save() {
   const username = myArgs[0];

@@ -8,6 +8,7 @@ var fork = require('child_process');
 var qs = require('querystring');
 
 var forum = require('./forum');
+let Forum = forum.Forum;
 
 var execPHP = require('./php_parser.js')();
 
@@ -21,7 +22,9 @@ function get_not_found(callback) {
   });
 }
 
-app.set('view_engine', 'ejs');
+var httpServer = http.createServer(app);
+
+app.set('view engine', 'ejs');
 
 app.get('/', function(req, res) {
   console.log(req);
@@ -43,8 +46,27 @@ app.delete('/code*', function(req, res) {
 
 app.get('/forum*', function(req, res) {
   /*return forum page*/
-  console.log(req);
-  res.redirect('/404.html');
+  console.log(req.params);
+  var id = 0;
+  var postID = 1;
+  if(Object.keys(req.query).includes("user"))
+  {
+    id = req.query['user'];
+  }
+  if(Object.keys(req.query).includes("post"))
+  {
+    postID = req.query['post'];
+  }
+  var forumObj = new Forum(id);
+  forumObj.fetch(postID, function(err, post) {
+    if(err)
+    {
+      console.log("failed to find post");
+      return res.redirect("/404.html");
+    }
+    var tmp = {post:post};
+    return res.render('post', tmp);
+  });
 });
 
 app.post('/forum*', function(req, res) {
@@ -116,7 +138,7 @@ app.use('*.js', function(req, res, next) {
 
 //from https://medium.com/@MartinMouritzen/how-to-run-php-in-node-js-and-why-you-probably-shouldnt-do-that-fb12abe955b0
 app.use('*.php',function(request,response,next) {
-  fs.readFile('./view'+request._parsedUrl.pathname, function(err, data) {
+  fs.readFile('./views'+request._parsedUrl.pathname, function(err, data) {
     if(err)
     {
       console.log(`error: ${err.message}`);
@@ -129,4 +151,4 @@ app.use('*.php',function(request,response,next) {
 	});
 });
 
-var server = app.listen(8000);
+httpServer.listen(8080);
