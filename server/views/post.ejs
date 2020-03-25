@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title><%= post[0].TITLE %></title>
+  </head>
+  <body>
+    <h3><%= post[0].TITLE %></h3>
+    <pre><%= post[0].CODE %></pre>
+    <% for(var i=0; i<post.length; i++) {%>
+      <h6><%= post[i].USER %></h6>
+      <pre><%= post[i].CONTENT %></pre>
+      <hr>
+    <% } %>
+  </body>
+</html>

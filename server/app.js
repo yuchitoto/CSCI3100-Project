@@ -7,7 +7,7 @@ var fs = require('fs');
 var fork = require('child_process');
 var qs = require('querystring');
 
-var forum = require('forum');
+var forum = require('./forum');
 
 var execPHP = require('./php_parser.js')();
 
@@ -20,6 +20,8 @@ function get_not_found(callback) {
     callback(data.toString('utf8'));
   });
 }
+
+app.set('view_engine', 'ejs');
 
 app.get('/', function(req, res) {
   console.log(req);
@@ -41,6 +43,8 @@ app.delete('/code*', function(req, res) {
 
 app.get('/forum*', function(req, res) {
   /*return forum page*/
+  console.log(req);
+  res.redirect('/404.html');
 });
 
 app.post('/forum*', function(req, res) {
@@ -71,8 +75,16 @@ app.delete('/user/*', function(req, res) {
   /*remove user*/
 });
 
+app.get('/create_account*', function(req, res) {
+  /*fetch account create page*/
+});
+
+app.post('/create_account*', function(req, res) {
+  /*create new account*/
+});
+
 app.use('*.html', function(req, res, next) {
-  //console.log(req._parsedUrl);
+  //console.log(req.headers); use headers to detect mobile
   var path = './html'+req._parsedUrl.pathname;
   console.log(path);
   fs.readFile(path, function(err, data) {

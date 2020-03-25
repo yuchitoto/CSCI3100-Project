@@ -6,7 +6,7 @@ class ExecPHP {
 	*/
 	constructor() {
 		this.phpPath = 'D:/program/xampp/php/php.exe';
-		this.phpFolder = './view';
+		this.phpFolder = './views';
 	}
 	/**
 	*
