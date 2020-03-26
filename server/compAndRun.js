@@ -4,6 +4,10 @@ const exec = util.promisify(require('child_process').exec);
 
 var myArgs = process.argv.slice(2);
 
+// function to write JSON buffer src code file to server
+/*async function tmpFile()*/
+
+// compile the file written on server
 async function compile(filename, user) {
   const fln = 'g++ '+filename+' -o '+user;
   const {error, stderr} = await exec(fln);
@@ -16,6 +20,7 @@ async function compile(filename, user) {
   return stderr;
 };
 
+// run the corresponding excutable
 async function run(filename, user) {
   const comperr = compile(filename, user);
 
@@ -49,6 +54,7 @@ async function run(filename, user) {
   return stdout;
 }
 
+// handle requests upon invoke
 process.on('message', m => {
   if(m==1) {
     var result = run(myArgs[0], myArgs[1]);

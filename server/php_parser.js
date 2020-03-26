@@ -1,26 +1,29 @@
-/*parser from https://medium.com/@MartinMouritzen/how-to-run-php-in-node-js-and-why-you-probably-shouldnt-do-that-fb12abe955b0*/
+/*
+parser ammended from https://medium.com/@MartinMouritzen/how-to-run-php-in-node-js-and-why-you-probably-shouldnt-do-that-fb12abe955b0
+to adapt to this project
+*/
+const {exec} = require('child_process');
 
 class ExecPHP {
-	/**
-	*
-	*/
 	constructor() {
 		this.phpPath = 'D:/program/xampp/php/php.exe';
 		this.phpFolder = './views';
 	}
-	/**
-	*
-	*/
-	parseFile(fileName,callback) {
-		var realFileName = this.phpFolder + fileName;
 
-		console.log('parsing file: ' + realFileName);
+	// to parse php script
+	parseFile(filename, params, callback) {
+		var filePath = this.phpFolder + filename;
 
-		var exec = require('child_process').exec;
-		var cmd = this.phpPath + ' ' + realFileName;
+		console.log('parsing file: ' + filePath);
+		var cmd = this.phpPath + ' ' + filePath;
+
+		for(var i=0;i<params.length;i++)
+		{
+			cmd += ' '+params[i];
+		}
 
 		exec(cmd, function(error, stdout, stderr) {
-			callback(stdout);
+			callback(error, stdout, stderr);
 		});
 	}
 }

@@ -1,10 +1,12 @@
 const {fork} = require("child_process");
 
+// forum definition
 class Forum {
   constructor(userid) {
     this.userid = userid;
   }
 
+// fetch post, needs modification
   fetch(postID, callback)
   {
     /*fetch json object list*/
@@ -49,9 +51,10 @@ class Forum {
     });
   }
 
+// to search post and return titles
   search(param, callback)
   {
-    /*pase parameter*/
+    /*parse parameter*/
     var key = "";
     const find = fork("connect_sql.js", ["search_post"]);
     find.send(JSON.stringify(key));
@@ -61,6 +64,7 @@ class Forum {
     });
   }
 
+// post new posts
   post_post(title, content, codeID, callback)
   {
     var msg = {userid: this.userid, codeID:codeID, title:title, content:content, reply:0};
@@ -72,11 +76,13 @@ class Forum {
     });
   }
 
+// post new replies
   post_reply(postID, content, callback)
   {
     /*send to mysql*/
   }
 
+// delete reply or post
   delete(param, callback)
   {
     /*delete reply or post*/

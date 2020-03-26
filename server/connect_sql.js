@@ -9,6 +9,7 @@ methods use parsed data
 functions handles raw JSON
 */
 
+// base class for specific database table accessing using mysql
 class MySQLDatabase {
   constructor(table) {
     this.connection = mysql.createConnection({
@@ -85,18 +86,23 @@ class MySQLDatabase {
   }
 }
 
+/*
+// calculating size of file
 function getFilesizeInBytes(filename) {
     var stats = fs.statSync(filename);
     var fileSizeInBytes = stats["size"];
     return fileSizeInBytes;
 }
+*/
 
+// mysql table SRC_CODE
 class SRC_CODE extends MySQLDatabase {
   constructor() {
     super('SRC_CODE');
   }
 
   validateSave(param, callback) {
+    // ensures no duplication and check for whether new file or updates
     const query = "SELECT COUNT(*) FROM SRC_CODE WHERE USER=? AND NAME=?";
     this.connection.query(query, [param.USER, param.NAME], function(err, data) {
       if(err)
@@ -112,17 +118,15 @@ class SRC_CODE extends MySQLDatabase {
     });
   }
 
-  newCode(data, callback) {
-    //save code to database
-    const values = JSON.parse(data);
-    var query = "INSERT INTO ? SET ?";
-    this.connection.query(query, [this.table, values], function(err, data) {
-      return callback(err, data);
+  newCode(values, callback) {
+    //save entry to database
+    this.insert(values, function(err, res) {
+      return callback(err, res);
     });
   }
 
   fetchCode(data, callback) {
-    //fetch code from database
+    //fetch entry from database
     this.selectWhenAllTrue(data, function(err, data) {
       return callback(err, data);
     });
@@ -135,17 +139,15 @@ class SRC_CODE extends MySQLDatabase {
     });
   }
 
-  updateCode(param, callback) {
-    const data = JSON.parse(param);
-    const query = "UPDATE SRC_CODE SET ? WHERE ? AND ? ";
-    console.log(data);
-    connection.query(query, [data, {USER:data.USER}, {NAME:data.NAME}], function(er, da) {
-
-      return callback(er, da);});
+  updateCode(data, callback) {
+    // update entry
+    this.update(data, {USER:data.USER, NAME:data.NAME} function(err, res) {
+      return callback(err, res);
+    });
   }
 
-  saveCode(param, callback) {
-    const data = JSON.parse(param);
+  saveCode(data, callback) {
+    // basic handler for updating or saving code entry
     console.log(data);
     this.validateSave(data, tmpres => {
       if(tmpres['COUNT(*)'] < 0)
@@ -154,7 +156,7 @@ class SRC_CODE extends MySQLDatabase {
       }
       else if(tmpres['COUNT(*)'] == 0)
       {
-        this.newCode(param, function(err, res) {
+        this.newCode(data, function(err, res) {
           if(err) {
             console.log(`error: ${err.message}`);
             return callback('fail');
@@ -164,7 +166,7 @@ class SRC_CODE extends MySQLDatabase {
         });
       }
       else if (tmpres['COUNT(*)'] == 1) {
-        this.updateCode(param, function(err, res) {
+        this.updateCode(data, function(err, res) {
           if(err) {
             console.log(`error: ${err.message}`);
             return callback('fail');
@@ -179,6 +181,7 @@ class SRC_CODE extends MySQLDatabase {
   }
 }
 
+// mysql table USER
 class USER extends MySQLDatabase {
   constructor() {
     super("USER");
@@ -226,7 +229,7 @@ class USER extends MySQLDatabase {
     });
   }
 
-  find_user(data, callback) {
+  findUser(data, callback) {
     //find user
     this.selectWhenAllTrue(data, function(err, data) {
       if(err) {
@@ -258,6 +261,7 @@ class USER extends MySQLDatabase {
   }
 }
 
+// mysql table POST
 class POST extends MySQLDatabase {
   constructor() {
     super("POST");
@@ -275,7 +279,8 @@ class POST extends MySQLDatabase {
   }
 
   fetchPost(id, callback) {
-    //fetch post
+    // fetch post
+    // special solution used instead of general method inherited
     const queryhead = "SELECT c.USERNAME AS USER, a.TITLE, a.CONTENT, b.SRC AS CODE FROM POST a, SRC_CODE b, USER c WHERE a.ID=? AND a.USER=c.ID AND a.CODE=b.ID";
     const queryreply = "SELECT c.USERNAME AS USER, a.CONTENT AS CODE FROM POST a, USER c WHERE a.REPLY=? AND a.USER=c.ID ORDER BY a.ID ASC";
 
@@ -303,6 +308,7 @@ class POST extends MySQLDatabase {
     //parse keywords into sql database
   }
 
+// planned advanced feature
   /*updateGrade(data, callback) {
     //update grade
   }
@@ -312,6 +318,7 @@ class POST extends MySQLDatabase {
   }*/
 }
 
+// to be removed
 const connection = mysql.createConnection({
   "host":"localhost",
   "port":3306,
@@ -324,12 +331,16 @@ const userT = new USER();
 const codeT = new SRC_CODE();
 const postT = new POST();
 
+// function caller upon message invoke, handles JSON here
+
+// saveCode wrapper
 function save_code(param, callback) {
   const data = JSON.parse(param);
 
-  codeT.saveCode(param, m => {callback(m);});
+  codeT.saveCode(data, m => {callback(m);});
 }
 
+// fetchCode wrapper
 function fetch_code(param, callback) {
   const data = JSON.parse(param);
   var sql = "SELECT * FROM SRC_CODE WHERE ?";
@@ -352,11 +363,13 @@ function fetch_code(param, callback) {
   });
 }
 
+// deleteCode wrapper
 function delete_code(param, callback)
 {
   /*delete code also delete all posts related*/
 }
 
+// newUser wrapper
 function new_user(data, callback)
 {
   const datan = qs.parse(data);
@@ -386,6 +399,7 @@ function new_user(data, callback)
   });
 }
 
+// existName wrapper
 function exist_name(data)
 {
   const datan = qs.parse(data);
@@ -401,12 +415,14 @@ function exist_name(data)
   });
 }
 
+// existEmail wrapper
 function exist_email(data, callback)
 {
   const datan = qs.parse(data);
   userT.existEmail(datan, msg => {return callback(msg);});
 }
 
+// findUser wrapper
 function find_user(param, callback){
   // find user from database
   const data = JSON.parse(param);
@@ -428,15 +444,18 @@ function find_user(param, callback){
   });
 }
 
+// verifyPassword wrapper
 function verify_password(user){
   // verify password
 }
 
+// deleteUser wrapper
 function delete_user(id){
   // delete given id in USER
   // receive id
 }
 
+// newPost wrapper
 function new_post(param, callback)
 {
   //assume take on userid, title, content, reply(0 for new post), code id
@@ -444,6 +463,7 @@ function new_post(param, callback)
   postT.newPost(data, msg => {return callback(msg);});
 }
 
+// fetchPost wrapper
 function fetch_post(param, callback)
 {
   /*if id or reply = post id ret json array of post*/
@@ -451,16 +471,19 @@ function fetch_post(param, callback)
   postT.fetchPost(data, msg => {return callback(msg);});
 }
 
+//deletePost wrapper
 function delete_post(param, callback)
 {
   /*delete all post if is post head, else single*/
 }
 
+// searchPost wrapper
 function search_post(param, callback)
 {
   /*search post head*/
 }
 
+// userID wrapper
 function userID(param, callback)
 {
   /*ret user id*/
@@ -472,6 +495,7 @@ function updateGrade(param, callback)
 
 }*/
 
+// invoke wrapper upon message
 process.on('message', m => {
   console.log(myArgs[0]);
   if(myArgs[0]=='save_code')
@@ -530,4 +554,5 @@ process.on('message', m => {
   }
 });
 
+// export class definition
 module.exports = {SRC_CODE:SRC_CODE, POST:POST, USER:USER};

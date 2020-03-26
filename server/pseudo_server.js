@@ -1,4 +1,8 @@
-
+/*
+this script is for testing each module,
+or demonstrating actions to others,
+not related to the website directly
+*/
 const {fork} = require('child_process');
 const fs = require('fs');
 
