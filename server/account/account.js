@@ -8,7 +8,7 @@ class Account {
 
     verify_password(){
       /* verify password and return id */
-      const check = fork("../connect_sql.js", ["verify_password"]);
+      const check = fork("../connect_sql.js", ["find_user"]);
       check.send(JSON.stringify(this.data));
 
       check.on("message", m => {
@@ -47,7 +47,7 @@ class Account {
       }
       else{
         const del = fork("connect_sql.js", ["delete_user"]);
-        del.send(id);
+        del.send(this.data);
         del.on("message", m => {
           // handle message
         })
