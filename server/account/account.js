@@ -64,6 +64,16 @@ class Account {
       })
       callback(/*msg*/);
     }
+
+    update(param, callback) {
+      /* update user data */
+    }
+
+    verifyData(param, callback) {
+      /* verify username and email to avoid duplication
+      called upon ajax request
+      callback: 2 boolean for email and username*/
+    }
 }
 
 module.exports = {Account:Account};
