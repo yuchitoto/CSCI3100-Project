@@ -428,11 +428,7 @@ function find_user(param, callback){
   });
 }
 
-function verify_password(user){
-  // verify password
-}
-
-function delete_user(id){
+function delete_user(param, callback){
   // delete given id in USER
   // receive id
 }
