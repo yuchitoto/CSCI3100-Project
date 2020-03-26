@@ -141,9 +141,13 @@ class SRC_CODE extends MySQLDatabase {
 
   updateCode(data, callback) {
     // update entry
-    this.update(data, {USER:data.USER, NAME:data.NAME} function(err, res) {
+    this.update(data, {USER:data.USER, NAME:data.NAME}, function(err, res) {
       return callback(err, res);
     });
+    /*const query = "UPDATE SRC_CODE SET ? WHERE USER=? AND NAME=?";
+    this.connection.query(query, [data, data.USER, data.NAME], function(err, res) {
+      return callback(err, res);
+    });*/
   }
 
   saveCode(data, callback) {
