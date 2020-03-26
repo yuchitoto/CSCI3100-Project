@@ -12,11 +12,11 @@ functions handles raw JSON
 class MySQLDatabase {
   constructor(table) {
     this.connection = mysql.createConnection({
-      "host":"sql12.freesqldatabase.com",
+      "host":"localhost",
       "port":3306,
-      "user":"sql12328565",
-      "password":"kQjmPhHsgA",
-      "database":"sql12328565"
+      "user":"csci3100grp18",
+      "password":"csci3100#Grp18",
+      "database":"CSCI3100GRP18"
     });
     this.table = table;
   }
@@ -24,11 +24,11 @@ class MySQLDatabase {
   insert(values, callback) {
     var query = "INSERT INTO ? SET ?";
     this.connection.query(query, [this.table, values], function(err, data) {
-      callback(err, data);
+      return callback(err, data);
     });
   }
 
-  select_when_all_true(params, callback) {
+  selectWhenAllTrue(params, callback) {
     var query = "SELECT * FROM ? WHERE ?";
     const key = Object.keys(params);
     const value = Object.values(param);
@@ -41,11 +41,11 @@ class MySQLDatabase {
       pr.push({[key[i]]:value[i]});
     }
     this.connection.query(query, pr, function(err, data) {
-      callback(err, data);
+      return callback(err, data);
     });
   }
 
-  delete_when_all_true(cond, callback) {
+  deleteWhenAllTrue(cond, callback) {
     var query = "DELETE FROM ? WHERE ?";
     const key = Object.keys(cond);
     const value = Object.values(cond);
@@ -59,10 +59,11 @@ class MySQLDatabase {
       pr.push({[key[i]]:value[i]});
     }
     this.connection.query(query, pr, function(err, data) {
-      callback(err, data);
+      return callback(err, data);
     });
   }
 
+  // universal update statement, problematic when 2nd level is obj
   update(val, cond, callback) {
     var query = "UPDATE ? SET ? WHERE ?";
     const key = Object.keys(cond);
@@ -74,10 +75,12 @@ class MySQLDatabase {
       {
         query += " AND ?";
       }
-      pr.push({[key[i]]:values[i]});
+      pr.push({[key[i]]:value[i]});
     }
+    console.log(pr);
     this.connection.query(query, pr, function(err, data) {
-      callback(err, data);
+      if(err) console.log('error');
+      return callback(err, data);
     });
   }
 }
@@ -90,39 +93,89 @@ function getFilesizeInBytes(filename) {
 
 class SRC_CODE extends MySQLDatabase {
   constructor() {
-    super(SRC_CODE);
+    super('SRC_CODE');
   }
 
-  validate_save(param, callback) {
-    const query = "SELECT COUNT(*) FROM SRC_CODE WHERE USRE=? AND NAME=?";
+  validateSave(param, callback) {
+    const query = "SELECT COUNT(*) FROM SRC_CODE WHERE USER=? AND NAME=?";
     this.connection.query(query, [param.USER, param.NAME], function(err, data) {
       if(err)
       {
         console.log(`error ${err.message}`);
-        return false;
+        return callback(-1);
       }
-      if(result[0]>1)
+      if(data[0]>1)
       {
-        return false;
+        return callback(-1);
       }
-      return true;
+      return callback(data[0]);
     });
   }
 
-  save_code(values, callback) {
-    this.insert(values, function(err, data) {
-      callback(err, data);
+  newCode(data, callback) {
+    //save code to database
+    const values = JSON.parse(data);
+    var query = "INSERT INTO ? SET ?";
+    this.connection.query(query, [this.table, values], function(err, data) {
+      return callback(err, data);
     });
   }
 
-  fetch_code(data, callback) {
-    this.select_when_all_true(data, function(err, data) {
-      callback(err, data);
+  fetchCode(data, callback) {
+    //fetch code from database
+    this.selectWhenAllTrue(data, function(err, data) {
+      return callback(err, data);
     });
   }
 
-  delete_code(data, callback) {
+  deleteCode(data, callback) {
     /*use parsed data to delete*/
+    this.delete(data, function(err, data) {
+      return callback(err, data);
+    });
+  }
+
+  updateCode(param, callback) {
+    const data = JSON.parse(param);
+    const query = "UPDATE SRC_CODE SET ? WHERE ? AND ? ";
+    console.log(data);
+    connection.query(query, [data, {USER:data.USER}, {NAME:data.NAME}], function(er, da) {
+
+      return callback(er, da);});
+  }
+
+  saveCode(param, callback) {
+    const data = JSON.parse(param);
+    console.log(data);
+    this.validateSave(data, tmpres => {
+      if(tmpres['COUNT(*)'] < 0)
+      {
+        return callback('fail');
+      }
+      else if(tmpres['COUNT(*)'] == 0)
+      {
+        this.newCode(param, function(err, res) {
+          if(err) {
+            console.log(`error: ${err.message}`);
+            return callback('fail');
+          }
+          console.log(res);
+          return callback('success');
+        });
+      }
+      else if (tmpres['COUNT(*)'] == 1) {
+        this.updateCode(param, function(err, res) {
+          if(err) {
+            console.log(`error: ${err.message}`);
+            return callback('fail');
+          }
+          console.log(res);
+          return callback('success');
+        });
+      }
+      else
+      return callback('fail');
+    });
   }
 }
 
@@ -131,32 +184,77 @@ class USER extends MySQLDatabase {
     super("USER");
   }
 
-  new_user(data, callback) {
+  newUser(data, callback) {
     /*new user*/
+    const query = "INSERT INTO USER SET ?";
+    this.connection.query(query, data, function(err, num) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback(-1);
+      }
+      this.userID(data, function(error, num) {
+        if(error)
+        {
+          console.log(`error: ${error.message}`);
+          return callback(-1);
+        }
+        return callback(num);
+      });
+    });
   }
 
-  exist_name(data, callback) {
+  existName(data, callback) {
     /*check if exists same name*/
+    this.selectWhenAllTrue({USERNAME:data.NAME}, function(err, data) {
+      if(err) {
+        console.log(`error: ${err.message}`);
+        return callback(-1);
+      }
+      return callback(data.length);
+    });
   }
 
-  exist_email(data, callback) {
+  existEmail(data, callback) {
     /*check if exists email*/
+    this.selectWhenAllTrue({EMAIL:data.EMAIL}, function(err, data) {
+      if(err) {
+        console.log(`error: ${err.message}`);
+        return callback(-1);
+      }
+      return callback(data.length);
+    });
   }
 
   find_user(data, callback) {
     //find user
+    this.selectWhenAllTrue(data, function(err, data) {
+      if(err) {
+        return callback(null);
+      }
+      return callback(data);
+    });
   }
 
-  verify_password(data, callback) {
+  verifyPassword(data, callback) {
     //verify password
   }
 
-  delete_user(data, callback) {
+  deleteUser(data, callback) {
     //remove user
   }
 
   userID(data, callback) {
     //return userID on callback
+    this.selectWhenAllTrue(data, function(err, data) {
+      if(err) {
+        return callback(-1);
+      }
+      if(data.length != 1) {
+        return callback(-1);
+      }
+      return callback(data[0].ID);
+    });
   }
 }
 
@@ -167,10 +265,34 @@ class POST extends MySQLDatabase {
 
   newPost(data, callback) {
     //insert new post or reply
+    this.insert(data, function(err, data) {
+      if(err)
+      {
+        return callback(false);
+      }
+      return callback(true);
+    });
   }
 
-  fetchPost(data, callback) {
+  fetchPost(id, callback) {
     //fetch post
+    const queryhead = "SELECT c.USERNAME AS USER, a.TITLE, a.CONTENT, b.SRC AS CODE FROM POST a, SRC_CODE b, USER c WHERE a.ID=? AND a.USER=c.ID AND a.CODE=b.ID";
+    const queryreply = "SELECT c.USERNAME AS USER, a.CONTENT AS CODE FROM POST a, USER c WHERE a.REPLY=? AND a.USER=c.ID ORDER BY a.ID ASC";
+
+    this.connection.query(queryhead, id, function(err1, hd) {
+      if(err1) {
+        console.log(`error: ${err1.message}`);
+        return callback('fail');
+      }
+      this.connection.query(queryreply, id, function(err2, rep) {
+        if(err2) {
+          console.log(`error: ${err2.message}`);
+          return callback('fail');
+        }
+        var res = hd.concat(rep);
+        return callback(res);
+      });
+    });
   }
 
   deletePost(data, callback) {
@@ -191,55 +313,21 @@ class POST extends MySQLDatabase {
 }
 
 const connection = mysql.createConnection({
-  "host":"sql12.freesqldatabase.com",
+  "host":"localhost",
   "port":3306,
-  "user":"sql12328565",
-  "password":"kQjmPhHsgA",
-  "database":"sql12328565"
+  "user":"csci3100grp18",
+  "password":"csci3100#Grp18",
+  "database":"CSCI3100GRP18"
 });
 
-function validate_save() {
-  const username = myArgs[0];
-  const filename = myArgs[1];
-  const query = "SELECT COUNT(*) FROM SRC_CODE WHERE USRE=? AND NAME=?";
-  connection.query(query, [username, filename], function (err, result) {
-    if(err)
-    {
-      console.log(`error ${err.message}`);
-      return -1;
-    }
-    if(result[0]>1)
-    {
-      return -1;
-    }
-    return result[0];
-  })
-}
+const userT = new USER();
+const codeT = new SRC_CODE();
+const postT = new POST();
 
-function save_code(param, num, callback) {
+function save_code(param, callback) {
   const data = JSON.parse(param);
-  var path = "../tmp_data/"+username+"__"+filename;
-  var values = {
-    USER:data.username,
-    NAME:data.filename,
-    SRC:data.src,
-    SRC_SZ:data.src_sz,
-    BLK:data.blk,
-    BLK_SZ:data.blk_sz
-  };
-  if(num==0)
-  {
-    const query = "INSERT INTO SRC_CODE SET?";
-    connection.query(query,values, function(er, da) {
-      callback(er, da);});
-  }
-  else if(num==1)
-  {
-    const query = "UPDATE SRC_CODE WHERE ? AND ? SET ?, ?, ?, ?";
-    connection.query(query, values, function(er, da) {
-      callback(er, da);
-    });
-  }
+
+  codeT.saveCode(param, m => {callback(m);});
 }
 
 function fetch_code(param, callback) {
@@ -313,19 +401,10 @@ function exist_name(data)
   });
 }
 
-function exist_email(data)
+function exist_email(data, callback)
 {
   const datan = qs.parse(data);
-  const query = "SELECT EMAIL FROM USER WHERE ?";
-
-  values = {EMAIL:datan.email};
-
-  connection.query(query, values, function(err, row, reply){
-    if(err){
-      throw err;
-    }
-    return row
-  });
+  userT.existEmail(datan, msg => {return callback(msg);});
 }
 
 function find_user(param, callback){
@@ -362,24 +441,14 @@ function new_post(param, callback)
 {
   //assume take on userid, title, content, reply(0 for new post), code id
   const data = JSON.parse(param);
-  const query2 = "INSERT INTO POST SET ?";
-  connection.query(query2, data, function(err, res) {
-    if(err)
-    {
-      callback(err, 0);
-    }
-    callback(err, res);
-  })
+  postT.newPost(data, msg => {return callback(msg);});
 }
 
 function fetch_post(param, callback)
 {
   /*if id or reply = post id ret json array of post*/
   const data = JSON.parse(param);
-  const query = "SELECT * FROM POST WHERE ? OR ?";
-  connection.query(query, [{ID:data.postID}, {REPLY:data.postID}], function(err, data) {
-    callback(err, data);
-  });
+  postT.fetchPost(data, msg => {return callback(msg);});
 }
 
 function delete_post(param, callback)
@@ -405,22 +474,9 @@ function updateGrade(param, callback)
 
 process.on('message', m => {
   console.log(myArgs[0]);
-  console.log(m);
   if(myArgs[0]=='save_code')
   {
-    validate_save(m, r => {
-      if(r<0)
-      {
-        return process.send('fail');
-      }
-      save_code(m, r, function(err, res) {
-        if(err)
-        {
-          return process.send('fail');
-        }
-        return process.send('success');
-      });
-    });
+    save_code(m, res => {process.send(res);});
   }
   else if(myArgs[0]=='fetch_code')
   {
@@ -455,10 +511,9 @@ process.on('message', m => {
     });
   }
   else if (myArgs[0]=='fetch_post') {
-    fetch_post(m, function(err, data) {
-      if(err)
+    fetch_post(m, res => {
+      if(res=='fail')
       {
-        console.log(`error: ${err.message}`);
         return process.send('fail');
       }
       return process.send(JSON.stringify(data));
@@ -473,4 +528,6 @@ process.on('message', m => {
       return process.send(JSON.stringify(data));
     });
   }
-})
+});
+
+module.exports = {SRC_CODE:SRC_CODE, POST:POST, USER:USER};

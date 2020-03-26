@@ -1,12 +1,15 @@
 
 const {fork} = require('child_process');
+const fs = require('fs');
 
 function main() {
-  const run = fork('connect_sql.js', ['fetch_code']);
-  const msg = JSON.stringify({USER:'TEST', NAME:'hello_world.cpp'});
-  run.send(msg);
-  run.on('message', result => {
-    console.log(`result: ${result}`);
+  const run = fork('connect_sql.js', ['save_code']);
+  fs.readFile('./tmp_data/hello_world.cpp', function(err, data) {
+
+    run.send(JSON.stringify({USER:1, NAME:'hello_world.cpp', SRC:data.toString('utf8'), SRC_SZ:data.length}));
+    run.on('message', m=>{
+      console.log(m);
+    });
   });
   return;
 }
