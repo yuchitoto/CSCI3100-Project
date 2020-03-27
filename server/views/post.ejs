@@ -5,11 +5,14 @@
     <title><%= post[0].TITLE %></title>
   </head>
   <body>
-    <h3><%= post[0].TITLE %></h3>
-    <pre><%= post[0].CODE %></pre>
+    <h2><%= post[0].TITLE %></h2>
     <% for(var i=0; i<post.length; i++) {%>
-      <h6><%= post[i].USER %></h6>
-      <pre><%= post[i].CONTENT %></pre>
+      <h4><%= post[i].USER %></h4>
+      <% if(i==0) {%>
+        <pre><%= post[0].CODE %></pre>
+        <p></p>
+      <% } %>
+      <p><%= post[i].CONTENT %></p>
       <hr>
     <% } %>
   </body>

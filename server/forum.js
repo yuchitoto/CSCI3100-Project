@@ -10,44 +10,26 @@ class Forum {
   fetch(postID, callback)
   {
     /*fetch json object list*/
-    var msg = {userID:this.userid, postID:postID};
+    var msg;
+    if (this.userID != 0)
+    {
+      msg = {USER:this.userID, ID:postID};
+    }
+    else {
+      msg = {ID:postID};
+    }
+
     const fetcher = fork("connect_sql.js", ["fetch_post"]);
     const code = fork("connect_sql.js", ["fetch_code"]);
     const user = fork("connect_sql.js", ["find_user"]);
     fetcher.send(JSON.stringify(msg));
     fetcher.on("message", m => {
       console.log(m);
-      var post = JSON.parse(m);
       if(m=='fail')
       {
-        callback(1, m);
+        return callback(1, m);
       }
-      var msg2 = {ID:post[0].CODE};
-      console.log(msg2);
-      code.send(JSON.stringify(msg2));
-      code.on("message", n => {
-        var cod = JSON.parse(n);
-        if(n=="fail")
-        {
-          callback(1, m);
-        }
-        post[0].CODE = cod.SRC;
-        var flag = 0;
-        for(var i=0;i<post.length;i++)
-        {
-          user.send(JSON.stringify({ID:post[i].USER}));
-          user.on("message", l => {
-            var userdata = JSON.parse(l);
-            console.log(userdata.USERNAME);
-            post[i].USER = userdata.USERNAME;
-            flag += 1;
-          });
-        }
-        if(flag == post.length - 1)
-        {
-          callback(0, post);
-        }
-      });
+      return callback(0, JSON.parse(m));
     });
   }
 

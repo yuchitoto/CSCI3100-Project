@@ -282,26 +282,43 @@ class POST extends MySQLDatabase {
     });
   }
 
-  fetchPost(id, callback) {
-    // fetch post
-    // special solution used instead of general method inherited
+  fetchPostHead(id, callback) {
     const queryhead = "SELECT c.USERNAME AS USER, a.TITLE, a.CONTENT, b.SRC AS CODE FROM POST a, SRC_CODE b, USER c WHERE a.ID=? AND a.USER=c.ID AND a.CODE=b.ID";
-    const queryreply = "SELECT c.USERNAME AS USER, a.CONTENT AS CODE FROM POST a, USER c WHERE a.REPLY=? AND a.USER=c.ID ORDER BY a.ID ASC";
-
     this.connection.query(queryhead, id, function(err1, hd) {
       if(err1) {
         console.log(`error: ${err1.message}`);
         return callback('fail');
       }
-      this.connection.query(queryreply, id, function(err2, rep) {
-        if(err2) {
-          console.log(`error: ${err2.message}`);
-          return callback('fail');
-        }
-        var res = hd.concat(rep);
-        return callback(res);
-      });
+      callback(hd);
     });
+  }
+
+  fetchReply(id, callback) {
+    const queryreply = "SELECT c.USERNAME AS USER, a.CONTENT FROM POST a, USER c WHERE a.REPLY=? AND a.USER=c.ID ORDER BY a.ID ASC";
+    this.connection.query(queryreply, id, function(err2, rep) {
+      if(err2) {
+        console.log(`error: ${err2.message}`);
+        return callback('fail');
+      }
+      return callback(rep);
+    });
+  }
+
+  fetchPost(id, callback) {
+    // fetch post
+    // special solution used instead of general method inherited
+    this.fetchPostHead(id, msg1=> {
+      if(msg1=='fail') {
+        return callback(msg1);
+      }
+      this.fetchReply(id, msg2 => {
+        if(msg2=='fail')
+        {
+          return callback(msg2);
+        }
+        return callback(msg1.concat(msg2));
+      })
+    })
   }
 
   deletePost(data, callback) {
@@ -472,7 +489,7 @@ function fetch_post(param, callback)
 {
   /*if id or reply = post id ret json array of post*/
   const data = JSON.parse(param);
-  postT.fetchPost(data, msg => {return callback(msg);});
+  postT.fetchPost(data.ID, msg => {return callback(msg);});
 }
 
 //deletePost wrapper
@@ -544,7 +561,7 @@ process.on('message', m => {
       {
         return process.send('fail');
       }
-      return process.send(JSON.stringify(data));
+      return process.send(JSON.stringify(res));
     });
   }
   else if (myArgs[0]=='find_user') {
