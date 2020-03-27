@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title><%= post[0].TITLE %></title>
+  </head>
+  <body>
+    <h2><%= post[0].TITLE %></h2>
+    <% for(var i=0; i<post.length; i++) {%>
+      <h4><%= post[i].USER %></h4>
+      <% if(i==0) {%>
+        <pre><%= post[0].CODE %></pre>
+        <p></p>
+      <% } %>
+      <p><%= post[i].CONTENT %></p>
+      <hr>
+    <% } %>
+  </body>
+</html>
