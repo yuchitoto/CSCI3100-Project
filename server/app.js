@@ -125,7 +125,7 @@ app.use('*.html', function(req, res, next) {
     if(err)
     {
       console.log(`error: ${err.message}`);
-      return res.redirect('./404.html');
+      return res.redirect('/404.html');
       /*res.writeHead(404, {'Content-Type':'text/html'});
       return res.end("404 Not Found");*/
     }
@@ -161,7 +161,8 @@ app.use('*.php',function(request,response,next) {
     execPHP.parseFile(request.originalUrl, [], function(err, phpResult, stderr) {
       if(err) {
         console.log(`error: ${err.message}`);
-        return response.redirect('/404.html');
+        response.writeHead(200, {'Content-Type':'text/html'});
+        return response.end("404 not found");
       }
       if(stderr) {
         console.log(`error: ${stderr}`);
@@ -171,6 +172,29 @@ app.use('*.php',function(request,response,next) {
   		response.write(phpResult);
   		return response.end();
   	});
+  });
+});
+
+app.get('*.png|*.jpg', function(req, res) {
+  //console.log(req);
+  fs.readFile(req._parsedUrl.pathname, function(err, data) {
+    if(err)
+    {
+      console.log(`error: ${err.message}`);
+      return res.end();
+    }
+    var cont = 'image/';
+    if (res.pathname.includes('.png'))
+    {
+      cont += 'png';
+    }
+    else if(res.pathname.includes('.jpg'))
+    {
+      cont += 'jpeg';
+    }
+    res.write(200, {'Content-Type':cont});
+    res.write(data);
+    return res.end();
   });
 });
 
