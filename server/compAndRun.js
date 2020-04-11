@@ -2,7 +2,7 @@ const util = require('util');
 const {spawn} = require("child_process");
 const exec = util.promisify(require('child_process').exec);
 
-var myArgs = process.argv.slice(2);
+// var myArgs = process.argv.slice(1); will be used when different compile is used
 
 // function to write JSON buffer src code file to server
 /*async function tmpFile()*/
@@ -56,8 +56,7 @@ async function run(filename, user) {
 
 // handle requests upon invoke
 process.on('message', m => {
-  if(m==1) {
-    var result = run(myArgs[0], myArgs[1]);
+    const data = JSON.parse(m); // user: userID, name: src code name
+    var result = run(data['user'], data['name']);
     process.send(result);
-  }
 });
