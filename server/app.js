@@ -78,15 +78,41 @@ app.get('/forum*', function(req, res) {
       return res.redirect("/404.html");
     }
     var tmp = {post:post};
+    return res.render('forum', tmp);
+  });
+});
+
+// for post
+app.get('/post*', function(req, res) {
+  /*return post page*/
+  console.log(req.params);
+  var id = 0;
+  var postID = 1;
+  if(Object.keys(req.query).includes("user"))
+  {
+    id = req.query['user'];
+  }
+  if(Object.keys(req.query).includes("post"))
+  {
+    postID = req.query['post'];
+  }
+  var forumObj = new Forum(id);
+  forumObj.fetch(postID, function(err, post) {
+    if(err)
+    {
+      console.log("failed to find post");
+      return res.redirect("/404.html");
+    }
+    var tmp = {post:post};
     return res.render('post', tmp);
   });
 });
 
-app.post('/forum*', function(req, res) {
+app.post('/post*', function(req, res) {
   /*new discussion or reply*/
 });
 
-app.delete('/forum*', function(req, res) {
+app.delete('/post*', function(req, res) {
   /*delete post*/
 });
 
@@ -251,26 +277,41 @@ app.use('*.php',function(request,response,next) {
   	});
   });
 });
+//a path for static files
+//app.use(express.static(__dirname + '/public'));
 
-
-app.get('*.png|*.jpg', function(req, res) {
+app.use('*.png|*.jpg', function(req, res) {
   //console.log(req);
-  fs.readFile(req._parsedUrl.pathname, function(err, data) {
+  var pthnm = './'+req._parsedUrl.pathname;
+  fs.readFile(pthnm,function(err, data) {
     if(err)
     {
       console.log(`error: ${err.message}`);
       return res.end();
     }
     var cont = 'image/';
-    if (res.pathname.includes('.png'))
+    if (pthnm.includes('.png'))
     {
       cont += 'png';
     }
-    else if(res.pathname.includes('.jpg'))
+    else if(pthnm.includes('.jpg'))
     {
       cont += 'jpeg';
     }
-    res.write(200, {'Content-Type':cont});
+    res.writeHead(200, {'Content-Type':cont});
+    res.write(data);
+    return res.end();
+  });
+});
+
+app.use('*.css', function(req, res) {
+  fs.readFile('./'+req._parsedUrl.pathname,function(err, data) {
+    if(err)
+    {
+      console.log(`error: ${err.message}`);
+      return res.end();
+    }
+    res.writeHead(200, {'Content-Type':'text/css'});
     res.write(data);
     return res.end();
   });

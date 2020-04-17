@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Code Block Forum</title>
+  </head>
+  <body>
+    <%- include ('forum_header.ejs') %>
+    <div className="forum">
+    <% for(var i=0; i<post.length; i++) {%>
+       <% if(post[i].TITLE != null) {%> 
+        <div className="post-title">
+          <a href="/post" ><h4><%= post[i].TITLE %></h4></a>
+        <br>
+        </div>
+       <% } %> 
+    <% } %>
+  </div>
+  </body>
+</html>
