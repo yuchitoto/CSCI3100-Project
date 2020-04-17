@@ -6,10 +6,15 @@ var url = require('url');
 var fs = require('fs');
 var fork = require('child_process');
 var qs = require('querystring');
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
+var FileStore = require('nedb-session-store')(session);
 
 // import forum class
 var forum = require('./forum');
 let Forum = forum.Forum;
+var user = require('./user');
+let User = user.User;
 
 // direct to php parser
 var execPHP = require('./php_parser.js')();
@@ -86,13 +91,85 @@ app.delete('/forum*', function(req, res) {
 });
 
 // for login page, auto redirect to user page or some other page after successful login
+
+// setup session
+app.use(cookieParser('codeblock'));
+app.use(session({
+  name: 'codeblockidesession',
+  secret: 'iamarandomstring',
+  store: new FileStore(),
+  saveUninitialized: false,
+  resave: false,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000
+  }
+}))
+var sess;
+
 app.get('/login', function(req, res) {
   /*login page*/
+  if(req.session.sign){
+    console.log('login');
+    console.log(req.session);
+    res.redirect('/user/' + req.session.name + '.html');
+  }
+  else{
+    res.redirect('/hello_world.html');
+  }
 });
 
 app.post('/login', function(req, res) {
   /*authentication*/
+  req.params.name = 'hello';
+  req.params.password = 'byebye';
+  console.log(req.params);
+  console.log(req.session);
+  console.log("ok");
+  if(req.session.sign){
+    console.log("Already login");
+    //res.send("Already login");
+    console.log(req.session);
+    res.redirect('/user/' + req.session.name + '.html');
+  }
+  else if(req.params.name && req.params.password){
+    var userObj = new User(req.params);
+    userObj.login(function(err, user){
+      if(err){
+        console.log(err);
+        res.redirect('/hello_world.html');
+      }
+      else{
+        sess = req.session;
+        console.log("Login success");
+        sess.sign = true;
+        sess.id = user.id;
+        sess.name = user.name;
+        console.log(sess);
+        //res.redirect('/user/' + user.name);
+        res.redirect('/hello_world.html')
+      }
+    })
+  }
 });
+
+// user logout
+app.get('/logout', function(req, res){
+  console.log(req.session);
+  if(req.session.sign){
+    req.session.destroy((err)=>{
+      if(err){
+        console.log(err);
+      }
+      console.log("logout successfully");
+      console.log(req.session);
+      res.redirect('/login.html');
+    })
+  }
+  else{
+    console.log("did not login");
+    res.redirect('/login.html');
+  }
+})
 
 // user pages
 app.get('/user/*', function(req, res) {
@@ -174,6 +251,7 @@ app.use('*.php',function(request,response,next) {
   	});
   });
 });
+
 
 app.get('*.png|*.jpg', function(req, res) {
   //console.log(req);
