@@ -14,4 +14,8 @@ mysql
 
 ejs
 
-session
+express-session
+
+cookie-parser
+
+nedb-session-store
