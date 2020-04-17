@@ -201,11 +201,11 @@ app.use('*.php',function(request,response,next) {
   });
 });
 //a path for static files
-app.use(express.static(__dirname + '/public'));
+//app.use(express.static(__dirname + '/public'));
 
 app.use('*.png|*.jpg', function(req, res) {
   //console.log(req);
-  fs.readFile(req._parsedUrl.pathname, function(err, data) {
+  fs.readFile('./'+res._parsedUrl.pathname,function(err, data) {
     if(err)
     {
       console.log(`error: ${err.message}`);
@@ -227,7 +227,7 @@ app.use('*.png|*.jpg', function(req, res) {
 });
 
 app.use('*.css', function(req, res) {
-  fs.readFile(req._parsedUrl.pathname,function(err, data) {
+  fs.readFile('./'+req._parsedUrl.pathname,function(err, data) {
     if(err)
     {
       console.log(`error: ${err.message}`);
