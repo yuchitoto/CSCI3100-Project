@@ -73,15 +73,41 @@ app.get('/forum*', function(req, res) {
       return res.redirect("/404.html");
     }
     var tmp = {post:post};
+    return res.render('forum', tmp);
+  });
+});
+
+// for post
+app.get('/post*', function(req, res) {
+  /*return post page*/
+  console.log(req.params);
+  var id = 0;
+  var postID = 1;
+  if(Object.keys(req.query).includes("user"))
+  {
+    id = req.query['user'];
+  }
+  if(Object.keys(req.query).includes("post"))
+  {
+    postID = req.query['post'];
+  }
+  var forumObj = new Forum(id);
+  forumObj.fetch(postID, function(err, post) {
+    if(err)
+    {
+      console.log("failed to find post");
+      return res.redirect("/404.html");
+    }
+    var tmp = {post:post};
     return res.render('post', tmp);
   });
 });
 
-app.post('/forum*', function(req, res) {
+app.post('/post*', function(req, res) {
   /*new discussion or reply*/
 });
 
-app.delete('/forum*', function(req, res) {
+app.delete('/post*', function(req, res) {
   /*delete post*/
 });
 
@@ -174,6 +200,8 @@ app.use('*.php',function(request,response,next) {
   	});
   });
 });
+//a path for static files
+app.use(express.static(__dirname + '/public'));
 
 app.get('*.png|*.jpg', function(req, res) {
   //console.log(req);
