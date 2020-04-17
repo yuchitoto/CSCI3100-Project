@@ -227,7 +227,7 @@ app.use('*.png|*.jpg', function(req, res) {
 });
 
 app.use('*.css', function(req, res) {
-  fs.readFile(req._parsedUrl.pathname,function(err, data) {
+  fs.readFile('./'+req._parsedUrl.pathname,function(err, data) {
     if(err)
     {
       console.log(`error: ${err.message}`);
