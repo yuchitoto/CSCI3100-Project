@@ -175,7 +175,7 @@ app.use('*.php',function(request,response,next) {
   });
 });
 
-app.get('*.png|*.jpg', function(req, res) {
+app.use('*.png|*.jpg', function(req, res) {
   //console.log(req);
   fs.readFile(req._parsedUrl.pathname, function(err, data) {
     if(err)
@@ -193,6 +193,19 @@ app.get('*.png|*.jpg', function(req, res) {
       cont += 'jpeg';
     }
     res.write(200, {'Content-Type':cont});
+    res.write(data);
+    return res.end();
+  });
+});
+
+app.use('*.css', function(req, res) {
+  fs.readFile(req._parsedUrl.pathname,function(err, data) {
+    if(err)
+    {
+      console.log(`error: ${err.message}`);
+      return res.end();
+    }
+    res.writeHead(200, {'Content-Type':'text/css'});
     res.write(data);
     return res.end();
   });
