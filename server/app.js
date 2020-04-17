@@ -205,22 +205,23 @@ app.use('*.php',function(request,response,next) {
 
 app.use('*.png|*.jpg', function(req, res) {
   //console.log(req);
-  fs.readFile('./'+res._parsedUrl.pathname,function(err, data) {
+  var pthnm = './'+req._parsedUrl.pathname;
+  fs.readFile(pthnm,function(err, data) {
     if(err)
     {
       console.log(`error: ${err.message}`);
       return res.end();
     }
     var cont = 'image/';
-    if (res.pathname.includes('.png'))
+    if (pthnm.includes('.png'))
     {
       cont += 'png';
     }
-    else if(res.pathname.includes('.jpg'))
+    else if(pthnm.includes('.jpg'))
     {
       cont += 'jpeg';
     }
-    res.write(200, {'Content-Type':cont});
+    res.writeHead(200, {'Content-Type':cont});
     res.write(data);
     return res.end();
   });
