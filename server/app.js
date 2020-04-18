@@ -129,7 +129,7 @@ app.use(session({
   cookie: {
     maxAge: 24 * 60 * 60 * 1000
   }
-}))
+}));
 var sess;
 
 app.get('/login', function(req, res) {
@@ -217,6 +217,21 @@ app.get('/create_account*', function(req, res) {
 
 app.post('/create_account*', function(req, res) {
   /*create new account*/
+  console.log(req.params);
+  if(req.params.name && req.params.email && req.params.password){
+    var userObj = new User(req.params);
+    userObj.registor(function(err){
+      if(err){
+        console.log(err);
+        res.redirect('./404.html');
+      }
+      else{
+        console.log("registor success");
+        res.redirect('./login.html');
+      }
+    })
+  }
+  res.redirect('./404.html');
 });
 
 // general treatnebt for html pages
