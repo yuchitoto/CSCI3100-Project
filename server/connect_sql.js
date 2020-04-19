@@ -29,6 +29,13 @@ class MySQLDatabase {
     });
   }
 
+  simpleSelect(params, callback) {
+    var query = "SELECT "+params.data+" FROM "+params.table+" WHERE "+params.query;
+    this.connection.query(query, function(err, data) {
+      return callback(err, data);
+    });
+  }
+
   selectWhenAllTrue(params, callback) {
     var query = "SELECT * FROM ? WHERE ?";
     const key = Object.keys(params);
@@ -317,16 +324,145 @@ class POST extends MySQLDatabase {
           return callback(msg2);
         }
         return callback(msg1.concat(msg2));
-      })
-    })
+      });
+    });
   }
 
   deletePost(data, callback) {
     //delete reply or post and replies
+    this.connection.query("DELETE FROM POST WHERE ? OR ?", [{ID:data.ID}, {REPLY:data.ID}], function(err, res) {
+      if(err){
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      else
+      {
+        //console.log(res);
+        if (res.affectedRows>0)
+          return callback('success');
+        else
+          return callback('fail');
+      }
+    });
   }
 
-  searchPost(data, callback) {
+  searchPostHead(data, callback) {
     //parse keywords into sql database
+    const existsTitle = data.existsTitle;
+    const user = data.user;
+    const inContext = data.inContext;
+    const id = data.id;
+    var queryKey = "(";
+    var k=0;
+
+    existsTitle.forEach((item, i) => {
+      if(k>0){
+        queryKey = queryKey.concat(' AND ');
+      }
+      k+=1;
+      queryKey = queryKey.concat('TITLE LIKE ','\'%', item,'%\'');
+    });
+    user.forEach((item, i) => {
+      if(k>0){
+        queryKey = queryKey.concat(' AND ');
+      }
+      k+=1;
+      queryKey = queryKey.concat('USERNAME=', item);
+    });
+    inContext.forEach((item, i) => {
+      if(k>0){
+        queryKey = queryKey.concat(' AND ');
+      }
+      k+=1;
+      queryKey = queryKey.concat('CONTENT LIKE ', '\'%', item, '%\'');
+    });
+    if(k>0){
+      queryKey = queryKey.concat(' AND ');
+    }
+    queryKey = queryKey.concat('POST.USER=USER.ID AND REPLY=0)');
+
+    k=0;
+    if(id.length){
+      queryKey += ' OR ('
+      id.forEach((item, i) => {
+        if(k>0){
+          queryKey += ' OR ';
+        }
+        k+=1;
+        queryKey = queryKey.concat('POST.ID=',item);
+      });
+      queryKey += ')';
+    }
+
+    //console.log(queryKey);
+
+    this.simpleSelect({data:'POST.ID AS ID, USER.USERNAME AS USER, TITLE, CREATE_TIME', table:'USER, POST', query:queryKey}, function(err, ret) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      return callback(ret);
+    });
+  }
+
+  searchReply(data, callback)
+  {
+    // find in reply for post head id
+    const user = data.user;
+    const inContext = data.inContext;
+
+    var queryKey = "";
+    var k=0;
+    user.forEach((item, i) => {
+      if(k>0){
+        queryKey = queryKey.concat(' AND ');
+      }
+      k+=1;
+      queryKey = queryKey.concat('USERNAME=', item);
+    });
+    inContext.forEach((item, i) => {
+      if(k>0){
+        queryKey = queryKey.concat(' AND ');
+      }
+      k+=1;
+      queryKey = queryKey.concat('CONTENT LIKE ', '\'%', item, '%\'');
+    });
+    if(k>0){
+      queryKey = queryKey.concat(' AND ');
+    }
+    queryKey = queryKey.concat('REPLY!=0');
+    this.simpleSelect({data:'POST.REPLY AS ID', table:'USER, POST', query:queryKey}, function(err, res) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      var id = [];
+      res.forEach((item, i) => {
+        if(!id.includes(item.ID))
+        {
+          id.push(item.ID);
+        }
+      });
+      return callback(id);
+    });
+  }
+
+  searchPost(data, callback)
+  {
+    // search posts
+    // search in reply first
+    this.searchReply(data, id => {
+      if(id=='fail')
+      {
+        return callback('fail');
+      }
+      data.id = id;
+      this.searchPostHead(data, res => {
+        return callback(res);
+      });
+    });
   }
 
 // planned advanced feature
@@ -496,12 +632,35 @@ function fetch_post(param, callback)
 function delete_post(param, callback)
 {
   /*delete all post if is post head, else single*/
+  const data = JSON.parse(param);
+  postT.deletePost(data, msg => {return callback(msg);});
+}
+
+function search_post_head(param, callback)
+{
+  /* search post head*/
+  const data = JSON.parse(param);
+  postT.searchPostHead(data, msg => {
+    if(msg=='fail')
+    {
+      return callback(1, msg);
+    }
+    return callback(0, msg);
+  })
 }
 
 // searchPost wrapper
 function search_post(param, callback)
 {
-  /*search post head*/
+  /*search posts*/
+  const data = JSON.parse(param);
+  postT.searchPost(data, msg => {
+    if(msg=='fail')
+    {
+      return callback(1, msg);
+    }
+    return callback(0, msg);
+  });
 }
 
 // userID wrapper
@@ -523,7 +682,7 @@ process.on('message', m => {
   {
     save_code(m, res => {process.send(res);});
   }
-  else if(myArgs[0]=='fetch_code')
+  if(myArgs[0]=='fetch_code')
   {
     fetch_code(m, function(err, data) {
       var result = JSON.stringify(data);
@@ -534,7 +693,7 @@ process.on('message', m => {
       return process.send(result);
     });
   }
-  else if(myArgs[0]=='exist_user')
+  if(myArgs[0]=='exist_user')
   {
     if(exist_name(m) != 0){
       process.send('exist_name');
@@ -546,7 +705,7 @@ process.on('message', m => {
       process.send('success');
     }
   }
-  else if(myArgs[0]=='new_user')
+  if(myArgs[0]=='new_user')
   {
     new_user(m, id => {
       if(id==0){
@@ -555,7 +714,7 @@ process.on('message', m => {
       return process.send(id);
     });
   }
-  else if (myArgs[0]=='fetch_post') {
+  if (myArgs[0]=='fetch_post') {
     fetch_post(m, res => {
       if(res=='fail')
       {
@@ -564,7 +723,7 @@ process.on('message', m => {
       return process.send(JSON.stringify(res));
     });
   }
-  else if (myArgs[0]=='find_user') {
+  if (myArgs[0]=='find_user') {
     find_user(m, function(err, data) {
       if(err)
       {
@@ -572,6 +731,27 @@ process.on('message', m => {
       }
       return process.send(JSON.stringify(data));
     });
+  }
+  if (myArgs[0]=='search_post_head') {
+    search_post_head(m, function(err, data) {
+      if(err)
+      {
+        return process.send('fail');
+      }
+      return process.send(JSON.stringify(data));
+    });
+  }
+  if(myArgs[0]=='search_post') {
+    search_post(m, function(err, res) {
+      if(err)
+      {
+        return process.send('fail');
+      }
+      return process.send(JSON.stringify(res));
+    });
+  }
+  if(myArgs[0]=='delete_post') {
+    delete_post(m, msg => {return process.send(msg);});
   }
 });
 
