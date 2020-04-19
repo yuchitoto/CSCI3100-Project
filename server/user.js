@@ -15,7 +15,7 @@ class User {
         // handle message
         var msg = JSON.parse(m);
         console.log(msg);
-        return 0;
+        return msg.id;
       });
     }
 
@@ -25,11 +25,8 @@ class User {
 
       check.on("message", m =>{
         /* handle message */
-        if(m == 'exist_name'){
-          callback(/*msg*/);
-        }
-        else if(m == 'exist_email'){
-          callback(/*msg*/);
+        if(m == 'exist_name' || m == 'exist_email'){
+          callback(m);
         }
       })
     }
@@ -37,7 +34,9 @@ class User {
     login(callback){
       var id = this.verify_password();
       console.log("login");
-      callback(0, {name: 'hello'});
+      callback(0, {
+        id: id,
+      });
     }
 
     // logout(callback){
