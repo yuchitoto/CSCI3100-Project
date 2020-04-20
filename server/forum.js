@@ -60,7 +60,6 @@ class Forum {
     const poster = fork("connect_sql.js", ["new_post"]);
     poster.send(JSON.stringify(msg));
     poster.on("message", m => {
-      var tmp = JSON.parse(m);
       return callback(m);
     });
   }

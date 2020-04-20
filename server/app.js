@@ -4,11 +4,12 @@ var app = express();
 var http = require('http');
 var url = require('url');
 var fs = require('fs');
-var fork = require('child_process');
+var {fork} = require('child_process');
 var qs = require('querystring');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var FileStore = require('nedb-session-store')(session);
+var bdp = require('body-parser');
 
 // import forum class
 var forum = require('./forum');
@@ -35,6 +36,8 @@ var httpServer = http.createServer(app);
 
 // use embedded javascript as html template generator
 app.set('view engine', 'ejs');
+app.use(bdp.urlencoded({extended:true}));
+app.use(bdp.json());
 
 // prepare for homepage
 app.get('/', function(req, res) {
@@ -79,14 +82,14 @@ app.get('/forum', function(req, res) {
 });
 
 // for post
-app.get('/post*', function(req, res) {
+app.get('/post', function(req, res) {
   /*return post page*/
   console.log(req.params);
   var id = 0;
   var postID = 1;
   if(Object.keys(req.query).includes("user"))
   {
-    id = req.query['user'];
+    id = req.query['USER'];
   }
   if(Object.keys(req.query).includes("post"))
   {
@@ -104,12 +107,54 @@ app.get('/post*', function(req, res) {
   });
 });
 
-app.post('/post*', function(req, res) {
-  /*new discussion or reply*/
+app.delete('/post', function(req, res) {
+  /*delete post*/
 });
 
-app.delete('/post*', function(req, res) {
-  /*delete post*/
+app.get('/post/new', function(req, res) {
+  /* page to write new post */
+  const coda = fork("connect_sql.js", ["all_code"]);
+  coda.send(JSON.stringify({USER:req.query['USER']}));
+  coda.on("message", msg => {
+    // give all code to choose, and prepare for response
+    var tmp = {
+      newPost:[{TITLE:"", CONTENT:"", CODE:0}],
+    codes:JSON.parse(msg)};
+    res.render('new_post',tmp);
+  });
+});
+
+app.post('/post*', function(req, res) {
+  /*new discussion or reply*/
+  var user = req.query['USER'];
+  console.log(req.body);
+  var forumObj = new forum(user);
+  if(req.query.keys.includes('post'))
+  {
+    forumObj.post_reply(req.query['post'], req.body.content, msg => {
+      if(msg=="success")
+      {
+        res.redir(req.path);
+      }
+      else
+      {
+        res.redir("/404.html"); //some error page
+      }
+    });
+  }
+  else
+  {
+    forumObj.post_post(req.body.TITLE, req.body.CONTENT, req.body.CODE, msg => {
+      if(msg=="success")
+      {
+        res.redir(req.path);
+      }
+      else
+      {
+        res.redir("/404.html"); //some error page
+      }
+    });
+  }
 });
 
 // for login page, auto redirect to user page or some other page after successful login

@@ -19,3 +19,5 @@ express-session
 cookie-parser
 
 nedb-session-store
+
+body-parser
