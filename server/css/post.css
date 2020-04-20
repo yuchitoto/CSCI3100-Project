@@ -1,0 +1,55 @@
+.post{
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:2%;
+    margin-right:2%;
+    background-color: white;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+    padding:1rem;
+}
+
+.code{
+    background-color: black;
+    color:white;
+    padding:0.8rem;
+}
+
+.reply{
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:2%;
+    margin-right:2%;
+    background-color: white;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+    padding-left:1rem;
+    padding-right:1rem;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+}
+
+.form{
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:2%;
+    margin-right:2%;
+    background-color: #4b5491;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+    padding-left:1rem;
+    padding-right:1rem;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+}
+
+.textarea{
+    width: 100%; 
+    min-height:150px;
+    outline: 0;
+    border: 1px solid white;
+    font-size: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body{
+    background-color: rgb(121, 121, 121);
+}

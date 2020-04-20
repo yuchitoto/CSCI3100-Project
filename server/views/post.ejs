@@ -3,17 +3,33 @@
   <head>
     <meta charset="utf-8">
     <title><%= post[0].TITLE %></title>
+    <link href="/css/post.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <h2><%= post[0].TITLE %></h2>
-    <% for(var i=0; i<post.length; i++) {%>
-      <h4><%= post[i].USER %></h4>
-      <% if(i==0) {%>
+    <%- include ('forum_header.ejs') %>
+    <div class="post">
+      <h2><%= post[0].TITLE %></h2>
+      <h4><%= post[0].USER %></h4>
+      <div class="code">
         <pre><%= post[0].CODE %></pre>
-        <p></p>
-      <% } %>
-      <p><%= post[i].CONTENT %></p>
-      <hr>
+      </div>
+      <p></p>
+      <p><%= post[0].CONTENT %></p>
+    </div>
+    <% for(var i=1; i<post.length; i++) {%>
+      <div class="reply">
+        <h4><%= post[0].USER %></h4>
+        <p><%= post[i].CONTENT %></p>
+        <h5>reply no.<%= i %></h5>
+      </div>
     <% } %>
+    <div class="form">
+      <h4 style="color:white">Wrtie your reply</h4>
+      <form action= <%-url%> method="post">
+        <textarea class="textarea" id="CONTENT" name="CONTENT"></textarea>
+        <br>
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
   </body>
 </html>

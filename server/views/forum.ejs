@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Code Block Forum</title>
+    <link href="/css/forum.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <%- include ('forum_header.ejs') %>
+    <div class="forum">
+      <div class="search">
+        <h2>Search Title</h2>
+        <form action= <%-"/post/search"%> method="post">
+        <textarea class="textarea"></textarea>
+        <br>
+        <input type="submit" value="Search" />
+        </form>
+      </div>
+    <% for(var i=0; i<post.length; i++) {%>
+       <% if(post[i].TITLE != null) {%>
+        <div class="post-title">
+          <a  class="post-text" href= <%-"/post?post="+post[i].ID%>><%= post[i].TITLE %></a>
+        </div>
+       <% } %>
+    <% } %>
+  </div>
+  </body>
+</html>

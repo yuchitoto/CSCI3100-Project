@@ -23,16 +23,34 @@ class MySQLDatabase {
   }
 
   insert(values, callback) {
-    var query = "INSERT INTO ? SET ?";
-    this.connection.query(query, [this.table, values], function(err, data) {
+    var query = "INSERT INTO ?? SET ?";
+    console.log(values);
+    const key = Object.keys(values);
+    const value = Object.values(values);
+    var pr = [this.table];
+    for(var i=0; i<key.length;i++)
+    {
+      if(i>0) {
+        query += ", ?";
+      }
+      pr.push({[key[i]]:value[i]});
+    }
+    this.connection.query(query, pr, function(err, data) {
+      return callback(err, data);
+    });
+  }
+
+  simpleSelect(params, callback) {
+    var query = "SELECT "+params.data+" FROM "+params.table+" WHERE "+params.query;
+    this.connection.query(query, function(err, data) {
       return callback(err, data);
     });
   }
 
   selectWhenAllTrue(params, callback) {
-    var query = "SELECT * FROM ? WHERE ?";
+    var query = "SELECT * FROM ?? WHERE ?";
     const key = Object.keys(params);
-    const value = Object.values(param);
+    const value = Object.values(params);
     var pr = [this.table];
     for(var i=0; i<key.length;i++)
     {
@@ -47,7 +65,7 @@ class MySQLDatabase {
   }
 
   deleteWhenAllTrue(cond, callback) {
-    var query = "DELETE FROM ? WHERE ?";
+    var query = "DELETE FROM ?? WHERE ?";
     const key = Object.keys(cond);
     const value = Object.values(cond);
     var pr = [this.table];
@@ -66,7 +84,7 @@ class MySQLDatabase {
 
   // universal update statement, problematic when 2nd level is obj
   update(val, cond, callback) {
-    var query = "UPDATE ? SET ? WHERE ?";
+    var query = "UPDATE ?? SET ? WHERE ?";
     const key = Object.keys(cond);
     const value = Object.values(cond);
     var pr = [this.table, val];
@@ -134,8 +152,18 @@ class SRC_CODE extends MySQLDatabase {
 
   deleteCode(data, callback) {
     /*use parsed data to delete*/
-    this.delete(data, function(err, data) {
-      return callback(err, data);
+    this.deleteWhenAllTrue(data, function(err, res) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      console.log(res);
+      if(res.affectedRows>0)
+      {
+        return callback('success');
+      }
+      return callback('fail');
     });
   }
 
@@ -183,6 +211,18 @@ class SRC_CODE extends MySQLDatabase {
       return callback('fail');
     });
   }
+
+  allCode(user, callback)
+  {
+    this.selectWhenAllTrue(user, function(err, res) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      return callback(res);
+    });
+  }
 }
 
 // mysql table USER
@@ -193,27 +233,30 @@ class USER extends MySQLDatabase {
 
   newUser(data, callback) {
     /*new user*/
-    const query = "INSERT INTO USER SET ?";
-    this.connection.query(query, data, function(err, num) {
-      if(err)
+    this.insert(data, function(err1, res1) {
+      if(err1)
       {
-        console.log(`error: ${err.message}`);
-        return callback(-1);
+        console.log(`error: ${err1.message}`);
+        return callback(0);
       }
-      this.userID(data, function(error, num) {
-        if(error)
+      this.selectWhenAllTrue(data, function(err2, res2) {
+        if(err2)
         {
-          console.log(`error: ${error.message}`);
-          return callback(-1);
+          console.log(`error: ${err2.message}`);
+          return callback(0);
         }
-        return callback(num);
-      });
-    });
+        if(res2.length==1)
+        {
+          return callback(res2[0].ID);
+        }
+        return callback(0);
+      })
+    })
   }
 
   existName(data, callback) {
     /*check if exists same name*/
-    this.selectWhenAllTrue({USERNAME:data.NAME}, function(err, data) {
+    this.selectWhenAllTrue(data, function(err, data) {
       if(err) {
         console.log(`error: ${err.message}`);
         return callback(-1);
@@ -237,7 +280,8 @@ class USER extends MySQLDatabase {
     //find user
     this.selectWhenAllTrue(data, function(err, data) {
       if(err) {
-        return callback(null);
+        console.log(`error: ${err.message}`);
+        return callback('fail');
       }
       return callback(data);
     });
@@ -245,10 +289,32 @@ class USER extends MySQLDatabase {
 
   verifyPassword(data, callback) {
     //verify password
+    this.selectWhenAllTrue(data, function(err, res) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      if(res.length==1)
+      {
+        return callback('success');
+      }
+      return callback('fail');
+    });
   }
 
   deleteUser(data, callback) {
     //remove user
+
+    this.deleteWhenAllTrue(data, function(err, res) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      //console.log(res);
+      return callback(res.length);
+    });
   }
 
   userID(data, callback) {
@@ -276,14 +342,16 @@ class POST extends MySQLDatabase {
     this.insert(data, function(err, data) {
       if(err)
       {
-        return callback(false);
+        console.log(`error: ${err.message}`);
+        return callback("fail");
       }
-      return callback(true);
+      //console.log(data);
+      return callback(data.insertId);
     });
   }
 
   fetchPostHead(id, callback) {
-    const queryhead = "SELECT c.USERNAME AS USER, a.TITLE, a.CONTENT, b.SRC AS CODE FROM POST a, SRC_CODE b, USER c WHERE a.ID=? AND a.USER=c.ID AND a.CODE=b.ID";
+    const queryhead = "SELECT a.ID as ID, c.USERNAME AS USER, a.TITLE, a.CONTENT, b.SRC AS CODE FROM POST a, SRC_CODE b, USER c WHERE a.ID=? AND a.USER=c.ID AND a.CODE=b.ID";
     this.connection.query(queryhead, id, function(err1, hd) {
       if(err1) {
         console.log(`error: ${err1.message}`);
@@ -317,16 +385,165 @@ class POST extends MySQLDatabase {
           return callback(msg2);
         }
         return callback(msg1.concat(msg2));
-      })
-    })
+      });
+    });
   }
 
   deletePost(data, callback) {
     //delete reply or post and replies
+    this.connection.query("DELETE FROM POST WHERE ? OR ?", [{ID:data.ID}, {REPLY:data.ID}], function(err, res) {
+      if(err){
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      else
+      {
+        //console.log(res);
+        if (res.affectedRows>0)
+          return callback('success');
+        else
+          return callback('fail');
+      }
+    });
   }
 
-  searchPost(data, callback) {
+  searchPostHead(data, callback) {
     //parse keywords into sql database
+    const existsTitle = data.existsTitle;
+    const user = data.user;
+    const inContext = data.inContext;
+    const id = data.id;
+    var queryKey = "(";
+    var k=0;
+
+    existsTitle.forEach((item, i) => {
+      if(k==0)
+      {
+        queryKey += "(";
+      }
+      if(k>0){
+        queryKey = queryKey.concat(' OR ');
+      }
+      k+=1;
+      queryKey = queryKey.concat('TITLE LIKE ','\'%', item,'%\'');
+    });
+    user.forEach((item, i) => {
+      if(k==0)
+      {
+        queryKey += "(";
+      }
+      if(k>0){
+        queryKey = queryKey.concat(' OR ');
+      }
+      k+=1;
+      queryKey = queryKey.concat('USERNAME=', item);
+    });
+    inContext.forEach((item, i) => {
+      if(k==0)
+      {
+        queryKey += "(";
+      }
+      if(k>0){
+        queryKey = queryKey.concat(' OR ');
+      }
+      k+=1;
+      queryKey = queryKey.concat('CONTENT LIKE ', '\'%', item, '%\'');
+    });
+    if(k>0){
+      queryKey = queryKey.concat(') AND ');
+    }
+    queryKey = queryKey.concat('POST.USER=USER.ID AND REPLY=0)');
+
+    k=0;
+    if(id.length){
+      queryKey += ' OR ('
+      id.forEach((item, i) => {
+        if(k>0){
+          queryKey += ' OR ';
+        }
+        k+=1;
+        queryKey = queryKey.concat('POST.ID=',item);
+      });
+      queryKey += ')';
+    }
+
+    //console.log(queryKey);
+
+    this.simpleSelect({data:'POST.ID AS ID, USER.USERNAME AS USER, TITLE, CREATE_TIME', table:'USER, POST', query:queryKey}, function(err, ret) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      return callback(ret);
+    });
+  }
+
+  searchReply(data, callback)
+  {
+    // find in reply for post head id
+    const user = data.user;
+    const inContext = data.inContext;
+
+    var queryKey = "";
+    var k=0;
+    user.forEach((item, i) => {
+      if(k==0)
+      {
+        queryKey += "(";
+      }
+      if(k>0){
+        queryKey = queryKey.concat(' OR ');
+      }
+      k+=1;
+      queryKey = queryKey.concat('USERNAME=', item);
+    });
+    inContext.forEach((item, i) => {
+      if(k==0)
+      {
+        queryKey += "(";
+      }
+      if(k>0){
+        queryKey = queryKey.concat(' OR ');
+      }
+      k+=1;
+      queryKey = queryKey.concat('CONTENT LIKE ', '\'%', item, '%\'');
+    });
+    if(k>0){
+      queryKey = queryKey.concat(') AND ');
+    }
+    queryKey = queryKey.concat('REPLY!=0');
+    this.simpleSelect({data:'POST.REPLY AS ID', table:'USER, POST', query:queryKey}, function(err, res) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      var id = [];
+      res.forEach((item, i) => {
+        if(!id.includes(item.ID))
+        {
+          id.push(item.ID);
+        }
+      });
+      return callback(id);
+    });
+  }
+
+  searchPost(data, callback)
+  {
+    // search posts
+    // search in reply first
+    this.searchReply(data, id => {
+      if(id=='fail')
+      {
+        return callback('fail');
+      }
+      data.id = id;
+      this.searchPostHead(data, res => {
+        return callback(res);
+      });
+    });
   }
 
 // planned advanced feature
@@ -339,14 +556,6 @@ class POST extends MySQLDatabase {
   }*/
 }
 
-// to be removed
-const connection = mysql.createConnection({
-  "host":"localhost",
-  "port":3306,
-  "user":"csci3100grp18",
-  "password":"csci3100#Grp18",
-  "database":"CSCI3100GRP18"
-});
 
 const userT = new USER();
 const codeT = new SRC_CODE();
@@ -364,23 +573,8 @@ function save_code(param, callback) {
 // fetchCode wrapper
 function fetch_code(param, callback) {
   const data = JSON.parse(param);
-  var sql = "SELECT * FROM SRC_CODE WHERE ?";
-  var pr = [];
-  var tmp1 = Object.keys(data);
-  var tmp2 = Object.values(data);
-  for (var i=0;i<tmp1.length;i++)
-  {
-    if (i>0){
-      sql += " AND ?";
-    }
-    var tmp3 = tmp1[i];
-    var tmp4 = tmp2[i];
-    pr.push({[tmp3]:tmp4});
-  }
-  console.log(pr);
-  connection.query(sql, pr, function (err, result) {
-    result[0].SRC = result[0].SRC.toString('utf8');
-    callback(err, result[0]);
+  codeT.fetchCode(data, function(err, res) {
+    return callback(err, res);
   });
 }
 
@@ -388,58 +582,30 @@ function fetch_code(param, callback) {
 function delete_code(param, callback)
 {
   /*delete code also delete all posts related*/
+  const data = JSON.parse(param);
+  codeT.deleteCode(data, msg => {
+    return callback(msg);
+  });
 }
 
 // newUser wrapper
 function new_user(data, callback)
 {
-  const datan = qs.parse(data);
-  const query1 = "INSERT INTO USER SET ?",
-  values = {
-    USERNAME:datan.USERNAME,
-    EMAIL:datan.EMAIL,
-    PASSWORD_HASH:datan.PASSWORD_HASH,
-    AC_TYPE:datan.AC_TYPE,
-    GROUP:datan.GROUP,
-    DESCRIPTION:datan.DESCRIPTION,
-    IS_PUBLIC:datan.IS_PUBLIC
-  };
-  const query2 = "SELECT ID FROM USER WHERE?";
-  connection.query(query1, values, function(err, num) {
-    if(err)
-    {
-      callback(0);
-    }
-    connection.query(query2,values, function(error, data) {
-      if(error)
-      {
-        callback(0);
-      }
-      callback(data[0]);
-    });
-  });
+  const datan = JSON.parse(data);
+  userT.newUser(datan, msg => {return callback(msg);});
 }
 
 // existName wrapper
 function exist_name(data)
 {
-  const datan = qs.parse(data);
-  const query = "SELECT USERNAME FROM USER WHERE ?";
-
-  values = {USERNAME:datan.name};
-
-  connection.query(query, values, function(err, row, reply){
-    if(err){
-      throw err;
-    }
-    return row;
-  });
+  const datan = JSON.parse(data);
+  userT.existName(datan, msg => {return callback(msg);});
 }
 
 // existEmail wrapper
 function exist_email(data, callback)
 {
-  const datan = qs.parse(data);
+  const datan = JSON.parse(data);
   userT.existEmail(datan, msg => {return callback(msg);});
 }
 
@@ -447,33 +613,21 @@ function exist_email(data, callback)
 function find_user(param, callback){
   // find user from database
   const data = JSON.parse(param);
-  var sql = "SELECT * FROM USER WHERE ?";
-  var pr = [];
-  const tmp1 = Object.keys(data);
-  const tmp2 = Object.values(data);
-  for(var i=0;i<tmp1.length;i++)
-  {
-    if(i>0)
-    {
-      sql += " AND ?";
-    }
-    pr.push({[tmp1[i]]:tmp2[i]});
-  }
-  connection.query(sql, pr, function(err, data) {
-    console.log(data[0]);
-    callback(err, data[0]);
-  });
+  userT.findUser(data, msg => {return callback(msg);});
 }
 
 // verifyPassword wrapper
-function verify_password(user){
+function verify_password(user, callback){
   // verify password
+  const data = JSON.parse(user)
+  userT.verifyPassword(data, msg => {return callback(msg);});
 }
 
 // deleteUser wrapper
 function delete_user(param, callback){
   // delete given id in USER
-  // receive id
+  const data=JSON.parse(param);
+  userT.deleteUser(data, msg=>{return callback(msg);});
 }
 
 // newPost wrapper
@@ -496,18 +650,53 @@ function fetch_post(param, callback)
 function delete_post(param, callback)
 {
   /*delete all post if is post head, else single*/
+  const data = JSON.parse(param);
+  postT.deletePost(data, msg => {return callback(msg);});
+}
+
+function search_post_head(param, callback)
+{
+  /* search post head*/
+  const data = JSON.parse(param);
+  postT.searchPostHead(data, msg => {
+    if(msg=='fail')
+    {
+      return callback(1, msg);
+    }
+    return callback(0, msg);
+  })
 }
 
 // searchPost wrapper
 function search_post(param, callback)
 {
-  /*search post head*/
+  /*search posts*/
+  const data = JSON.parse(param);
+  postT.searchPost(data, msg => {
+    if(msg=='fail')
+    {
+      return callback(1, msg);
+    }
+    return callback(0, msg);
+  });
 }
 
 // userID wrapper
 function userID(param, callback)
 {
   /*ret user id*/
+  userT.selectWhenAllTrue(JSON.parse(param), function(err, res) {
+    if(err)
+    {
+      console.log(`error: ${err.message}`);
+      return callback('fail');
+    }
+    if(res.length!=1)
+    {
+      return callback('fail');
+    }
+    return callback(res[0].ID);
+  });
 }
 
 /*advanced
@@ -523,7 +712,7 @@ process.on('message', m => {
   {
     save_code(m, res => {process.send(res);});
   }
-  else if(myArgs[0]=='fetch_code')
+  if(myArgs[0]=='fetch_code')
   {
     fetch_code(m, function(err, data) {
       var result = JSON.stringify(data);
@@ -534,7 +723,7 @@ process.on('message', m => {
       return process.send(result);
     });
   }
-  else if(myArgs[0]=='exist_user')
+  if(myArgs[0]=='exist_user')
   {
     if(exist_name(m) != 0){
       process.send('exist_name');
@@ -546,7 +735,7 @@ process.on('message', m => {
       process.send('success');
     }
   }
-  else if(myArgs[0]=='new_user')
+  if(myArgs[0]=='new_user')
   {
     new_user(m, id => {
       if(id==0){
@@ -555,7 +744,11 @@ process.on('message', m => {
       return process.send(id);
     });
   }
-  else if (myArgs[0]=='fetch_post') {
+  if(myArgs[0]=='delete_user')
+  {
+    delete_user(m, res =>{return process.send(res);});
+  }
+  if (myArgs[0]=='fetch_post') {
     fetch_post(m, res => {
       if(res=='fail')
       {
@@ -564,14 +757,56 @@ process.on('message', m => {
       return process.send(JSON.stringify(res));
     });
   }
-  else if (myArgs[0]=='find_user') {
-    find_user(m, function(err, data) {
+  if (myArgs[0]=='find_user') {
+    find_user(m, function(res) {
+      if(res=='fail')
+      {
+        return process.send('fail');
+      }
+      return process.send(JSON.stringify(data));
+    });
+  }
+  if (myArgs[0]=='search_post_head') {
+    search_post_head(m, function(err, data) {
       if(err)
       {
         return process.send('fail');
       }
       return process.send(JSON.stringify(data));
     });
+  }
+  if(myArgs[0]=='search_post') {
+    search_post(m, function(err, res) {
+      if(err)
+      {
+        return process.send('fail');
+      }
+      return process.send(JSON.stringify(res));
+    });
+  }
+  if(myArgs[0]=='delete_post') {
+    delete_post(m, msg => {return process.send(msg);});
+  }
+  if(myArgs[0]=='delete_code') {
+    delete_code(m, msg => {return process.send(msg);});
+  }
+  if(myArgs[0]=='verify_password') {
+    verify_password(m, msg=>{return process.send(msg);});
+  }
+  if(myArgs[0]=='userID') {
+    userID(m, msg=>{return process.send(msg);});
+  }
+  if(myArgs[0]=="new_post") {
+    new_post(m, msg => {return process.send(msg);});
+  }
+  if(myArgs[0]=="all_code"){
+    codeT.allCode(JSON.parse(m), msg=>{
+      if(msg=="fail")
+      {
+        return callback(msg);
+      }
+      return callback(JSON.stringify(msg));
+    })
   }
 });
 

@@ -4,12 +4,18 @@ var app = express();
 var http = require('http');
 var url = require('url');
 var fs = require('fs');
-var fork = require('child_process');
+var {fork} = require('child_process');
 var qs = require('querystring');
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
+var FileStore = require('nedb-session-store')(session);
+var bdp = require('body-parser');
 
 // import forum class
 var forum = require('./forum');
 let Forum = forum.Forum;
+var user = require('./user');
+let User = user.User;
 
 // direct to php parser
 var execPHP = require('./php_parser.js')();
@@ -30,10 +36,12 @@ var httpServer = http.createServer(app);
 
 // use embedded javascript as html template generator
 app.set('view engine', 'ejs');
+app.use(bdp.urlencoded({extended:true}));
+app.use(bdp.json());
 
 // prepare for homepage
 app.get('/', function(req, res) {
-  console.log(req);
+  //console.log(req);
   res.redirect('/hello_world.html');
 });
 
@@ -52,9 +60,36 @@ app.delete('/code*', function(req, res) {
 });
 
 // for forum
-app.get('/forum*', function(req, res) {
+app.get('/forum', function(req, res) {
   /*return forum page*/
-  console.log(req.params);
+  //console.log(req);
+  var id = 0;
+  var postID = 1;
+  if(Object.keys(req.query).includes("user"))
+  {
+    id = req.query['user'];
+  }
+  var forumObj = new Forum(id);
+  forumObj.titles(post => {
+    //console.log(post);
+    if(post=='fail')
+    {
+      return res.redirect("/404.html");
+    }
+    var tmp = {post:post, keywords:""}
+    return res.render("forum", tmp);
+  })
+});
+
+app.post('/forum/search', function(req, res) {
+  // search engine
+
+});
+
+// for post
+app.get('/post', function(req, res) {
+  /*return post page*/
+  console.log(req.query);
   var id = 0;
   var postID = 1;
   if(Object.keys(req.query).includes("user"))
@@ -72,27 +107,153 @@ app.get('/forum*', function(req, res) {
       console.log("failed to find post");
       return res.redirect("/404.html");
     }
-    var tmp = {post:post};
+    var tmp = {post:post, CONTENT:"", url:req.originalUrl, keywords:""};
     return res.render('post', tmp);
   });
 });
 
-app.post('/forum*', function(req, res) {
-  /*new discussion or reply*/
-});
-
-app.delete('/forum*', function(req, res) {
+app.delete('/post', function(req, res) {
   /*delete post*/
 });
 
+app.get('/post/new', function(req, res) {
+  /* page to write new post */
+  const coda = fork("connect_sql.js", ["all_code"]);
+  coda.send(JSON.stringify({USER:req.query['user']}));
+  coda.on("message", msg => {
+    // give all code to choose, and prepare for response
+    if(msg=='fail')
+    {
+      res.redirect('/404.html');
+    }
+    var tmp = {
+      newPost:[{TITLE:"", CONTENT:"", CODE:0}],
+      codes:JSON.parse(msg)
+    };
+    res.render('new_post',tmp);
+  });
+});
+
+app.post('/post', function(req, res) {
+  /*new discussion or reply*/
+  //console.log(req);
+  if(!Object.keys(req.query).includes("user"))
+  {
+    res.redirect(req.originalUrl);
+  }
+  var user = req.query['user'];
+  //console.log(req.query);
+  //console.log(req.body);
+  //console.log(user);
+  var forumObj = new Forum(user);
+  if(Object.keys(req.query).includes('post'))
+  {
+    forumObj.post_reply(req.query['post'], req.body.CONTENT, msg => {
+      if(msg!="fail")
+      {
+        return res.redirect(req.originalUrl);
+      }
+      else
+      {
+        return res.redirect("/404.html"); //some error page
+      }
+    });
+  }
+  else
+  {
+    forumObj.post_post(req.body.TITLE, req.body.CONTENT, req.body.CODE, msg => {
+      if(msg!="fail")
+      {
+        return res.redirect("/post?user="+user+"&post="+msg);
+      }
+      else
+      {
+        return res.redirect("/404.html"); //some error page
+      }
+    });
+  }
+});
+
 // for login page, auto redirect to user page or some other page after successful login
+
+// setup session
+app.use(cookieParser('codeblock'));
+app.use(session({
+  name: 'codeblockidesession',
+  secret: 'iamarandomstring',
+  store: new FileStore(),
+  saveUninitialized: false,
+  resave: false,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000
+  }
+}))
+var sess;
+
 app.get('/login', function(req, res) {
   /*login page*/
+  if(req.session.sign){
+    console.log('login');
+    console.log(req.session);
+    res.redirect('/user/' + req.session.name + '.html');
+  }
+  else{
+    res.redirect('/hello_world.html');
+  }
 });
 
 app.post('/login', function(req, res) {
   /*authentication*/
+  req.params.name = 'hello';
+  req.params.password = 'byebye';
+  console.log(req.params);
+  console.log(req.session);
+  console.log("ok");
+  if(req.session.sign){
+    console.log("Already login");
+    //res.send("Already login");
+    console.log(req.session);
+    res.redirect('/user/' + req.session.name + '.html');
+  }
+  else if(req.params.name && req.params.password){
+    var userObj = new User(req.params);
+    userObj.login(function(err, user){
+      if(err){
+        console.log(err);
+        res.redirect('/hello_world.html');
+      }
+      else{
+        sess = req.session;
+        console.log("Login success");
+        sess.sign = true;
+        sess.id = user.id;
+        sess.name = user.name;
+        console.log(sess);
+        //res.redirect('/user/' + user.name);
+        res.redirect('/hello_world.html')
+      }
+    })
+  }
 });
+
+// user logout
+app.get('/logout', function(req, res){
+  console.log(req.session);
+  if(req.session.sign){
+    req.session.destroy((err)=>{
+      if(err){
+        console.log(err);
+      }
+      console.log("logout successfully");
+      console.log(req.session);
+      res.redirect('/login.html');
+    })
+  }
+  else{
+    console.log("did not login");
+    res.redirect('/login.html');
+  }
+})
 
 // user pages
 app.get('/user/*', function(req, res) {
@@ -125,7 +286,7 @@ app.use('*.html', function(req, res, next) {
     if(err)
     {
       console.log(`error: ${err.message}`);
-      return res.redirect('./404.html');
+      return res.redirect('/404.html');
       /*res.writeHead(404, {'Content-Type':'text/html'});
       return res.end("404 Not Found");*/
     }
@@ -161,16 +322,56 @@ app.use('*.php',function(request,response,next) {
     execPHP.parseFile(request.originalUrl, [], function(err, phpResult, stderr) {
       if(err) {
         console.log(`error: ${err.message}`);
-        return response.redirect('/404.html');
+        response.writeHead(200, {'Content-Type':'text/html'});
+        return response.end("404 not found");
       }
       if(stderr) {
         console.log(`error: ${stderr}`);
-        return response.redirect('/404.html');
+        return response.redirect('404.html');
       }
       response.writeHead(200, {'Content-Type':'text/html'});
   		response.write(phpResult);
   		return response.end();
   	});
+  });
+});
+//a path for static files
+//app.use(express.static(__dirname + '/public'));
+
+app.use('*.png|*.jpg', function(req, res) {
+  //console.log(req);
+  var pthnm = './'+req._parsedUrl.pathname;
+  fs.readFile(pthnm,function(err, data) {
+    if(err)
+    {
+      console.log(`error: ${err.message}`);
+      return res.end();
+    }
+    var cont = 'image/';
+    if (pthnm.includes('.png'))
+    {
+      cont += 'png';
+    }
+    else if(pthnm.includes('.jpg'))
+    {
+      cont += 'jpeg';
+    }
+    res.writeHead(200, {'Content-Type':cont});
+    res.write(data);
+    return res.end();
+  });
+});
+
+app.use('*.css', function(req, res) {
+  fs.readFile('./'+req._parsedUrl.pathname,function(err, data) {
+    if(err)
+    {
+      console.log(`error: ${err.message}`);
+      return res.end();
+    }
+    res.writeHead(200, {'Content-Type':'text/css'});
+    res.write(data);
+    return res.end();
   });
 });
 
