@@ -118,7 +118,7 @@ app.delete('/post', function(req, res) {
 app.get('/post/new', function(req, res) {
   /* page to write new post */
   const coda = fork("connect_sql.js", ["all_code"]);
-  coda.send(JSON.stringify({USER:req.query['USER']}));
+  coda.send(JSON.stringify({USER:req.query['user']}));
   coda.on("message", msg => {
     // give all code to choose, and prepare for response
     var tmp = {
