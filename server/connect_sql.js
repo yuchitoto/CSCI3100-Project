@@ -24,7 +24,18 @@ class MySQLDatabase {
 
   insert(values, callback) {
     var query = "INSERT INTO ?? SET ?";
-    this.connection.query(query, [this.table].push(values), function(err, data) {
+    console.log(values);
+    const key = Object.keys(values);
+    const value = Object.values(values);
+    var pr = [this.table];
+    for(var i=0; i<key.length;i++)
+    {
+      if(i>0) {
+        query += ", ?";
+      }
+      pr.push({[key[i]]:value[i]});
+    }
+    this.connection.query(query, pr, function(err, data) {
       return callback(err, data);
     });
   }
@@ -206,6 +217,7 @@ class SRC_CODE extends MySQLDatabase {
     this.selectWhenAllTrue(user, function(err, res) {
       if(err)
       {
+        console.log(`error: ${err.message}`);
         return callback('fail');
       }
       return callback(res);
@@ -330,9 +342,11 @@ class POST extends MySQLDatabase {
     this.insert(data, function(err, data) {
       if(err)
       {
+        console.log(`error: ${err.message}`);
         return callback("fail");
       }
-      return callback("success");
+      //console.log(data);
+      return callback(data.insertId);
     });
   }
 
@@ -403,28 +417,40 @@ class POST extends MySQLDatabase {
     var k=0;
 
     existsTitle.forEach((item, i) => {
+      if(k==0)
+      {
+        queryKey += "(";
+      }
       if(k>0){
-        queryKey = queryKey.concat(' AND ');
+        queryKey = queryKey.concat(' OR ');
       }
       k+=1;
       queryKey = queryKey.concat('TITLE LIKE ','\'%', item,'%\'');
     });
     user.forEach((item, i) => {
+      if(k==0)
+      {
+        queryKey += "(";
+      }
       if(k>0){
-        queryKey = queryKey.concat(' AND ');
+        queryKey = queryKey.concat(' OR ');
       }
       k+=1;
       queryKey = queryKey.concat('USERNAME=', item);
     });
     inContext.forEach((item, i) => {
+      if(k==0)
+      {
+        queryKey += "(";
+      }
       if(k>0){
-        queryKey = queryKey.concat(' AND ');
+        queryKey = queryKey.concat(' OR ');
       }
       k+=1;
       queryKey = queryKey.concat('CONTENT LIKE ', '\'%', item, '%\'');
     });
     if(k>0){
-      queryKey = queryKey.concat(' AND ');
+      queryKey = queryKey.concat(') AND ');
     }
     queryKey = queryKey.concat('POST.USER=USER.ID AND REPLY=0)');
 
@@ -462,21 +488,29 @@ class POST extends MySQLDatabase {
     var queryKey = "";
     var k=0;
     user.forEach((item, i) => {
+      if(k==0)
+      {
+        queryKey += "(";
+      }
       if(k>0){
-        queryKey = queryKey.concat(' AND ');
+        queryKey = queryKey.concat(' OR ');
       }
       k+=1;
       queryKey = queryKey.concat('USERNAME=', item);
     });
     inContext.forEach((item, i) => {
+      if(k==0)
+      {
+        queryKey += "(";
+      }
       if(k>0){
-        queryKey = queryKey.concat(' AND ');
+        queryKey = queryKey.concat(' OR ');
       }
       k+=1;
       queryKey = queryKey.concat('CONTENT LIKE ', '\'%', item, '%\'');
     });
     if(k>0){
-      queryKey = queryKey.concat(' AND ');
+      queryKey = queryKey.concat(') AND ');
     }
     queryKey = queryKey.concat('REPLY!=0');
     this.simpleSelect({data:'POST.REPLY AS ID', table:'USER, POST', query:queryKey}, function(err, res) {
