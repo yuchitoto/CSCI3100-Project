@@ -24,7 +24,7 @@ class Forum {
     const user = fork("connect_sql.js", ["find_user"]);
     fetcher.send(JSON.stringify(msg));
     fetcher.on("message", m => {
-      console.log(m);
+      //console.log(m);
       if(m=='fail')
       {
         return callback(1, m);
@@ -109,7 +109,7 @@ with username of author, title and create date and id
       {
         return callback('fail');
       }
-      console.log(msg);
+      //console.log(msg);
       return callback(JSON.parse(msg));
     });
   }
