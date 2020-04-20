@@ -766,7 +766,7 @@ process.on('message', m => {
     new_post(m, msg => {return process.send(msg);});
   }
   if(myArgs[0]=="all_code"){
-    codeT.allCode(JSON.parse(m) msg=>{
+    codeT.allCode(JSON.parse(m), msg=>{
       if(msg=="fail")
       {
         return callback(msg);

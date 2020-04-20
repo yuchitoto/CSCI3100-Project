@@ -41,7 +41,7 @@ app.use(bdp.json());
 
 // prepare for homepage
 app.get('/', function(req, res) {
-  console.log(req);
+  //console.log(req);
   res.redirect('/hello_world.html');
 });
 
