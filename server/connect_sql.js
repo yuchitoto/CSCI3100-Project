@@ -23,8 +23,8 @@ class MySQLDatabase {
   }
 
   insert(values, callback) {
-    var query = "INSERT INTO ? SET ?";
-    this.connection.query(query, [this.table, values], function(err, data) {
+    var query = "INSERT INTO ?? SET ?";
+    this.connection.query(query, [this.table].push(values), function(err, data) {
       return callback(err, data);
     });
   }
@@ -37,9 +37,9 @@ class MySQLDatabase {
   }
 
   selectWhenAllTrue(params, callback) {
-    var query = "SELECT * FROM ? WHERE ?";
+    var query = "SELECT * FROM ?? WHERE ?";
     const key = Object.keys(params);
-    const value = Object.values(param);
+    const value = Object.values(params);
     var pr = [this.table];
     for(var i=0; i<key.length;i++)
     {
@@ -54,7 +54,7 @@ class MySQLDatabase {
   }
 
   deleteWhenAllTrue(cond, callback) {
-    var query = "DELETE FROM ? WHERE ?";
+    var query = "DELETE FROM ?? WHERE ?";
     const key = Object.keys(cond);
     const value = Object.values(cond);
     var pr = [this.table];
@@ -73,7 +73,7 @@ class MySQLDatabase {
 
   // universal update statement, problematic when 2nd level is obj
   update(val, cond, callback) {
-    var query = "UPDATE ? SET ? WHERE ?";
+    var query = "UPDATE ?? SET ? WHERE ?";
     const key = Object.keys(cond);
     const value = Object.values(cond);
     var pr = [this.table, val];
@@ -141,8 +141,18 @@ class SRC_CODE extends MySQLDatabase {
 
   deleteCode(data, callback) {
     /*use parsed data to delete*/
-    this.delete(data, function(err, data) {
-      return callback(err, data);
+    this.deleteWhenAllTrue(data, function(err, res) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      console.log(res);
+      if(res.affectedRows>0)
+      {
+        return callback('success');
+      }
+      return callback('fail');
     });
   }
 
@@ -200,27 +210,30 @@ class USER extends MySQLDatabase {
 
   newUser(data, callback) {
     /*new user*/
-    const query = "INSERT INTO USER SET ?";
-    this.connection.query(query, data, function(err, num) {
-      if(err)
+    this.insert(data, function(err1, res1) {
+      if(err1)
       {
-        console.log(`error: ${err.message}`);
-        return callback(-1);
+        console.log(`error: ${err1.message}`);
+        return callback(0);
       }
-      this.userID(data, function(error, num) {
-        if(error)
+      this.selectWhenAllTrue(data, function(err2, res2) {
+        if(err2)
         {
-          console.log(`error: ${error.message}`);
-          return callback(-1);
+          console.log(`error: ${err2.message}`);
+          return callback(0);
         }
-        return callback(num);
-      });
-    });
+        if(res2.length==1)
+        {
+          return callback(res2[0].ID);
+        }
+        return callback(0);
+      })
+    })
   }
 
   existName(data, callback) {
     /*check if exists same name*/
-    this.selectWhenAllTrue({USERNAME:data.NAME}, function(err, data) {
+    this.selectWhenAllTrue(data, function(err, data) {
       if(err) {
         console.log(`error: ${err.message}`);
         return callback(-1);
@@ -244,7 +257,8 @@ class USER extends MySQLDatabase {
     //find user
     this.selectWhenAllTrue(data, function(err, data) {
       if(err) {
-        return callback(null);
+        console.log(`error: ${err.message}`);
+        return callback('fail');
       }
       return callback(data);
     });
@@ -252,10 +266,32 @@ class USER extends MySQLDatabase {
 
   verifyPassword(data, callback) {
     //verify password
+    this.selectWhenAllTrue(data, function(err, res) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      if(res.length==1)
+      {
+        return callback('success');
+      }
+      return callback('fail');
+    });
   }
 
   deleteUser(data, callback) {
     //remove user
+
+    this.deleteWhenAllTrue(data, function(err, res) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback('fail');
+      }
+      //console.log(res);
+      return callback(res.length);
+    });
   }
 
   userID(data, callback) {
@@ -475,14 +511,6 @@ class POST extends MySQLDatabase {
   }*/
 }
 
-// to be removed
-const connection = mysql.createConnection({
-  "host":"localhost",
-  "port":3306,
-  "user":"csci3100grp18",
-  "password":"csci3100#Grp18",
-  "database":"CSCI3100GRP18"
-});
 
 const userT = new USER();
 const codeT = new SRC_CODE();
@@ -500,23 +528,8 @@ function save_code(param, callback) {
 // fetchCode wrapper
 function fetch_code(param, callback) {
   const data = JSON.parse(param);
-  var sql = "SELECT * FROM SRC_CODE WHERE ?";
-  var pr = [];
-  var tmp1 = Object.keys(data);
-  var tmp2 = Object.values(data);
-  for (var i=0;i<tmp1.length;i++)
-  {
-    if (i>0){
-      sql += " AND ?";
-    }
-    var tmp3 = tmp1[i];
-    var tmp4 = tmp2[i];
-    pr.push({[tmp3]:tmp4});
-  }
-  console.log(pr);
-  connection.query(sql, pr, function (err, result) {
-    result[0].SRC = result[0].SRC.toString('utf8');
-    callback(err, result[0]);
+  codeT.fetchCode(data, function(err, res) {
+    return callback(err, res);
   });
 }
 
@@ -524,58 +537,30 @@ function fetch_code(param, callback) {
 function delete_code(param, callback)
 {
   /*delete code also delete all posts related*/
+  const data = JSON.parse(param);
+  codeT.deleteCode(data, msg => {
+    return callback(msg);
+  });
 }
 
 // newUser wrapper
 function new_user(data, callback)
 {
-  const datan = qs.parse(data);
-  const query1 = "INSERT INTO USER SET ?",
-  values = {
-    USERNAME:datan.USERNAME,
-    EMAIL:datan.EMAIL,
-    PASSWORD_HASH:datan.PASSWORD_HASH,
-    AC_TYPE:datan.AC_TYPE,
-    GROUP:datan.GROUP,
-    DESCRIPTION:datan.DESCRIPTION,
-    IS_PUBLIC:datan.IS_PUBLIC
-  };
-  const query2 = "SELECT ID FROM USER WHERE?";
-  connection.query(query1, values, function(err, num) {
-    if(err)
-    {
-      callback(0);
-    }
-    connection.query(query2,values, function(error, data) {
-      if(error)
-      {
-        callback(0);
-      }
-      callback(data[0]);
-    });
-  });
+  const datan = JSON.parse(data);
+  userT.newUser(datan, msg => {return callback(msg);});
 }
 
 // existName wrapper
 function exist_name(data)
 {
-  const datan = qs.parse(data);
-  const query = "SELECT USERNAME FROM USER WHERE ?";
-
-  values = {USERNAME:datan.name};
-
-  connection.query(query, values, function(err, row, reply){
-    if(err){
-      throw err;
-    }
-    return row;
-  });
+  const datan = JSON.parse(data);
+  userT.existName(datan, msg => {return callback(msg);});
 }
 
 // existEmail wrapper
 function exist_email(data, callback)
 {
-  const datan = qs.parse(data);
+  const datan = JSON.parse(data);
   userT.existEmail(datan, msg => {return callback(msg);});
 }
 
@@ -583,33 +568,21 @@ function exist_email(data, callback)
 function find_user(param, callback){
   // find user from database
   const data = JSON.parse(param);
-  var sql = "SELECT * FROM USER WHERE ?";
-  var pr = [];
-  const tmp1 = Object.keys(data);
-  const tmp2 = Object.values(data);
-  for(var i=0;i<tmp1.length;i++)
-  {
-    if(i>0)
-    {
-      sql += " AND ?";
-    }
-    pr.push({[tmp1[i]]:tmp2[i]});
-  }
-  connection.query(sql, pr, function(err, data) {
-    console.log(data[0]);
-    callback(err, data[0]);
-  });
+  userT.findUser(data, msg => {return callback(msg);});
 }
 
 // verifyPassword wrapper
-function verify_password(user){
+function verify_password(user, callback){
   // verify password
+  const data = JSON.parse(user)
+  userT.verifyPassword(data, msg => {return callback(msg);});
 }
 
 // deleteUser wrapper
 function delete_user(param, callback){
   // delete given id in USER
-  // receive id
+  const data=JSON.parse(param);
+  userT.deleteUser(data, msg=>{return callback(msg);});
 }
 
 // newPost wrapper
@@ -667,6 +640,18 @@ function search_post(param, callback)
 function userID(param, callback)
 {
   /*ret user id*/
+  userT.selectWhenAllTrue(JSON.parse(param), function(err, res) {
+    if(err)
+    {
+      console.log(`error: ${err.message}`);
+      return callback('fail');
+    }
+    if(res.length!=1)
+    {
+      return callback('fail');
+    }
+    return callback(res[0].ID);
+  });
 }
 
 /*advanced
@@ -714,6 +699,10 @@ process.on('message', m => {
       return process.send(id);
     });
   }
+  if(myArgs[0]=='delete_user')
+  {
+    delete_user(m, res =>{return process.send(res);});
+  }
   if (myArgs[0]=='fetch_post') {
     fetch_post(m, res => {
       if(res=='fail')
@@ -724,8 +713,8 @@ process.on('message', m => {
     });
   }
   if (myArgs[0]=='find_user') {
-    find_user(m, function(err, data) {
-      if(err)
+    find_user(m, function(res) {
+      if(res=='fail')
       {
         return process.send('fail');
       }
@@ -752,6 +741,15 @@ process.on('message', m => {
   }
   if(myArgs[0]=='delete_post') {
     delete_post(m, msg => {return process.send(msg);});
+  }
+  if(myArgs[0]=='delete_code') {
+    delete_code(m, msg => {return process.send(msg);});
+  }
+  if(myArgs[0]=='verify_password') {
+    verify_password(m, msg=>{return process.send(msg);});
+  }
+  if(myArgs[0]=='userID') {
+    userID(m, msg=>{return process.send(msg);});
   }
 });
 
