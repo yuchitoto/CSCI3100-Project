@@ -6,7 +6,7 @@ class Forum {
     this.userid = userid;
   }
 
-// fetch post, needs modification
+// fetch post, return success of failure using 1st callback argument, and result array in 2nd
   fetch(postID, callback)
   {
     /*fetch json object list*/
@@ -65,7 +65,7 @@ class Forum {
     });
   }
 
-// post new replies
+// post new replies, return success or fail
   post_reply(postID, content, callback)
   {
     /*send to mysql*/
@@ -96,12 +96,21 @@ class Forum {
     });
   }
 
+/*
+return all posts that are not reply,
+with username of author, title and create date and id
+*/
   titles(callback)
   {
     const eng = fork("connect_sql.js", ["search_post_head"]);
-    eng.send(JSON.parse({existsTitle:[],user:[],inContext:[],id:[]}));
+    eng.send(JSON.stringify({existsTitle:[],user:[],inContext:[],id:[]}));
     eng.on("message", msg => {
-      return callback(msg);
+      if(msg=='fail')
+      {
+        return callback('fail');
+      }
+      console.log(msg);
+      return callback(JSON.parse(msg));
     });
   }
 

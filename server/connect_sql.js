@@ -751,6 +751,9 @@ process.on('message', m => {
   if(myArgs[0]=='userID') {
     userID(m, msg=>{return process.send(msg);});
   }
+  if(myArgs[0]=="new_post") {
+    new_post(m, msg => {return process.send(msg);});
+  }
 });
 
 // export class definition
