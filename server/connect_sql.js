@@ -722,10 +722,10 @@ process.on('message', m => {
     fetch_code(m, function(err, data) {
       var result = JSON.stringify(data);
       if(err){
-        console.log(err);
+        console.log(`error: ${err.message}`);
         return process.send('fail');
       }
-      return process.send(result);
+      return process.send(JSON.stringify(result));
     });
   }
   if(myArgs[0]=='exist_user')

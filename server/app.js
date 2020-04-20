@@ -46,16 +46,35 @@ app.get('/', function(req, res) {
 });
 
 // for online ide
-app.get('/code*', function(req, res) {
+app.get('/code', function(req, res) {
   /*get code*/
+  //console.log(res);
+  if(!Object.keys(req.query).includes('user'))
+  {
+    return res.redirect('/forum');
+  }
+  const coder = fork("connect_sql.js", ['fetch_code']);
+  var dict = {USER:req.query['user'], ID:req.query['code']};
+  coder.send(JSON.stringify(dict));
+  coder.on("message", msg=>{
+    if(msg=="fail")
+    {
+      return res.redirect('/forum?user='+req.query['user']); //failed to get code
+    }
+    var tmp = {
+      user:req.query['user'].toString(10),
+      code:JSON.parse(msg)[0]
+    };
+    return res.render('/code', tmp);
+  });
 });
 
-app.post('/code*', function(req, res) {
+app.post('/code', function(req, res) {
   /*save code*/
   /*compile and run*/
 });
 
-app.delete('/code*', function(req, res) {
+app.delete('/code', function(req, res) {
   /*delete code from database*/
 });
 
@@ -99,7 +118,8 @@ app.post('/forum/search', function(req, res) {
   forumObj.search(dict, function(err, msg) {
     if(msg!='fail')
     {
-      return res.render('/forum/search',msg);
+      var tmp = {post:msg, user:(Object.keys(req.query).includes('user')?(req.query['user'].toString(10)):"")};
+      return res.render('/forum/search',tmp);
     }
     return res.redirect('/404.html');
   });
@@ -126,7 +146,12 @@ app.get('/post', function(req, res) {
       console.log("failed to find post");
       return res.redirect("/404.html");
     }
-    var tmp = {post:post, CONTENT:"", url:req.originalUrl, keywords:""};
+    var user="";
+    if(id>0)
+    {
+      user=id.toString(10);
+    }
+    var tmp = {post:post, CONTENT:"", url:req.originalUrl, keywords:"", user:user};
     return res.render('post', tmp);
   });
 });
@@ -152,7 +177,8 @@ app.get('/post/new', function(req, res) {
     }
     var tmp = {
       newPost:[{TITLE:"", CONTENT:"", CODE:0}],
-      codes:JSON.parse(msg)
+      codes:JSON.parse(msg),
+      user:req.query['user'].toString(10)
     };
     res.render('new_post',tmp);
   });
