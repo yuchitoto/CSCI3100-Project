@@ -60,6 +60,10 @@ class MySQLDatabase {
       pr.push({[key[i]]:value[i]});
     }
     this.connection.query(query, pr, function(err, data) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+      }
       return callback(err, data);
     });
   }

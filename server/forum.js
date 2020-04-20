@@ -20,8 +20,8 @@ class Forum {
     }
 
     const fetcher = fork("connect_sql.js", ["fetch_post"]);
-    const code = fork("connect_sql.js", ["fetch_code"]);
-    const user = fork("connect_sql.js", ["find_user"]);
+    //const code = fork("connect_sql.js", ["fetch_code"]);
+    //const user = fork("connect_sql.js", ["find_user"]);
     fetcher.send(JSON.stringify(msg));
     fetcher.on("message", m => {
       //console.log(m);
