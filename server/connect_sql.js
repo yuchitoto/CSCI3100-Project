@@ -337,7 +337,7 @@ class POST extends MySQLDatabase {
   }
 
   fetchPostHead(id, callback) {
-    const queryhead = "SELECT c.USERNAME AS USER, a.TITLE, a.CONTENT, b.SRC AS CODE FROM POST a, SRC_CODE b, USER c WHERE a.ID=? AND a.USER=c.ID AND a.CODE=b.ID";
+    const queryhead = "SELECT a.ID as ID, c.USERNAME AS USER, a.TITLE, a.CONTENT, b.SRC AS CODE FROM POST a, SRC_CODE b, USER c WHERE a.ID=? AND a.USER=c.ID AND a.CODE=b.ID";
     this.connection.query(queryhead, id, function(err1, hd) {
       if(err1) {
         console.log(`error: ${err1.message}`);

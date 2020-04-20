@@ -25,7 +25,7 @@
     <% } %>
     <div class="form">
       <h4 style="color:white">Wrtie your reply</h4>
-      <form action="/" method="get">
+      <form action= <%-"/post?post="+post[0].ID%> method="post">
         <textarea class="textarea"></textarea>
         <br>
         <input type="submit" value="Submit" />
