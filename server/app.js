@@ -63,7 +63,7 @@ app.delete('/code*', function(req, res) {
 app.get('/forum', function(req, res) {
   /*return forum page*/
   //console.log(req);
-  var id = 0;
+  var id = -1;
   var postID = 1;
   if(Object.keys(req.query).includes("user"))
   {
@@ -76,14 +76,33 @@ app.get('/forum', function(req, res) {
     {
       return res.redirect("/404.html");
     }
-    var tmp = {post:post, keywords:""}
+    var user = "";
+    if(id>0)
+    {
+      user = id.toString(10);
+    }
+    var tmp = {post:post, keywords:"", user:user};
     return res.render("forum", tmp);
   })
 });
 
 app.post('/forum/search', function(req, res) {
   // search engine
-
+  var forumObj = new Forum(1);
+  var key = req.body.split(" ");
+  var dict = {existsTitle:[], inContext:[], user:[]};
+  key.forEach((item, i) => {
+    dict.existsTitle.push(item);
+    dict.inContext.push(item);
+    dict.user.push(item);
+  });
+  forumObj.search(dict, function(err, msg) {
+    if(msg!='fail')
+    {
+      return res.render('/forum/search',msg);
+    }
+    return res.redirect('/404.html');
+  });
 });
 
 // for post
@@ -118,6 +137,11 @@ app.delete('/post', function(req, res) {
 
 app.get('/post/new', function(req, res) {
   /* page to write new post */
+  console.log('/post/new');
+  if(!Object.keys(req.query).includes('user'))
+  {
+    return res.redirect('/forum');
+  }
   const coda = fork("connect_sql.js", ["all_code"]);
   coda.send(JSON.stringify({USER:req.query['user']}));
   coda.on("message", msg => {
