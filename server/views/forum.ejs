@@ -8,12 +8,12 @@
     <%- include ('forum_header.ejs') %>
     <div className="forum">
     <% for(var i=0; i<post.length; i++) {%>
-       <% if(post[i].TITLE != null) {%> 
+       <% if(post[i].TITLE != null) {%>
         <div className="post-title">
-          <a href="/post" ><h4><%= post[i].TITLE %></h4></a>
+          <a href= <%-"/post?post="+post[i].ID%>><h4><%= post[i].TITLE %></h4></a>
         <br>
         </div>
-       <% } %> 
+       <% } %>
     <% } %>
   </div>
   </body>

@@ -57,29 +57,25 @@ app.delete('/code*', function(req, res) {
 });
 
 // for forum
-app.get('/forum*', function(req, res) {
+app.get('/forum', function(req, res) {
   /*return forum page*/
-  console.log(req.params);
+  //console.log(req);
   var id = 0;
   var postID = 1;
   if(Object.keys(req.query).includes("user"))
   {
     id = req.query['user'];
   }
-  if(Object.keys(req.query).includes("post"))
-  {
-    postID = req.query['post'];
-  }
   var forumObj = new Forum(id);
-  forumObj.fetch(postID, function(err, post) {
-    if(err)
+  forumObj.titles(post => {
+    //console.log(post);
+    if(post=='fail')
     {
-      console.log("failed to find post");
       return res.redirect("/404.html");
     }
-    var tmp = {post:post};
-    return res.render('forum', tmp);
-  });
+    var tmp = {post:post}
+    return res.render("forum", tmp);
+  })
 });
 
 // for post
@@ -284,7 +280,7 @@ app.use('*.php',function(request,response,next) {
       }
       if(stderr) {
         console.log(`error: ${stderr}`);
-        return response.redirect('/404.html');
+        return response.redirect('404.html');
       }
       response.writeHead(200, {'Content-Type':'text/html'});
   		response.write(phpResult);
