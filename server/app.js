@@ -81,15 +81,19 @@ app.get('/forum', function(req, res) {
   })
 });
 
+app.post('/forum/search', function(req, res) {
+  // search engine
+});
+
 // for post
 app.get('/post', function(req, res) {
   /*return post page*/
-  console.log(req.params);
+  console.log(req.query);
   var id = 0;
   var postID = 1;
   if(Object.keys(req.query).includes("user"))
   {
-    id = req.query['USER'];
+    id = req.query['user'];
   }
   if(Object.keys(req.query).includes("post"))
   {
@@ -102,7 +106,7 @@ app.get('/post', function(req, res) {
       console.log("failed to find post");
       return res.redirect("/404.html");
     }
-    var tmp = {post:post};
+    var tmp = {post:post, CONTENT:"", url:req.originalUrl};
     return res.render('post', tmp);
   });
 });
@@ -114,44 +118,52 @@ app.delete('/post', function(req, res) {
 app.get('/post/new', function(req, res) {
   /* page to write new post */
   const coda = fork("connect_sql.js", ["all_code"]);
-  coda.send(JSON.stringify({USER:req.query['USER']}));
+  coda.send(JSON.stringify({USER:req.query['user']}));
   coda.on("message", msg => {
     // give all code to choose, and prepare for response
     var tmp = {
       newPost:[{TITLE:"", CONTENT:"", CODE:0}],
-    codes:JSON.parse(msg)};
+      codes:JSON.parse(msg)
+    };
     res.render('new_post',tmp);
   });
 });
 
-app.post('/post*', function(req, res) {
+app.post('/post', function(req, res) {
   /*new discussion or reply*/
-  var user = req.query['USER'];
-  console.log(req.body);
-  var forumObj = new forum(user);
-  if(req.query.keys.includes('post'))
+  //console.log(req);
+  if(!Object.keys(req.query).includes("user"))
   {
-    forumObj.post_reply(req.query['post'], req.body.content, msg => {
-      if(msg=="success")
+    res.redirect(req.originalUrl);
+  }
+  var user = req.query['user'];
+  //console.log(req.query);
+  //console.log(req.body);
+  //console.log(user);
+  var forumObj = new Forum(user);
+  if(Object.keys(req.query).includes('post'))
+  {
+    forumObj.post_reply(req.query['post'], req.body.CONTENT, msg => {
+      if(msg!="fail")
       {
-        res.redir(req.path);
+        return res.redirect(req.originalUrl);
       }
       else
       {
-        res.redir("/404.html"); //some error page
+        return res.redirect("/404.html"); //some error page
       }
     });
   }
   else
   {
     forumObj.post_post(req.body.TITLE, req.body.CONTENT, req.body.CODE, msg => {
-      if(msg=="success")
+      if(msg!="fail")
       {
-        res.redir(req.path);
+        return res.redirect("/post?user="+user+"&post="+msg);
       }
       else
       {
-        res.redir("/404.html"); //some error page
+        return res.redirect("/404.html"); //some error page
       }
     });
   }
