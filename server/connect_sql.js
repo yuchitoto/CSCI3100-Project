@@ -212,14 +212,14 @@ class SRC_CODE extends MySQLDatabase {
     });
   }
 
-  allCode(user, callback)
-  {
+  allCode(user, callback) {
     this.selectWhenAllTrue(user, function(err, res) {
       if(err)
       {
         console.log(`error: ${err.message}`);
         return callback('fail');
       }
+      console.log(res);
       return callback(res);
     });
   }
@@ -513,6 +513,7 @@ class POST extends MySQLDatabase {
       queryKey = queryKey.concat(') AND ');
     }
     queryKey = queryKey.concat('REPLY!=0');
+    console.log(queryKey);
     this.simpleSelect({data:'POST.REPLY AS ID', table:'USER, POST', query:queryKey}, function(err, res) {
       if(err)
       {
@@ -800,12 +801,13 @@ process.on('message', m => {
     new_post(m, msg => {return process.send(msg);});
   }
   if(myArgs[0]=="all_code"){
-    codeT.allCode(JSON.parse(m), msg=>{
+    codeT.allCode(JSON.parse(m), msg => {
+      console.log(msg);
       if(msg=="fail")
       {
-        return callback(msg);
+        return process.send(msg);
       }
-      return callback(JSON.stringify(msg));
+      return process.send(JSON.stringify(msg));
     })
   }
 });
