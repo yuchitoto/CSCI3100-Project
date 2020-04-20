@@ -80,9 +80,20 @@ class Forum {
   }
 
 // delete reply or post
-  delete(param, callback)
+  delete(id, callback)
   {
     /*delete reply or post*/
+    const eng = fork("connect_sql.js", ["delete_post"]);
+    eng.send({ID:id});
+    eng.on("message", msg => {
+      if(msg=="success")
+      {
+        return callback(true);
+      }
+      else {
+        return callback(false);
+      }
+    });
   }
 
   titles(callback)
