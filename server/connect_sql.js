@@ -24,7 +24,18 @@ class MySQLDatabase {
 
   insert(values, callback) {
     var query = "INSERT INTO ?? SET ?";
-    this.connection.query(query, [this.table].push(values), function(err, data) {
+    console.log(values);
+    const key = Object.keys(values);
+    const value = Object.values(values);
+    var pr = [this.table];
+    for(var i=0; i<key.length;i++)
+    {
+      if(i>0) {
+        query += ", ?";
+      }
+      pr.push({[key[i]]:value[i]});
+    }
+    this.connection.query(query, pr, function(err, data) {
       return callback(err, data);
     });
   }
@@ -330,9 +341,11 @@ class POST extends MySQLDatabase {
     this.insert(data, function(err, data) {
       if(err)
       {
+        console.log(`error: ${err.message}`);
         return callback("fail");
       }
-      return callback("success");
+      //console.log(data);
+      return callback(data.insertId);
     });
   }
 

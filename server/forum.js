@@ -13,7 +13,7 @@ class Forum {
     var msg;
     if (this.userID != 0)
     {
-      msg = {USER:this.userID, ID:postID};
+      msg = {USER:this.userid, ID:postID};
     }
     else {
       msg = {ID:postID};
@@ -70,11 +70,12 @@ class Forum {
     /*send to mysql*/
     const data = {
       REPLY:postID,
-      USER:this.userID,
+      USER:this.userid,
       CONTENT:content
     };
+    console.log(data);
     const eng = fork("connect_sql.js", ["new_post"]);
-    eng.send(JSON.parse(data));
+    eng.send(JSON.stringify(data));
     eng.on("message", msg => {return callback(msg);});
   }
 
