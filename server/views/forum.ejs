@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8">
     <title>Code Block Forum</title>
+    <link href="/css/forum.css" rel="stylesheet" type="text/css">
   </head>
   <body>
     <%- include ('forum_header.ejs') %>
-    <div className="forum">
+    <div class="forum">
     <% for(var i=0; i<post.length; i++) {%>
        <% if(post[i].TITLE != null) {%>
-        <div className="post-title">
-          <a href= <%-"/post?post="+post[i].ID%>><h4><%= post[i].TITLE %></h4></a>
-        <br>
+        <div class="post-title">
+          <a  class="post-text" href= <%-"/post?post="+post[i].ID%>><%= post[i].TITLE %></a>
         </div>
        <% } %>
     <% } %>
