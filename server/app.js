@@ -76,13 +76,14 @@ app.get('/forum', function(req, res) {
     {
       return res.redirect("/404.html");
     }
-    var tmp = {post:post}
+    var tmp = {post:post, keywords:""}
     return res.render("forum", tmp);
   })
 });
 
 app.post('/forum/search', function(req, res) {
   // search engine
+
 });
 
 // for post
@@ -106,7 +107,7 @@ app.get('/post', function(req, res) {
       console.log("failed to find post");
       return res.redirect("/404.html");
     }
-    var tmp = {post:post, CONTENT:"", url:req.originalUrl};
+    var tmp = {post:post, CONTENT:"", url:req.originalUrl, keywords:""};
     return res.render('post', tmp);
   });
 });
@@ -121,6 +122,10 @@ app.get('/post/new', function(req, res) {
   coda.send(JSON.stringify({USER:req.query['user']}));
   coda.on("message", msg => {
     // give all code to choose, and prepare for response
+    if(msg=='fail')
+    {
+      res.redirect('/404.html');
+    }
     var tmp = {
       newPost:[{TITLE:"", CONTENT:"", CODE:0}],
       codes:JSON.parse(msg)
