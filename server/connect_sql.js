@@ -592,14 +592,8 @@ function verify_password(user, callback){
 // deleteUser wrapper
 function delete_user(param, callback){
   // delete given id in USER
-<<<<<<< HEAD
-  // receive id
-  const data = JSON.parse(param);
-  userT.deleteUser(data, msg => {return callback(msg);});
-=======
   const data=JSON.parse(param);
   userT.deleteUser(data, msg=>{return callback(msg);});
->>>>>>> 7104879ad207cfa6357092656e11693955db9b83
 }
 
 // newPost wrapper
