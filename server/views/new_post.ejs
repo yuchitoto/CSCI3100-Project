@@ -11,12 +11,17 @@
         <form action="/" method="post">
             <div class="block">
                 <h2>Title:</h2><br>
-                <textarea class="textarea"></textarea>
+                <textarea class="textarea" id="TITLE" name="CONTENT"></textarea>
             </div>
             <div class="block">
                 <h2>Content:</h2>><br>
-                <textarea class="textarea"></textarea>
+                <textarea class="textarea" id="CONTENT" name="CONTENT"></textarea>
             </div>
+            <% for(var i=0; i<codes.length; i++) {%>
+            <div class="block">
+                <label><input type="radio" name="CODE" id="CODE" value=<%= i %> /><%= codes[i] %></label>
+            </div>
+            <% } %>
             <input type="submit" value="POST">
             </form> 
     </div>
