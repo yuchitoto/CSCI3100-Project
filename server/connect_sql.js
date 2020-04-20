@@ -200,6 +200,17 @@ class SRC_CODE extends MySQLDatabase {
       return callback('fail');
     });
   }
+
+  allCode(user, callback)
+  {
+    this.selectWhenAllTrue(user, function(err, res) {
+      if(err)
+      {
+        return callback('fail');
+      }
+      return callback(res);
+    });
+  }
 }
 
 // mysql table USER
@@ -319,14 +330,14 @@ class POST extends MySQLDatabase {
     this.insert(data, function(err, data) {
       if(err)
       {
-        return callback(false);
+        return callback("fail");
       }
-      return callback(true);
+      return callback("success");
     });
   }
 
   fetchPostHead(id, callback) {
-    const queryhead = "SELECT c.USERNAME AS USER, a.TITLE, a.CONTENT, b.SRC AS CODE FROM POST a, SRC_CODE b, USER c WHERE a.ID=? AND a.USER=c.ID AND a.CODE=b.ID";
+    const queryhead = "SELECT a.ID as ID, c.USERNAME AS USER, a.TITLE, a.CONTENT, b.SRC AS CODE FROM POST a, SRC_CODE b, USER c WHERE a.ID=? AND a.USER=c.ID AND a.CODE=b.ID";
     this.connection.query(queryhead, id, function(err1, hd) {
       if(err1) {
         console.log(`error: ${err1.message}`);
@@ -759,6 +770,15 @@ process.on('message', m => {
   }
   if(myArgs[0]=="new_post") {
     new_post(m, msg => {return process.send(msg);});
+  }
+  if(myArgs[0]=="all_code"){
+    codeT.allCode(JSON.parse(m), msg=>{
+      if(msg=="fail")
+      {
+        return callback(msg);
+      }
+      return callback(JSON.stringify(msg));
+    })
   }
 });
 
