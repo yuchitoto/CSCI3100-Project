@@ -43,23 +43,16 @@ class User {
       })
     }
 
-    // logout(callback){
-    //   // perform logout
-    // }
-
     delete_user(callback){
-      var id = this.verify_password();
-      if(id == 0){
+      const check = fork("connect_sql.js", ["find_user"]);
+      check.send(JSON.stringify(this.data));
 
-      }
-      else{
-        const del = fork("connect_sql.js", ["delete_user"]);
-        del.send(this.data);
-        del.on("message", m => {
-          // handle message
-        })
-      }
-      callback(/*msg*/);
+      check.on("message", m => {
+        if(m == "fail"){
+          return callback(m, 0);
+        }
+        else return callback(0, m);
+      })
     }
 
     change_type(type, callback){
