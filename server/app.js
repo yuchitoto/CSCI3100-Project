@@ -339,11 +339,7 @@ app.post('/auth/login', function(req, res) {
     console.log("Already login");
     //res.send("Already login");
     console.log(req.session);
-<<<<<<< HEAD
     res.redirect('user');
-=======
-    return res.redirect('/user/' + req.session.name + '.html');
->>>>>>> 0873908789f23adc04dce4efe8d53610353470cd
   }
   else if(req.body.password && (req.body.email || req.body.name)){
     var data;
@@ -364,18 +360,13 @@ app.post('/auth/login', function(req, res) {
         console.log("Login success");
         sess.sign = true;
         sess.ID = user.ID;
-        sess.USERNAME = user.USERNAME;
         console.log(sess);
         //res.redirect('/user/' + user.name);
         return res.redirect('/')
       }
     })
   }
-<<<<<<< HEAD
   else res.redirect('/auth/login');
-=======
-  else return res.redirect('login');
->>>>>>> 0873908789f23adc04dce4efe8d53610353470cd
 });
 
 // user logout
@@ -388,30 +379,18 @@ app.get('/auth/logout', function(req, res){
       }
       console.log("logout successfully");
       console.log(req.session);
-<<<<<<< HEAD
       res.redirect('/');
     })
   }
   else{
     console.log("did not login");
     res.redirect('login');
-=======
-      return res.redirect('/login');
-    });
-  }
-  else{
-    console.log("did not login");
-    res.redirect('/login');
->>>>>>> 0873908789f23adc04dce4efe8d53610353470cd
   }
 });
 
 // user pages
 app.get('/user', function(req, res) {
   /*user data*/
-<<<<<<< HEAD
-  res.render('user', req);
-=======
   if(!Object.keys(req.query).includes('user'))
   {
     return res.redirect('/');
@@ -426,7 +405,6 @@ app.get('/user', function(req, res) {
     var tmp = {code:JSON.parse(msg), user:req.query['user']};
     return res.render('user', tmp);
   });
->>>>>>> 0873908789f23adc04dce4efe8d53610353470cd
 });
 
 app.put('/user', function(req, res) {
