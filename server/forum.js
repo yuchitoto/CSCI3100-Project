@@ -56,6 +56,7 @@ class Forum {
   post_post(title, content, codeID, callback)
   {
     var msg = {USER: this.userid, CODE:codeID, TITLE:title, CONTENT:content, REPLY:0};
+    console.log(msg);
     const poster = fork("connect_sql.js", ["new_post"]);
     poster.send(JSON.stringify(msg));
     poster.on("message", m => {
