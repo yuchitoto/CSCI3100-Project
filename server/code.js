@@ -53,7 +53,7 @@ return false for error, and compiler or program result
       {
         return callback(false);
       }
-      const name = msg[0].USER.toString(10)+"_"codeID.toString(10)+".cpp";
+      const name = msg[0].USER.toString(10)+"_"+codeID.toString(10)+".cpp";
       fs.writeFile(name, msg[0].SRC, (err) => {
         if(err)
         {
