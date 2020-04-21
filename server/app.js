@@ -318,7 +318,7 @@ app.use(session({
 }));
 var sess;
 
-app.get('/auth/login', function(req, res) {
+app.get('/login', function(req, res) {
   /*login page*/
   if(req.session.sign){
     console.log('login');
@@ -330,7 +330,7 @@ app.get('/auth/login', function(req, res) {
   }
 });
 
-app.post('/auth/login', function(req, res) {
+app.post('/login', function(req, res) {
   /*authentication*/
   console.log("ok");
   console.log(req.body);
@@ -351,7 +351,7 @@ app.post('/auth/login', function(req, res) {
     userObj.login(function(err, user){
       if(err){
         console.log(err);
-        return res.redirect('/login');
+        return res.redirect('login');
       }
       else{
         sess = req.session;
@@ -365,11 +365,11 @@ app.post('/auth/login', function(req, res) {
       }
     })
   }
-  else res.redirect('/auth/login');
+  else res.redirect('/login');
 });
 
 // user logout
-app.get('/auth/logout', function(req, res){
+app.get('/logout', function(req, res){
   console.log(req.session);
   if(req.session.sign){
     req.session.destroy((err)=>{
@@ -424,13 +424,13 @@ app.delete('/user', function(req, res) {
 });
 
 // for account creation
-app.get('/auth/create_account*', function(req, res) {
+app.get('/create_account*', function(req, res) {
   /*fetch account create page*/
   console.log('nonono');
   return res.render('create_account');
 });
 
-app.post('/auth/create_account*', function(req, res) {
+app.post('/create_account*', function(req, res) {
   /*create new account*/
   console.log(req.body);
   console.log('hello');
