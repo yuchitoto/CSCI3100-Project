@@ -151,9 +151,9 @@ app.get('/forum', function(req, res) {
   //console.log(req);
   var id = -1;
   var postID = 1;
-  if(Object.keys(req.query).includes("user"))
+  if(Object.keys(req.session).includes("ID"))
   {
-    id = req.query['user'];
+    id = req.session['ID'];
   }
   var forumObj = new Forum(id);
   forumObj.titles(post => {
@@ -394,15 +394,23 @@ app.get('/user', function(req, res) {
   {
     return res.redirect('/');
   }
-  const db = fork("connect_sql.js", ["fetch_code"]);
-  db.send(JSON.stringify({ID:req.query['user']}));
-  db.on("message", msg => {
+  const db1 = fork("connect_sql.js", ["fetch_code"]);
+  const db2 = fork("connect_sql.js", ["find_user"]);
+  db1.send(JSON.stringify({ID:req.session['ID']}));
+  db1.on("message", msg => {
     if(msg=='fail')
     {
       return res.redirect('/');
     }
-    var tmp = {code:JSON.parse(msg), user:req.query['user']};
-    return res.render('user', tmp);
+    db2.send(JSON.stringify({ID:req.session['ID']}));
+    db2.on("message", msg2 => {
+      if(msg2=="fail"||msg2=="no_user")
+      {
+        return res.redirect('/404.html');
+      }
+      var tmp = {code:JSON.parse(msg), USERNAME:JSON.parse(msg2).USERNAME};
+      return res.render('user', tmp);
+    });
   });
 });
 

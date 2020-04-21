@@ -15,7 +15,7 @@ class MySQLDatabase {
     this.connection = mysql.createConnection({
       "host":"localhost",
       "port":3306,
-      "user":"root",
+      "user":"csci3100grp18",
       "password":"csci3100#Grp18",
       "database":"CSCI3100GRP18"
     });
@@ -235,32 +235,39 @@ class USER extends MySQLDatabase {
     super("USER");
   }
 
-  newUser(data, callback) {
-    /*new user*/
-    console.log('wowo');
-    console.log(data);
-    console.log('wowo');
+  insertUser(data, callback){
     this.insert(data, function(err1, res1) {
       if(err1)
       {
         console.log(`error: ${err1.message}`);
         return callback(0);
       }
-      else{
-        this.selectWhenAllTrue(data, function(err2, res2) {
-        if(err2)
+      return callback(res1);
+    });
+  }
+
+  newUser(data, callback) {
+    /*new user*/
+    //console.log('wowo');
+    console.log(data);
+    //console.log('wowo');
+    this.insertUser(data, res => {
+      if(res==0)
+      {
+        return callback(0);
+      }
+      this.selectWhenAllTrue(data, function(err, result) {
+        if(err)
         {
-          console.log(`error: ${err2.message}`);
           return callback(0);
         }
-        if(res2.length==1)
+        if(result.length==1)
         {
-          return callback(res2[0].ID);
+          return callback(result[0].ID);
         }
         return callback(0);
-        })
-      }
-    })
+      });
+    });
   }
 
   existName(data, callback) {
@@ -756,13 +763,13 @@ process.on('message', m => {
         flag = 1;
         return process.send('exist_name');
       }
-    })
+    });
     exist_email(m, msg => {
       if(msg != 0){
         flag = 1;
         return process.send('exist_email');
       }
-    })
+    });
     if(flag) return;
     new_user(m, id => {
       if(id==0){
