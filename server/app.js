@@ -293,19 +293,33 @@ app.post('/post', function(req, res) {
 
 // for login page, auto redirect to user page or some other page after successful login
 
-app.get('/login', function(req, res) {
+// setup session
+app.use(cookieParser('codeblock'));
+app.use(session({
+  name: 'codeblockidesession',
+  secret: 'iamarandomstring',
+  store: new FileStore(),
+  saveUninitialized: false,
+  resave: false,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000
+  },
+}));
+var sess;
+
+app.get('/auth/login', function(req, res) {
   /*login page*/
   if(req.session.sign){
     console.log('login');
     console.log(req.session);
-    res.render('user');
+    res.redirect('/user');
   }
   else{
     res.render('login');
   }
 });
 
-app.post('/login', function(req, res) {
+app.post('/auth/login', function(req, res) {
   /*authentication*/
   console.log("ok");
   console.log(req.body);
@@ -313,7 +327,7 @@ app.post('/login', function(req, res) {
     console.log("Already login");
     //res.send("Already login");
     console.log(req.session);
-    res.redirect('/user/' + req.session.name + '.html');
+    res.redirect('user');
   }
   else if(req.body.password && (req.body.email || req.body.name)){
     var data;
@@ -341,11 +355,11 @@ app.post('/login', function(req, res) {
       }
     })
   }
-  else res.render('login');
+  else res.redirect('/auth/login');
 });
 
 // user logout
-app.get('/logout', function(req, res){
+app.get('/auth/logout', function(req, res){
   console.log(req.session);
   if(req.session.sign){
     req.session.destroy((err)=>{
@@ -354,18 +368,19 @@ app.get('/logout', function(req, res){
       }
       console.log("logout successfully");
       console.log(req.session);
-      res.redirect('/login.html');
+      res.redirect('/');
     })
   }
   else{
     console.log("did not login");
-    res.redirect('/login.html');
+    res.redirect('login');
   }
 })
 
 // user pages
 app.get('/user/*', function(req, res) {
   /*user data*/
+  res.render('user', req);
 });
 
 app.put('/user/*', function(req, res) {
@@ -377,13 +392,13 @@ app.delete('/user/*', function(req, res) {
 });
 
 // for account creation
-app.get('/create_account*', function(req, res) {
+app.get('/auth/create_account*', function(req, res) {
   /*fetch account create page*/
   console.log('nonono');
   return res.render('create_account');
 });
 
-app.post('/create_account*', function(req, res) {
+app.post('/auth/create_account*', function(req, res) {
   /*create new account*/
   console.log(req.body);
   console.log('hello');
