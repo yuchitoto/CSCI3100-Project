@@ -16,6 +16,8 @@ var forum = require('./forum');
 let Forum = forum.Forum;
 var user = require('./user');
 let User = user.User;
+var code = require('./code');
+let Code = code.Code;
 
 // direct to php parser
 var execPHP = require('./php_parser.js')();
@@ -45,33 +47,50 @@ app.get('/', function(req, res) {
   res.redirect('/hello_world.html');
 });
 
-// for online ide
+// for online ide show code
 app.get('/code', function(req, res) {
   /*get code*/
   //console.log(res);
+  /*if(!Object.keys(req.query).includes('user'))
+  {
+    return res.redirect('/forum');
+  }*/
+  var coder = new Code();
+  coder.fetch(req.query['code'], ret => {
+    if(ret=="fail")
+    {
+      res.redirect('/404.html');
+    }
+    var tmp = {code:ret[0], user:Object.keys(req.query).includes('user')?req.query['user'].toString(10):"", action:""};
+    res.render('code', tmp);
+  });
+});
+
+app.get('/code/write', function(req, res) {
   if(!Object.keys(req.query).includes('user'))
   {
     return res.redirect('/forum');
   }
-  const coder = fork("connect_sql.js", ['fetch_code']);
-  var dict = {USER:req.query['user'], ID:req.query['code']};
-  coder.send(JSON.stringify(dict));
-  coder.on("message", msg=>{
-    if(msg=="fail")
-    {
-      return res.redirect('/forum?user='+req.query['user']); //failed to get code
-    }
-    var tmp = {
-      user:req.query['user'].toString(10),
-      code:JSON.parse(msg)[0]
-    };
-    return res.render('/code', tmp);
-  });
+  var codehold = {NAME:"", USER:req.query['user'], SRC:"", BLK:""};
+  var tmp = {code:codehold, user:req.query['user'].toString(10), action:""};
+  res.render('write_code', tmp);
 });
 
 app.post('/code', function(req, res) {
+  if(req.body.action=='cpar')
+  {}
+
+  // previlleged actions
+  if(!Object.keys(req.query).includes('user'))
+  {
+    res.redirect('/404.html');
+  }
   /*save code*/
+  if(req.body.action=='save')
+  {}
   /*compile and run*/
+  if(req.body.action=='sacpar')
+  {}
 });
 
 app.delete('/code', function(req, res) {
@@ -119,7 +138,7 @@ app.post('/forum/search', function(req, res) {
     if(msg!='fail')
     {
       var tmp = {post:msg, user:(Object.keys(req.query).includes('user')?(req.query['user'].toString(10)):"")};
-      return res.render('/forum/search',tmp);
+      return res.render('forum/search',tmp);
     }
     return res.redirect('/404.html');
   });

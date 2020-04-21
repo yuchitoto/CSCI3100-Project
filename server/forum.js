@@ -10,14 +10,14 @@ class Forum {
   fetch(postID, callback)
   {
     /*fetch json object list*/
-    var msg;
-    if (this.userID != 0)
+    var msg = {ID:postID};
+    /*if (this.userID != 0)
     {
       msg = {USER:this.userid, ID:postID};
     }
     else {
       msg = {ID:postID};
-    }
+    }*/
 
     const fetcher = fork("connect_sql.js", ["fetch_post"]);
     //const code = fork("connect_sql.js", ["fetch_code"]);

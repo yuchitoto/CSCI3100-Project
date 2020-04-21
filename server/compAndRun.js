@@ -24,18 +24,24 @@ async function compile(filename, user) {
 async function run(filename, user) {
   const comperr = compile(filename, user);
 
+  var result = {comp:false, prog:false, proger:false};
+
   if(comperr)
   {
     console.log(`1: ${comperr}`);
-    return comperr;
+    result.comp = comperr;
+    return result;
   }
 
   const {stdout, stderr} = await exec(user+'.exe');
   if(stderr)
   {
     console.log(`2: ${stderr}`);
-    return stderr;
+    result.proger = stderr;
+    return result;
   }
+
+  result.prog = stdout;
 
   spawn('del',[user+'.exe'], (error, stdout, stderr) => {
     if(error)
@@ -51,12 +57,12 @@ async function run(filename, user) {
     return;
   });
 
-  return stdout;
+  return result;
 }
 
 // handle requests upon invoke
 process.on('message', m => {
     const data = JSON.parse(m); // user: userID, name: src code name
-    var result = run(data['user'], data['name']);
-    process.send(result);
+    var result = run(data.USER, data.NAME);
+    process.send(JSON.stringify(result));
 });
