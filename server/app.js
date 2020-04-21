@@ -395,7 +395,7 @@ app.get('/user', function(req, res) {
     return res.redirect('/');
   }
   const db = fork("connect_sql.js", ["fetch_code"]);
-  db.send(JSON.stringify(ID:req.query['user']));
+  db.send(JSON.stringify({ID:req.query['user']}));
   db.on("message", msg => {
     if(msg=='fail')
     {
