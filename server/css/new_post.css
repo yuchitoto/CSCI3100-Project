@@ -21,6 +21,13 @@
     overflow-y: auto;
 }
 
+input[type="radio"] {
+    width: 20px;
+    height: 20px;
+} 
+
+input[type=]
+
 body{
     background-color: rgb(121, 121, 121);
 }
