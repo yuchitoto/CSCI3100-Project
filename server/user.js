@@ -8,36 +8,39 @@ class User {
 
     verify_password(callback){
       /* verify password and return id */
+      console.log(this.data);
       const check = fork("connect_sql.js", ["find_user"]);
       check.send(JSON.stringify(this.data));
 
       check.on("message", m => {
         // handle message
+        console.log(m);
         var msg = JSON.parse(m);
         console.log(msg);
-        return 0;
+        return msg;
       });
     }
 
     registor(callback){
-      const check = fork("connect_sql.js", ["exist_user"]);
+      const check = fork("connect_sql.js", ["new_user"]);
       check.send(JSON.stringify(this.data));
 
       check.on("message", m =>{
         /* handle message */
-        if(m == 'exist_name'){
-          callback(/*msg*/);
-        }
-        else if(m == 'exist_email'){
-          callback(/*msg*/);
-        }
+        return callback(m);
       })
     }
 
     login(callback){
-      var id = this.verify_password();
-      console.log("login");
-      callback(0, {name: 'hello'});
+      const check = fork("connect_sql.js", ["find_user"]);
+      check.send(JSON.stringify(this.data));
+
+      check.on("message", m => {
+        if(m == "fail" || m == "no_user"){
+          return callback(m, 0);
+        }
+        else return callback(0, m);
+      })
     }
 
     // logout(callback){

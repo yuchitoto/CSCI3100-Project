@@ -237,13 +237,17 @@ class USER extends MySQLDatabase {
 
   newUser(data, callback) {
     /*new user*/
+    console.log('wowo');
+    console.log(data);
+    console.log('wowo');
     this.insert(data, function(err1, res1) {
       if(err1)
       {
         console.log(`error: ${err1.message}`);
         return callback(0);
       }
-      this.selectWhenAllTrue(data, function(err2, res2) {
+      else{
+        this.selectWhenAllTrue(data, function(err2, res2) {
         if(err2)
         {
           console.log(`error: ${err2.message}`);
@@ -254,17 +258,19 @@ class USER extends MySQLDatabase {
           return callback(res2[0].ID);
         }
         return callback(0);
-      })
+        })
+      }
     })
   }
 
   existName(data, callback) {
     /*check if exists same name*/
-    this.selectWhenAllTrue(data, function(err, data) {
+    this.selectWhenAllTrue({USERNAME:data.USERNAME}, function(err, data) {
       if(err) {
         console.log(`error: ${err.message}`);
         return callback(-1);
       }
+      console.log(data.length);
       return callback(data.length);
     });
   }
@@ -287,7 +293,10 @@ class USER extends MySQLDatabase {
         console.log(`error: ${err.message}`);
         return callback('fail');
       }
-      return callback(data);
+      if(data.length == 0){
+        return callback('no_user');
+      }
+      return callback(data[0]);
     });
   }
 
@@ -601,7 +610,7 @@ function new_user(data, callback)
 }
 
 // existName wrapper
-function exist_name(data)
+function exist_name(data, callback)
 {
   const datan = JSON.parse(data);
   userT.existName(datan, msg => {return callback(msg);});
@@ -728,20 +737,22 @@ process.on('message', m => {
       return process.send(JSON.stringify(result));
     });
   }
-  if(myArgs[0]=='exist_user')
-  {
-    if(exist_name(m) != 0){
-      process.send('exist_name');
-    }
-    else if(exist_email(m) != 0){
-      process.send('exist_email');
-    }
-    else {
-      process.send('success');
-    }
-  }
   if(myArgs[0]=='new_user')
   {
+    var flag = 0;
+    exist_name(m, msg => {
+      if(msg != 0){
+        flag = 1;
+        return process.send('exist_name');
+      }
+    })
+    exist_email(m, msg => {
+      if(msg != 0){
+        flag = 1;
+        return process.send('exist_email');
+      }
+    })
+    if(flag) return;
     new_user(m, id => {
       if(id==0){
         return process.send('fail');
@@ -764,11 +775,11 @@ process.on('message', m => {
   }
   if (myArgs[0]=='find_user') {
     find_user(m, function(res) {
-      if(res=='fail')
+      if(res=='fail' || res=='no_user')
       {
-        return process.send('fail');
+        return process.send(res);
       }
-      return process.send(JSON.stringify(data));
+      return process.send(res);
     });
   }
   if (myArgs[0]=='search_post_head') {
