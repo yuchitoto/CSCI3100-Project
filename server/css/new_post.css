@@ -37,6 +37,7 @@ input[type="submit"]{
     height:50px;
     border: none;
     background-color: white;
+    transition: all 0.3s;
 }
 
 input[type="submit"]:hover{

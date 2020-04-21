@@ -13,6 +13,21 @@ h1 {
 
 button {
   left: 50%;
+  margin-top:1rem;
+  margin-bottom:1rem;
+  margin-left:5%;
+  margin-right:5%;
+  padding:0.5rem;
+  font-size:30px;
+  color:white;
+  width:150px;
+  height:50px;
+  background-color: black;
+  transition: all 0.3s;
+}
+
+button:hover{
+  background-color: grey;
 }
 
 .wrapper {
