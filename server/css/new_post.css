@@ -26,7 +26,23 @@ input[type="radio"] {
     height: 20px;
 } 
 
-input[type=]
+input[type="submit"]{
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:5%;
+    margin-right:5%;
+    padding:0.5rem;
+    font-size:30px;
+    width:150px;
+    height:50px;
+    border: none;
+    background-color: white;
+    transition: all 0.3s;
+}
+
+input[type="submit"]:hover{
+    background-color: #7f8ad8;
+}
 
 body{
     background-color: rgb(121, 121, 121);
