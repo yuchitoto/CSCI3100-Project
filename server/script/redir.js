@@ -1,4 +1,4 @@
 function homing() {
   //alert('jump to home');
-  window.location.href = ("/mainpage.html");
+  window.location.href = ("/mainpage");
 }

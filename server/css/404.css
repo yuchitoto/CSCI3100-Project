@@ -1,0 +1,18 @@
+body {
+  background-image: url("../image/BH_LMC.png");
+  background-size:cover;
+}
+
+h1 {
+  font-size: 60px;
+  color: #0018A8;
+  /*text-align: center;*/
+}
+
+button {
+  left: 50%;
+}
+
+.wrapper {
+  text-align: center;
+}
