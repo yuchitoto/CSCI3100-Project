@@ -9,7 +9,7 @@ const exec = util.promisify(require('child_process').exec);
 
 // compile the file written on server
 async function compile(filename, user) {
-  const fln = 'g++ '+filename+' -o '+user;
+  const fln = 'gcc '+filename+' -o '+user;
   const {error, stderr} = await exec(fln);
 
   if(error)
