@@ -44,12 +44,11 @@ class Forum {
 
     find.on("message", m => {
       /*handle message*/
-      const parsed = JSON.parse(m);
       if(m=='fail')
       {
         return callback(1, m);
       }
-      return callback(0, parsed);
+      return callback(0, JSON.parse(m));
     });
   }
 

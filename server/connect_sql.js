@@ -449,7 +449,7 @@ class POST extends MySQLDatabase {
         queryKey = queryKey.concat(' OR ');
       }
       k+=1;
-      queryKey = queryKey.concat('USERNAME=', item);
+      queryKey = queryKey.concat('USERNAME=\'', item, '\'');
     });
     inContext.forEach((item, i) => {
       if(k==0)
@@ -509,7 +509,7 @@ class POST extends MySQLDatabase {
         queryKey = queryKey.concat(' OR ');
       }
       k+=1;
-      queryKey = queryKey.concat('USERNAME=', item);
+      queryKey = queryKey.concat('USERNAME=\'', item, '\'');
     });
     inContext.forEach((item, i) => {
       if(k==0)

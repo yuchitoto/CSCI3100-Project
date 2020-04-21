@@ -19,11 +19,11 @@
             </div>
             <% for(var i=0; i<codes.length; i++) {%>
             <div class="block">
-                <label><input type="radio" name="CODE" id="CODE" value=<%= i %> /><%= codes[i] %></label>
+                <label><input type="radio" name="CODE" id="CODE" value=<%= i %> /><%- codes[i].NAME %></label>
             </div>
             <% } %>
             <input type="submit" value="POST">
-            </form> 
+            </form>
     </div>
   </body>
 </html>

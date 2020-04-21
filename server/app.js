@@ -175,7 +175,7 @@ app.get('/forum', function(req, res) {
 app.post('/forum/search', function(req, res) {
   // search engine
   var forumObj = new Forum(1);
-  var key = req.body.split(" ");
+  var key = req.body.keywords.split(" ");
   var dict = {existsTitle:[], inContext:[], user:[]};
   key.forEach((item, i) => {
     dict.existsTitle.push(item);
@@ -186,7 +186,7 @@ app.post('/forum/search', function(req, res) {
     if(msg!='fail')
     {
       var tmp = {post:msg, user:(Object.keys(req.query).includes('user')?(req.query['user'].toString(10)):"")};
-      return res.render('forum/search',tmp);
+      return res.render('forum_search',tmp);
     }
     return res.redirect('/404.html');
   });
