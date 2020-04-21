@@ -151,9 +151,9 @@ app.get('/forum', function(req, res) {
   //console.log(req);
   var id = -1;
   var postID = 1;
-  if(Object.keys(req.query).includes("user"))
+  if(Object.keys(req.session).includes("ID"))
   {
-    id = req.query['user'];
+    id = req.session['ID'];
   }
   var forumObj = new Forum(id);
   forumObj.titles(post => {
