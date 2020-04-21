@@ -44,7 +44,7 @@ app.use(bdp.json());
 // prepare for homepage
 app.get('/', function(req, res) {
   //console.log(req);
-  res.redirect('/hello_world.html');
+  res.render('mainpage', {user:(Object.keys(req.query).includes('user'))?req.query['user']:""});
 });
 
 // for online ide show code
@@ -301,7 +301,7 @@ app.get('/login', function(req, res) {
     res.redirect('/user/' + req.session.name + '.html');
   }
   else{
-    res.redirect('/hello_world.html');
+    res.redirect('/');
   }
 });
 
@@ -323,7 +323,7 @@ app.post('/login', function(req, res) {
     userObj.login(function(err, user){
       if(err){
         console.log(err);
-        res.redirect('/hello_world.html');
+        res.redirect('/');
       }
       else{
         sess = req.session;
@@ -333,7 +333,7 @@ app.post('/login', function(req, res) {
         sess.name = user.name;
         console.log(sess);
         //res.redirect('/user/' + user.name);
-        res.redirect('/hello_world.html')
+        res.redirect('/')
       }
     })
   }
