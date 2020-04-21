@@ -390,7 +390,7 @@ app.get('/auth/logout', function(req, res){
 // user pages
 app.get('/user', function(req, res) {
   /*user data*/
-  if(!Object.keys(req.query).includes('user'))
+  if(!Object.keys(req.session).includes('ID'))
   {
     return res.redirect('/');
   }
@@ -408,7 +408,10 @@ app.get('/user', function(req, res) {
       {
         return res.redirect('/404.html');
       }
-      var tmp = {code:JSON.parse(msg), USERNAME:JSON.parse(msg2).USERNAME};
+      var code = JSON.parse(msg);
+      //console.log(code);
+      //console.log(code.length);
+      var tmp = {code:code, USERNAME:JSON.parse(msg2).USERNAME};
       return res.render('user', tmp);
     });
   });

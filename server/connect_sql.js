@@ -249,7 +249,7 @@ class USER extends MySQLDatabase {
   newUser(data, callback) {
     /*new user*/
     //console.log('wowo');
-    console.log(data);
+    //console.log(data);
     //console.log('wowo');
     this.insertUser(data, res => {
       if(res==0)
@@ -605,6 +605,7 @@ function save_code(param, callback) {
 // fetchCode wrapper
 function fetch_code(param, callback) {
   const data = JSON.parse(param);
+  //console.log(data);
   codeT.fetchCode(data, function(err, res) {
     return callback(err, res);
   });
@@ -747,12 +748,11 @@ process.on('message', m => {
   if(myArgs[0]=='fetch_code')
   {
     fetch_code(m, function(err, data) {
-      var result = JSON.stringify(data);
       if(err){
         console.log(`error: ${err.message}`);
         return process.send('fail');
       }
-      return process.send(JSON.stringify(result));
+      return process.send(JSON.stringify(data));
     });
   }
   if(myArgs[0]=='new_user')
@@ -797,7 +797,7 @@ process.on('message', m => {
       {
         return process.send(res);
       }
-      return process.send(res);
+      return process.send(JSON.stringify(res));
     });
   }
   if (myArgs[0]=='search_post_head') {
