@@ -44,12 +44,11 @@ class Forum {
 
     find.on("message", m => {
       /*handle message*/
-      const parsed = JSON.parse(m);
       if(m=='fail')
       {
         return callback(1, m);
       }
-      return callback(0, parsed);
+      return callback(0, JSON.parse(m));
     });
   }
 
@@ -57,6 +56,7 @@ class Forum {
   post_post(title, content, codeID, callback)
   {
     var msg = {USER: this.userid, CODE:codeID, TITLE:title, CONTENT:content, REPLY:0};
+    console.log(msg);
     const poster = fork("connect_sql.js", ["new_post"]);
     poster.send(JSON.stringify(msg));
     poster.on("message", m => {

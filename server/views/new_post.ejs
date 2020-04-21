@@ -8,7 +8,7 @@
   <body>
     <%- include ('forum_header.ejs') %>
     <div>
-        <form action="/" method="post">
+        <form action=<%-"/post?user="+user%> method="post">
             <div class="block">
                 <h2>Title:</h2><br>
                 <textarea class="textarea" id="TITLE" name="TITLE"></textarea>
@@ -19,11 +19,11 @@
             </div>
             <% for(var i=0; i<codes.length; i++) {%>
             <div class="block">
-                <label><input type="radio" name="CODE" id="CODE" value=<%= i %> /><%= codes[i] %></label>
+                <label><input type="radio" name="CODE" id="CODE" value=<%- codes[i].ID %> /><%- codes[i].NAME %></label>
             </div>
             <% } %>
             <input type="submit" value="POST">
-            </form> 
+            </form>
     </div>
   </body>
 </html>
