@@ -20,11 +20,10 @@ class Code{
     });
   }
 
-  save(codeID, code, block, name, callback)
+  save(code, block, name, callback)
   {
     const db = fork("connect_sql.js", ["save_code"]);
     db.send(JSON.stringify({
-      ID:codeID,
       USER:this.userid,
       SRC:code,
       BLK:block,
@@ -37,7 +36,7 @@ class Code{
       {
         return callback('fail');
       }
-      return callback('success');
+      return callback(msg);
     });
   }
 

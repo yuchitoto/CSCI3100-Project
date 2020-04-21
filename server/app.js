@@ -77,20 +77,54 @@ app.get('/code/write', function(req, res) {
 });
 
 app.post('/code', function(req, res) {
-  if(req.body.action=='cpar')
-  {}
 
-  // previlleged actions
   if(!Object.keys(req.query).includes('user'))
   {
-    res.redirect('/404.html');
+    var coder = new Code();
+    if(req.body.action=='cpar')
+    {
+      coder.cpar(req.query['code'], msg => {
+        var tmp = {res:msg, user:"", loc:req.query['code']};
+        return res.render('code_result',tmp);
+      });
+    }
+    return res.redirect('/404.html');
   }
+  // previlleged actions
+  var coder = new Code(req.query['user']);
   /*save code*/
+  // if return is success, indicates an update, not fail a new code
   if(req.body.action=='save')
-  {}
+  {
+    coder.save(req.body.SRC, req.body.BLK, req.body.NAME, m => {
+      if(m=='success')
+      {
+        return res.redirect(req.originalUrl);
+      }
+      else if(m != 'fail')
+      {
+        return res.redirect('/code?user='+req.query['user']+'&code='+m);
+      }
+      return res.redirect('/404.html');
+    });
+  }
   /*compile and run*/
   if(req.body.action=='sacpar')
-  {}
+  {
+    coderT.sacpar(req.body.SRC, req.body.BLK, req.body.NAME, m => {
+      if(m.loc=='success')
+      {
+        var tmp = {res:m.res, loc:req.query['code'], user:req.query['user']};
+        return res.render('code_result', tmp);
+      }
+      else if(m.loc != 'fail')
+      {
+        var tmp = {res:m.res, loc:m.loc, user:req.query['user']};
+        return res.render('code_result', tmp);
+      }
+      return res.redirect('/404.html');
+    });
+  }
 });
 
 app.delete('/code', function(req, res) {

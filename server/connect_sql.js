@@ -198,7 +198,7 @@ class SRC_CODE extends MySQLDatabase {
             return callback('fail');
           }
           console.log(res);
-          return callback('success');
+          return callback(res.insertId);
         });
       }
       else if (tmpres['COUNT(*)'] == 1) {
