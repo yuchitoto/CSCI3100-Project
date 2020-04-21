@@ -73,7 +73,7 @@ save and compile and run
 
 return false for error, compiler or program result otherwise
 */
-  sacpar(codeID, code, block, name, callback)
+  sacpar(code, block, name, callback)
   {
     this.save(codeID, code, block, name, sres => {
       if(sres=='fail')
@@ -81,7 +81,7 @@ return false for error, compiler or program result otherwise
         return callback(false);
       }
       this.cpar(codeID, pres => {
-        return callback(pres);
+        return callback({res:pres, loc:sres});
       });
     });
   }
