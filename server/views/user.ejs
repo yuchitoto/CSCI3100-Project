@@ -8,13 +8,14 @@
   <body>
     <%- include ('forum_header.ejs') %>
     <div class="block">
-        <%= USERNAME %>
+        Username:<%= USERNAME %>
     </div>
     <div class="block">
         CODEs:
     </div>
     <% for(var i=0; i<code.length; i++) {%>
       <div class="block">
+        <%= i %><br>
         <div class="code">
           <pre><%= code[i].SRC %></pre>
         </div>
