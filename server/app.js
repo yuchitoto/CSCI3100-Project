@@ -342,6 +342,7 @@ app.post('/login', function(req, res) {
       else{
         sess = req.session;
         console.log(user);
+        user = JSON.parse(user);
         console.log("Login success");
         sess.sign = true;
         sess.ID = user.ID;
