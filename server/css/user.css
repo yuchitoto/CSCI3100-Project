@@ -1,0 +1,23 @@
+.block{
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:5%;
+    margin-right:5%;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+    padding-left:1rem;
+    padding-right:1rem;
+    font-size: 30px;
+    background-color: white;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+}
+
+.code{
+    background-color: black;
+    color:white;
+    padding:0.8rem;
+}
+
+body{
+    background-color: rgb(121, 121, 121);
+}

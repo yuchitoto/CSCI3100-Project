@@ -396,7 +396,7 @@ app.get('/user', function(req, res) {
   }
   const db1 = fork("connect_sql.js", ["fetch_code"]);
   const db2 = fork("connect_sql.js", ["find_user"]);
-  db1.send(JSON.stringify({ID:req.session['ID']}));
+  db1.send(JSON.stringify({USER:req.session['ID']}));
   db1.on("message", msg => {
     if(msg=='fail')
     {

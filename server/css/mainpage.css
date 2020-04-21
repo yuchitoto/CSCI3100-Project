@@ -8,21 +8,38 @@ body{
 }
 
 .contrib{
+  margin:1rem;
+  padding:1rem;
   float:left;
   width: 25%;
+  background-color: white;
+  color:#222f85;
+  font-size:30px;
+}
+
+.block{
+  margin-top:1rem;
+  margin-bottom:1rem;
+  margin-left:5%;
+  margin-right:5%;
+  padding-top:0.1rem;
+  padding-bottom:0.1rem;
+  padding-left:1rem;
+  padding-right:1rem;
+  font-size: 30px;
+  background-color: white;
+  box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
 }
 
 h1 {
-  color:#FCD12A;
-}
-
-h4 {
-  color:#B2FFFF
+  color:#222f85;
 }
 
 img.contrib {
   width:60px;
   height:60px;
   padding:3px;
-  border-radius: 50%
+  border-radius: 50%;
+  border: 5px solid #222f85;
+  box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
 }
