@@ -225,6 +225,18 @@ app.get('/post', function(req, res) {
 
 app.delete('/post', function(req, res) {
   /*delete post*/
+  if(Object.keys(req.query).includes('user'))
+  {
+    var forumObj = new Forum(req.query['user']);
+    forumObj.delete(req.query['post'], m => {
+      if(!m)
+      {
+        return res.redirect('/404.html'); // no right to do the delete
+      }
+      return res.redirect('/forum');
+    })
+  }
+  return res.redirect('/forum');
 });
 
 app.get('/post/new', function(req, res) {
@@ -313,7 +325,7 @@ app.post('/login', function(req, res) {
     console.log("Already login");
     //res.send("Already login");
     console.log(req.session);
-    res.redirect('/user/' + req.session.name + '.html');
+    return res.redirect('/user/' + req.session.name + '.html');
   }
   else if(req.body.password && (req.body.email || req.body.name)){
     var data;
@@ -326,7 +338,7 @@ app.post('/login', function(req, res) {
     userObj.login(function(err, user){
       if(err){
         console.log(err);
-        res.render('login');
+        return res.redirect('/login');
       }
       else{
         sess = req.session;
@@ -337,11 +349,11 @@ app.post('/login', function(req, res) {
         sess.USERNAME = user.USERNAME;
         console.log(sess);
         //res.redirect('/user/' + user.name);
-        res.redirect('/')
+        return res.redirect('/')
       }
     })
   }
-  else res.render('login');
+  else return res.redirect('login');
 });
 
 // user logout
@@ -354,26 +366,35 @@ app.get('/logout', function(req, res){
       }
       console.log("logout successfully");
       console.log(req.session);
-      res.redirect('/login.html');
-    })
+      return res.redirect('/login');
+    });
   }
   else{
     console.log("did not login");
-    res.redirect('/login.html');
+    res.redirect('/login');
   }
-})
+});
 
 // user pages
-app.get('/user/*', function(req, res) {
+app.get('/user', function(req, res) {
   /*user data*/
 });
 
-app.put('/user/*', function(req, res) {
+app.put('/user', function(req, res) {
   /*update user data*/
 });
 
-app.delete('/user/*', function(req, res) {
+app.delete('/user', function(req, res) {
   /*remove user*/
+  const db = fork("connect_sql.js", ["delete_user"]);
+  db.send(JSON.stringify({ID:req.query['user'], USERNAME:req.body.USERNAME}));
+  db.on("message", msg => {
+    if(msg)
+    {
+      return res.redirect('/');
+    }
+    return res.redirect('/404.html');
+  })
 });
 
 // for account creation
@@ -401,7 +422,7 @@ app.post('/create_account*', function(req, res) {
       }
     })
   }
-  res.redirect('./404.html');
+  return res.redirect('./404.html');
 });
 
 // general treatnebt for html pages
