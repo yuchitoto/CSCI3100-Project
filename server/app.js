@@ -304,20 +304,6 @@ app.post('/post', function(req, res) {
 
 // for login page, auto redirect to user page or some other page after successful login
 
-// setup session
-// app.use(cookieParser('codeblock'));
-// app.use(session({
-//   name: 'codeblockidesession',
-//   secret: 'iamarandomstring',
-//   store: new FileStore(),
-//   saveUninitialized: false,
-//   resave: false,
-//   cookie: {
-//     maxAge: 24 * 60 * 60 * 1000
-//   },
-// }));
-// var sess;
-
 app.get('/login', function(req, res) {
   /*login page*/
   if(req.session.sign){
@@ -361,7 +347,7 @@ app.post('/login', function(req, res) {
         sess.ID = user.ID;
         console.log(sess);
         //res.redirect('/user/' + user.name);
-        return res.redirect('/')
+        return res.redirect('user');
       }
     })
   }
