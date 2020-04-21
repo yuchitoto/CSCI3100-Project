@@ -58,7 +58,7 @@ app.use(bdp.json());
 // prepare for homepage
 app.get('/', function(req, res) {
   //console.log(req);
-  res.render('mainpage', {user:(Object.keys(req.query).includes('user'))?req.query['user']:""});
+  res.render('mainpage');
 });
 
 // for online ide show code
@@ -75,7 +75,7 @@ app.get('/code', function(req, res) {
     {
       res.redirect('/404.html');
     }
-    var tmp = {code:ret[0], user:Object.keys(req.query).includes('user')?req.query['user'].toString(10):"", action:""};
+    var tmp = {code:ret[0], action:""};
     res.render('code', tmp);
   });
 });
@@ -85,14 +85,14 @@ app.get('/code/write', function(req, res) {
   {
     return res.redirect('/forum');
   }
-  var codehold = {NAME:"", USER:req.query['user'], SRC:"", BLK:""};
-  var tmp = {code:codehold, user:req.query['user'].toString(10), action:""};
+  var codehold = {NAME:"", USER:req.session['ID'], SRC:"", BLK:""};
+  var tmp = {code:codehold, action:""};
   res.render('write_code', tmp);
 });
 
 app.post('/code', function(req, res) {
 
-  if(!Object.keys(req.query).includes('user'))
+  if(!Object.keys(req.session).includes('ID'))
   {
     var coder = new Code();
     if(req.body.action=='cpar')
@@ -105,7 +105,7 @@ app.post('/code', function(req, res) {
     return res.redirect('/404.html');
   }
   // previlleged actions
-  var coder = new Code(req.query['user']);
+  var coder = new Code(req.session['ID']);
   /*save code*/
   // if return is success, indicates an update, not fail a new code
   if(req.body.action=='save')
@@ -117,7 +117,7 @@ app.post('/code', function(req, res) {
       }
       else if(m != 'fail')
       {
-        return res.redirect('/code?user='+req.query['user']+'&code='+m);
+        return res.redirect('/code?code='+m);
       }
       return res.redirect('/404.html');
     });
@@ -128,12 +128,12 @@ app.post('/code', function(req, res) {
     coderT.sacpar(req.body.SRC, req.body.BLK, req.body.NAME, m => {
       if(m.loc=='success')
       {
-        var tmp = {res:m.res, loc:req.query['code'], user:req.query['user']};
+        var tmp = {res:m.res, loc:req.query['code']};
         return res.render('code_result', tmp);
       }
       else if(m.loc != 'fail')
       {
-        var tmp = {res:m.res, loc:m.loc, user:req.query['user']};
+        var tmp = {res:m.res, loc:m.loc};
         return res.render('code_result', tmp);
       }
       return res.redirect('/404.html');
@@ -185,7 +185,7 @@ app.post('/forum/search', function(req, res) {
   forumObj.search(dict, function(err, msg) {
     if(msg!='fail')
     {
-      var tmp = {post:msg, user:(Object.keys(req.query).includes('user')?(req.query['user'].toString(10)):"")};
+      var tmp = {post:msg};
       return res.render('forum_search',tmp);
     }
     return res.redirect('/404.html');
@@ -198,9 +198,9 @@ app.get('/post', function(req, res) {
   console.log(req.query);
   var id = 0;
   var postID = 1;
-  if(Object.keys(req.query).includes("user"))
+  if(Object.keys(req.session).includes("ID"))
   {
-    id = req.query['user'];
+    id = req.session['ID'];
   }
   if(Object.keys(req.query).includes("post"))
   {
@@ -218,16 +218,16 @@ app.get('/post', function(req, res) {
     {
       user=id.toString(10);
     }
-    var tmp = {post:post, CONTENT:"", url:req.originalUrl, keywords:"", user:user};
+    var tmp = {post:post, CONTENT:"", url:req.originalUrl, keywords:""};
     return res.render('post', tmp);
   });
 });
 
 app.delete('/post', function(req, res) {
   /*delete post*/
-  if(Object.keys(req.query).includes('user'))
+  if(Object.keys(req.session).includes('ID'))
   {
-    var forumObj = new Forum(req.query['user']);
+    var forumObj = new Forum(req.session['ID']);
     forumObj.delete(req.query['post'], m => {
       if(!m)
       {
@@ -242,12 +242,12 @@ app.delete('/post', function(req, res) {
 app.get('/post/new', function(req, res) {
   /* page to write new post */
   console.log('/post/new');
-  if(!Object.keys(req.query).includes('user'))
+  if(!Object.keys(req.session).includes('ID'))
   {
     return res.redirect('/forum');
   }
   const coda = fork("connect_sql.js", ["all_code"]);
-  coda.send(JSON.stringify({USER:req.query['user']}));
+  coda.send(JSON.stringify({USER:req.session['ID']}));
   coda.on("message", msg => {
     // give all code to choose, and prepare for response
     if(msg=='fail')
@@ -256,8 +256,7 @@ app.get('/post/new', function(req, res) {
     }
     var tmp = {
       newPost:[{TITLE:"", CONTENT:"", CODE:0}],
-      codes:JSON.parse(msg),
-      user:req.query['user'].toString(10)
+      codes:JSON.parse(msg)
     };
     res.render('new_post',tmp);
   });
@@ -266,11 +265,11 @@ app.get('/post/new', function(req, res) {
 app.post('/post', function(req, res) {
   /*new discussion or reply*/
   //console.log(req);
-  if(!Object.keys(req.query).includes("user"))
+  if(!Object.keys(req.session).includes("ID"))
   {
     res.redirect(req.originalUrl);
   }
-  var user = req.query['user'];
+  var user = req.session['ID'];
   //console.log(req.query);
   //console.log(req.body);
   //console.log(user);
@@ -293,7 +292,7 @@ app.post('/post', function(req, res) {
     forumObj.post_post(req.body.TITLE, req.body.CONTENT, req.body.CODE, msg => {
       if(msg!="fail")
       {
-        return res.redirect("/post?user="+user+"&post="+msg);
+        return res.redirect("/post?post="+msg);
       }
       else
       {
@@ -305,19 +304,33 @@ app.post('/post', function(req, res) {
 
 // for login page, auto redirect to user page or some other page after successful login
 
-app.get('/login', function(req, res) {
+// setup session
+app.use(cookieParser('codeblock'));
+app.use(session({
+  name: 'codeblockidesession',
+  secret: 'iamarandomstring',
+  store: new FileStore(),
+  saveUninitialized: false,
+  resave: false,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000
+  },
+}));
+var sess;
+
+app.get('/auth/login', function(req, res) {
   /*login page*/
   if(req.session.sign){
     console.log('login');
     console.log(req.session);
-    res.render('user');
+    res.redirect('/user');
   }
   else{
     res.render('login');
   }
 });
 
-app.post('/login', function(req, res) {
+app.post('/auth/login', function(req, res) {
   /*authentication*/
   console.log("ok");
   console.log(req.body);
@@ -325,7 +338,7 @@ app.post('/login', function(req, res) {
     console.log("Already login");
     //res.send("Already login");
     console.log(req.session);
-    return res.redirect('/user/' + req.session.name + '.html');
+    res.redirect('user');
   }
   else if(req.body.password && (req.body.email || req.body.name)){
     var data;
@@ -346,18 +359,17 @@ app.post('/login', function(req, res) {
         console.log("Login success");
         sess.sign = true;
         sess.ID = user.ID;
-        sess.USERNAME = user.USERNAME;
         console.log(sess);
         //res.redirect('/user/' + user.name);
         return res.redirect('/')
       }
     })
   }
-  else return res.redirect('login');
+  else res.redirect('/auth/login');
 });
 
 // user logout
-app.get('/logout', function(req, res){
+app.get('/auth/logout', function(req, res){
   console.log(req.session);
   if(req.session.sign){
     req.session.destroy((err)=>{
@@ -366,18 +378,32 @@ app.get('/logout', function(req, res){
       }
       console.log("logout successfully");
       console.log(req.session);
-      return res.redirect('/login');
-    });
+      res.redirect('/');
+    })
   }
   else{
     console.log("did not login");
-    res.redirect('/login');
+    res.redirect('login');
   }
 });
 
 // user pages
 app.get('/user', function(req, res) {
   /*user data*/
+  if(!Object.keys(req.query).includes('user'))
+  {
+    return res.redirect('/');
+  }
+  const db = fork("connect_sql.js", ["fetch_code"]);
+  db.send(JSON.stringify({ID:req.query['user']}));
+  db.on("message", msg => {
+    if(msg=='fail')
+    {
+      return res.redirect('/');
+    }
+    var tmp = {code:JSON.parse(msg), user:req.query['user']};
+    return res.render('user', tmp);
+  });
 });
 
 app.put('/user', function(req, res) {
@@ -398,13 +424,13 @@ app.delete('/user', function(req, res) {
 });
 
 // for account creation
-app.get('/create_account*', function(req, res) {
+app.get('/auth/create_account*', function(req, res) {
   /*fetch account create page*/
   console.log('nonono');
   return res.render('create_account');
 });
 
-app.post('/create_account*', function(req, res) {
+app.post('/auth/create_account*', function(req, res) {
   /*create new account*/
   console.log(req.body);
   console.log('hello');

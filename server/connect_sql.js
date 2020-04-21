@@ -15,7 +15,7 @@ class MySQLDatabase {
     this.connection = mysql.createConnection({
       "host":"localhost",
       "port":3306,
-      "user":"csci3100grp18",
+      "user":"root",
       "password":"csci3100#Grp18",
       "database":"CSCI3100GRP18"
     });
