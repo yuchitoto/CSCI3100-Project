@@ -186,7 +186,7 @@ app.use(session({
   resave: false,
   cookie: {
     maxAge: 24 * 60 * 60 * 1000
-  }
+  },
 }));
 var sess;
 
@@ -195,45 +195,50 @@ app.get('/login', function(req, res) {
   if(req.session.sign){
     console.log('login');
     console.log(req.session);
-    res.redirect('/user/' + req.session.name + '.html');
+    res.render('user');
   }
   else{
-    res.redirect('/hello_world.html');
+    res.render('login');
   }
 });
 
 app.post('/login', function(req, res) {
   /*authentication*/
-  req.params.name = 'hello';
-  req.params.password = 'byebye';
-  console.log(req.params);
-  console.log(req.session);
   console.log("ok");
+  console.log(req.body);
   if(req.session.sign){
     console.log("Already login");
     //res.send("Already login");
     console.log(req.session);
     res.redirect('/user/' + req.session.name + '.html');
   }
-  else if(req.params.name && req.params.password){
-    var userObj = new User(req.params);
+  else if(req.body.password && (req.body.email || req.body.name)){
+    var data;
+    if(req.body.email == ''){
+      data = {USERNAME: req.body.name, PASSWORD: req.body.password};
+    }
+    else data = {EMAIL: req.body.email, PASSWORD: req.body.password};
+    var userObj = new User(data);
+    console.log(data);
     userObj.login(function(err, user){
       if(err){
         console.log(err);
-        res.redirect('/hello_world.html');
+        res.render('login');
       }
       else{
         sess = req.session;
+        console.log(user);
         console.log("Login success");
         sess.sign = true;
-        sess.id = user.id;
-        sess.name = user.name;
+        sess.ID = user.ID;
+        sess.USERNAME = user.USERNAME;
         console.log(sess);
         //res.redirect('/user/' + user.name);
         res.redirect('/hello_world.html')
       }
     })
   }
+  else res.render('login');
 });
 
 // user logout
@@ -271,21 +276,25 @@ app.delete('/user/*', function(req, res) {
 // for account creation
 app.get('/create_account*', function(req, res) {
   /*fetch account create page*/
+  console.log('nonono');
+  return res.render('create_account');
 });
 
 app.post('/create_account*', function(req, res) {
   /*create new account*/
-  console.log(req.params);
-  if(req.params.name && req.params.email && req.params.password){
-    var userObj = new User(req.params);
+  console.log(req.body);
+  console.log('hello');
+  if(req.body.name && req.body.email && req.body.password){
+    var data = {USERNAME: req.body.name, EMAIL: req.body.email, PASSWORD: req.body.password, ACC_TYPE: 0};
+    var userObj = new User(data);
     userObj.registor(function(err){
       if(err){
         console.log(err);
-        res.redirect('./404.html');
+        // return res.redirect("/404.html");
       }
       else{
         console.log("registor success");
-        res.redirect('./login.html');
+        return res.redirect('./login.html');
       }
     })
   }
