@@ -5,17 +5,25 @@ not related to the website directly
 */
 const {fork} = require('child_process');
 const fs = require('fs');
+//const sql = require('./connect_sql');
+//let POST = sql.POST;
 
 function main() {
-  const run = fork('connect_sql.js', ['save_code']);
-  fs.readFile('./tmp_data/hello_world.cpp', 'utf8', function(err, data) {
-
-    run.send(JSON.stringify({USER:1, NAME:'hello_world.cpp', SRC:data, SRC_SZ:data.length}));
-    run.on('message', m=>{
-      console.log(m);
-    });
+  const sql = fork('./connect_sql.js', ['fetch_code']);
+  /*sql.send(JSON.stringify({existsTitle:[],user:[],inContext:['intro'],id:[]}));
+  sql.on("message", msg => {
+    if(msg=='fail')
+    {
+      console.log(msg);
+      return;
+    }
+    const dep = JSON.parse(msg);
+    console.log(dep);
+  });*/
+  sql.send(JSON.stringify({USER:1, NAME:"hello_world.cpp"}));
+  sql.on("message", msg => {
+    console.log(msg);
   });
-  return;
 }
 
 main()

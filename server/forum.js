@@ -10,18 +10,18 @@ class Forum {
   fetch(postID, callback)
   {
     /*fetch json object list*/
-    var msg;
-    if (this.userID != 0)
+    var msg = {ID:postID};
+    /*if (this.userID != 0)
     {
       msg = {USER:this.userid, ID:postID};
     }
     else {
       msg = {ID:postID};
-    }
+    }*/
 
     const fetcher = fork("connect_sql.js", ["fetch_post"]);
-    const code = fork("connect_sql.js", ["fetch_code"]);
-    const user = fork("connect_sql.js", ["find_user"]);
+    //const code = fork("connect_sql.js", ["fetch_code"]);
+    //const user = fork("connect_sql.js", ["find_user"]);
     fetcher.send(JSON.stringify(msg));
     fetcher.on("message", m => {
       //console.log(m);
@@ -36,20 +36,20 @@ class Forum {
 // to search post and return titles
   search(param, callback)
   {
-    var finde = JSON.parse(param);
+    var finde = param
     /*parse parameter*/
-    var key = {exactTitle:finde[exactTitle], existsTitle:finde[existsTitle], user:finde[user], inContext:finde[inContext], exactContext:finde[exactContext]};
+    var key = {existsTitle:finde.existsTitle, user:finde.user, inContext:finde.inContext};
     const find = fork("connect_sql.js", ["search_post"]);
     find.send(JSON.stringify(key));
 
     find.on("message", m => {
       /*handle message*/
       const parsed = JSON.parse(m);
-      if(parsed=='fail')
+      if(m=='fail')
       {
         return callback(1, m);
       }
-      return callback(0, m);
+      return callback(0, parsed);
     });
   }
 

@@ -16,6 +16,8 @@ var forum = require('./forum');
 let Forum = forum.Forum;
 var user = require('./user');
 let User = user.User;
+var code = require('./code');
+let Code = code.Code;
 
 // direct to php parser
 var execPHP = require('./php_parser.js')();
@@ -45,17 +47,87 @@ app.get('/', function(req, res) {
   res.redirect('/hello_world.html');
 });
 
-// for online ide
-app.get('/code*', function(req, res) {
+// for online ide show code
+app.get('/code', function(req, res) {
   /*get code*/
+  //console.log(res);
+  /*if(!Object.keys(req.query).includes('user'))
+  {
+    return res.redirect('/forum');
+  }*/
+  var coder = new Code();
+  coder.fetch(req.query['code'], ret => {
+    if(ret=="fail")
+    {
+      res.redirect('/404.html');
+    }
+    var tmp = {code:ret[0], user:Object.keys(req.query).includes('user')?req.query['user'].toString(10):"", action:""};
+    res.render('code', tmp);
+  });
 });
 
-app.post('/code*', function(req, res) {
+app.get('/code/write', function(req, res) {
+  if(!Object.keys(req.query).includes('user'))
+  {
+    return res.redirect('/forum');
+  }
+  var codehold = {NAME:"", USER:req.query['user'], SRC:"", BLK:""};
+  var tmp = {code:codehold, user:req.query['user'].toString(10), action:""};
+  res.render('write_code', tmp);
+});
+
+app.post('/code', function(req, res) {
+
+  if(!Object.keys(req.query).includes('user'))
+  {
+    var coder = new Code();
+    if(req.body.action=='cpar')
+    {
+      coder.cpar(req.query['code'], msg => {
+        var tmp = {res:msg, user:"", loc:req.query['code']};
+        return res.render('code_result',tmp);
+      });
+    }
+    return res.redirect('/404.html');
+  }
+  // previlleged actions
+  var coder = new Code(req.query['user']);
   /*save code*/
+  // if return is success, indicates an update, not fail a new code
+  if(req.body.action=='save')
+  {
+    coder.save(req.body.SRC, req.body.BLK, req.body.NAME, m => {
+      if(m=='success')
+      {
+        return res.redirect(req.originalUrl);
+      }
+      else if(m != 'fail')
+      {
+        return res.redirect('/code?user='+req.query['user']+'&code='+m);
+      }
+      return res.redirect('/404.html');
+    });
+  }
   /*compile and run*/
+  if(req.body.action=='sacpar')
+  {
+    coderT.sacpar(req.body.SRC, req.body.BLK, req.body.NAME, m => {
+      if(m.loc=='success')
+      {
+        var tmp = {res:m.res, loc:req.query['code'], user:req.query['user']};
+        return res.render('code_result', tmp);
+      }
+      else if(m.loc != 'fail')
+      {
+        var tmp = {res:m.res, loc:m.loc, user:req.query['user']};
+        return res.render('code_result', tmp);
+      }
+      return res.redirect('/404.html');
+    });
+  }
 });
 
-app.delete('/code*', function(req, res) {
+app.delete('/code', function(req, res) {
   /*delete code from database*/
 });
 
@@ -63,7 +135,7 @@ app.delete('/code*', function(req, res) {
 app.get('/forum', function(req, res) {
   /*return forum page*/
   //console.log(req);
-  var id = 0;
+  var id = -1;
   var postID = 1;
   if(Object.keys(req.query).includes("user"))
   {
@@ -76,14 +148,34 @@ app.get('/forum', function(req, res) {
     {
       return res.redirect("/404.html");
     }
-    var tmp = {post:post, keywords:""}
+    var user = "";
+    if(id>0)
+    {
+      user = id.toString(10);
+    }
+    var tmp = {post:post, keywords:"", user:user};
     return res.render("forum", tmp);
   })
 });
 
 app.post('/forum/search', function(req, res) {
   // search engine
-
+  var forumObj = new Forum(1);
+  var key = req.body.split(" ");
+  var dict = {existsTitle:[], inContext:[], user:[]};
+  key.forEach((item, i) => {
+    dict.existsTitle.push(item);
+    dict.inContext.push(item);
+    dict.user.push(item);
+  });
+  forumObj.search(dict, function(err, msg) {
+    if(msg!='fail')
+    {
+      var tmp = {post:msg, user:(Object.keys(req.query).includes('user')?(req.query['user'].toString(10)):"")};
+      return res.render('forum/search',tmp);
+    }
+    return res.redirect('/404.html');
+  });
 });
 
 // for post
@@ -107,7 +199,12 @@ app.get('/post', function(req, res) {
       console.log("failed to find post");
       return res.redirect("/404.html");
     }
-    var tmp = {post:post, CONTENT:"", url:req.originalUrl, keywords:""};
+    var user="";
+    if(id>0)
+    {
+      user=id.toString(10);
+    }
+    var tmp = {post:post, CONTENT:"", url:req.originalUrl, keywords:"", user:user};
     return res.render('post', tmp);
   });
 });
@@ -118,6 +215,11 @@ app.delete('/post', function(req, res) {
 
 app.get('/post/new', function(req, res) {
   /* page to write new post */
+  console.log('/post/new');
+  if(!Object.keys(req.query).includes('user'))
+  {
+    return res.redirect('/forum');
+  }
   const coda = fork("connect_sql.js", ["all_code"]);
   coda.send(JSON.stringify({USER:req.query['user']}));
   coda.on("message", msg => {
@@ -128,7 +230,8 @@ app.get('/post/new', function(req, res) {
     }
     var tmp = {
       newPost:[{TITLE:"", CONTENT:"", CODE:0}],
-      codes:JSON.parse(msg)
+      codes:JSON.parse(msg),
+      user:req.query['user'].toString(10)
     };
     res.render('new_post',tmp);
   });

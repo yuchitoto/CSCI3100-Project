@@ -7,15 +7,15 @@
   </head>
   <body>
     <%- include ('forum_header.ejs') %>
-    <div class="forum">
-      <div class="search">
-        <h2>Search Title</h2>
+    <div class="search">
+        <h2 style="color:#afc2e7">Search Title</h2>
         <form action= <%-"/post/search"%> method="post">
-        <textarea class="textarea"></textarea>
-        <br>
+        <textarea class="textarea" id="keywords" name="keywords"></textarea>
+        <br><br>
         <input type="submit" value="Search" />
         </form>
       </div>
+    <div class="forum">
     <% for(var i=0; i<post.length; i++) {%>
        <% if(post[i].TITLE != null) {%>
         <div class="post-title">

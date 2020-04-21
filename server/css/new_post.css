@@ -1,0 +1,14 @@
+.block{
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:5%;
+    margin-right:5%;
+    background-color: white;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+}
+
+
+
+body{
+    background-color: rgb(121, 121, 121);
+}
