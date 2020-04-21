@@ -378,6 +378,20 @@ app.get('/logout', function(req, res){
 // user pages
 app.get('/user', function(req, res) {
   /*user data*/
+  if(!Object.keys(req.query).includes('user'))
+  {
+    return res.redirect('/');
+  }
+  const db = fork("connect_sql.js", ["fetch_code"]);
+  db.send(JSON.stringify(ID:req.query['user']));
+  db.on("message", msg => {
+    if(msg=='fail')
+    {
+      return res.redirect('/');
+    }
+    var tmp = {code:JSON.parse(msg), user:req.query['user']};
+    return res.render('user', tmp);
+  });
 });
 
 app.put('/user', function(req, res) {
