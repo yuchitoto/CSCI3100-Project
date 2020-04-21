@@ -225,6 +225,18 @@ app.get('/post', function(req, res) {
 
 app.delete('/post', function(req, res) {
   /*delete post*/
+  if(Object.keys(req.query).includes('user'))
+  {
+    var forumObj = new Forum(req.query['user']);
+    forumObj.delete(req.query['post'], m => {
+      if(!m)
+      {
+        return res.redirect('/404.html'); // no right to do the delete
+      }
+      return res.redirect('/forum');
+    })
+  }
+  return res.redirect('/forum');
 });
 
 app.get('/post/new', function(req, res) {
@@ -327,7 +339,11 @@ app.post('/auth/login', function(req, res) {
     console.log("Already login");
     //res.send("Already login");
     console.log(req.session);
+<<<<<<< HEAD
     res.redirect('user');
+=======
+    return res.redirect('/user/' + req.session.name + '.html');
+>>>>>>> 0873908789f23adc04dce4efe8d53610353470cd
   }
   else if(req.body.password && (req.body.email || req.body.name)){
     var data;
@@ -340,7 +356,7 @@ app.post('/auth/login', function(req, res) {
     userObj.login(function(err, user){
       if(err){
         console.log(err);
-        res.render('login');
+        return res.redirect('/login');
       }
       else{
         sess = req.session;
@@ -351,11 +367,15 @@ app.post('/auth/login', function(req, res) {
         sess.USERNAME = user.USERNAME;
         console.log(sess);
         //res.redirect('/user/' + user.name);
-        res.redirect('/')
+        return res.redirect('/')
       }
     })
   }
+<<<<<<< HEAD
   else res.redirect('/auth/login');
+=======
+  else return res.redirect('login');
+>>>>>>> 0873908789f23adc04dce4efe8d53610353470cd
 });
 
 // user logout
@@ -368,27 +388,62 @@ app.get('/auth/logout', function(req, res){
       }
       console.log("logout successfully");
       console.log(req.session);
+<<<<<<< HEAD
       res.redirect('/');
     })
   }
   else{
     console.log("did not login");
     res.redirect('login');
+=======
+      return res.redirect('/login');
+    });
   }
-})
-
-// user pages
-app.get('/user/*', function(req, res) {
-  /*user data*/
-  res.render('user', req);
+  else{
+    console.log("did not login");
+    res.redirect('/login');
+>>>>>>> 0873908789f23adc04dce4efe8d53610353470cd
+  }
 });
 
-app.put('/user/*', function(req, res) {
+// user pages
+app.get('/user', function(req, res) {
+  /*user data*/
+<<<<<<< HEAD
+  res.render('user', req);
+=======
+  if(!Object.keys(req.query).includes('user'))
+  {
+    return res.redirect('/');
+  }
+  const db = fork("connect_sql.js", ["fetch_code"]);
+  db.send(JSON.stringify(ID:req.query['user']));
+  db.on("message", msg => {
+    if(msg=='fail')
+    {
+      return res.redirect('/');
+    }
+    var tmp = {code:JSON.parse(msg), user:req.query['user']};
+    return res.render('user', tmp);
+  });
+>>>>>>> 0873908789f23adc04dce4efe8d53610353470cd
+});
+
+app.put('/user', function(req, res) {
   /*update user data*/
 });
 
-app.delete('/user/*', function(req, res) {
+app.delete('/user', function(req, res) {
   /*remove user*/
+  const db = fork("connect_sql.js", ["delete_user"]);
+  db.send(JSON.stringify({ID:req.query['user'], USERNAME:req.body.USERNAME}));
+  db.on("message", msg => {
+    if(msg)
+    {
+      return res.redirect('/');
+    }
+    return res.redirect('/404.html');
+  })
 });
 
 // for account creation
@@ -416,7 +471,7 @@ app.post('/auth/create_account*', function(req, res) {
       }
     })
   }
-  res.redirect('./404.html');
+  return res.redirect('./404.html');
 });
 
 // general treatnebt for html pages

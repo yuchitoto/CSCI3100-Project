@@ -91,7 +91,7 @@ class MySQLDatabase {
     var query = "UPDATE ?? SET ? WHERE ?";
     const key = Object.keys(cond);
     const value = Object.values(cond);
-    var pr = [this.table, val];
+    var pr = [this.table].push(val);
     for (var i=0;i<key.length;i++)
     {
       if(i>0)
@@ -326,7 +326,7 @@ class USER extends MySQLDatabase {
         return callback('fail');
       }
       //console.log(res);
-      return callback(res.length);
+      return callback(res.affectedRows);
     });
   }
 
@@ -340,6 +340,17 @@ class USER extends MySQLDatabase {
         return callback(-1);
       }
       return callback(data[0].ID);
+    });
+  }
+
+  updateUser(data, callback) {
+    this.update(data.val, data.cur, function(err, res) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback(false);
+      }
+      return callback(res.affectedRows);
     });
   }
 }
@@ -824,6 +835,10 @@ process.on('message', m => {
       }
       return process.send(JSON.stringify(msg));
     })
+  }
+  if(myArgs[0]=="update_user")
+  {
+    userT.updateUser(JSON.parse(m), m=>{return process.send(m);});
   }
 });
 
