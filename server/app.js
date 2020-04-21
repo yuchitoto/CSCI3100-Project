@@ -305,18 +305,18 @@ app.post('/post', function(req, res) {
 // for login page, auto redirect to user page or some other page after successful login
 
 // setup session
-app.use(cookieParser('codeblock'));
-app.use(session({
-  name: 'codeblockidesession',
-  secret: 'iamarandomstring',
-  store: new FileStore(),
-  saveUninitialized: false,
-  resave: false,
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000
-  },
-}));
-var sess;
+// app.use(cookieParser('codeblock'));
+// app.use(session({
+//   name: 'codeblockidesession',
+//   secret: 'iamarandomstring',
+//   store: new FileStore(),
+//   saveUninitialized: false,
+//   resave: false,
+//   cookie: {
+//     maxAge: 24 * 60 * 60 * 1000
+//   },
+// }));
+// var sess;
 
 app.get('/login', function(req, res) {
   /*login page*/
@@ -445,18 +445,19 @@ app.post('/create_account*', function(req, res) {
   if(req.body.name && req.body.email && req.body.password){
     var data = {USERNAME: req.body.name, EMAIL: req.body.email, PASSWORD: req.body.password, ACC_TYPE: 0};
     var userObj = new User(data);
-    userObj.registor(function(err){
-      if(err){
-        console.log(err);
+    userObj.registor(function(m){
+      if(!m){
+        console.log(m);
         // return res.redirect("/404.html");
       }
       else{
+        console.log(m)
         console.log("registor success");
-        return res.redirect('./login.html');
+        return res.redirect('login');
       }
     })
   }
-  return res.redirect('./404.html');
+  else return res.redirect('./404.html');
 });
 
 // general treatnebt for html pages
