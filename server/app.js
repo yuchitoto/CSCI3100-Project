@@ -19,6 +19,20 @@ let User = user.User;
 var code = require('./code');
 let Code = code.Code;
 
+// setup session
+app.use(cookieParser('codeblock'));
+app.use(session({
+  name: 'codeblockidesession',
+  secret: 'iamarandomstring',
+  store: new FileStore(),
+  saveUninitialized: false,
+  resave: false,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000
+  },
+}));
+var sess;
+
 // direct to php parser
 var execPHP = require('./php_parser.js')();
 
@@ -278,20 +292,6 @@ app.post('/post', function(req, res) {
 });
 
 // for login page, auto redirect to user page or some other page after successful login
-
-// setup session
-app.use(cookieParser('codeblock'));
-app.use(session({
-  name: 'codeblockidesession',
-  secret: 'iamarandomstring',
-  store: new FileStore(),
-  saveUninitialized: false,
-  resave: false,
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000
-  },
-}));
-var sess;
 
 app.get('/login', function(req, res) {
   /*login page*/
