@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Code Block Forum</title>
+    <link href="/css/forum.css" rel="stylesheet" type="text/css">
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <!--<%- include ('forum_header.ejs') %>-->
+    <div class="create_account">
+      <div class="no">
+        <h2>Create new account</h2>
+        <form action= <%-"/create_account"%> method="post">
+            <input class="input" name="name" placeholder="username">
+            <input class="input" name="email" placeholder="email">
+            <input class="input" name="password" placeholder="password">
+        <br>
+        <button type="submit" value="Search" >
+        </form>
+      </div>
+
+  </div>
+  </body>
+</html>
