@@ -71,7 +71,7 @@ app.use(function(req, res, next){
 
 // prepare for homepage
 app.get('/', function(req, res) {
-  console.log(req);
+  //console.log(req);
   res.render('mainpage');
 });
 
@@ -504,7 +504,7 @@ app.use('*.html', function(req, res, next) {
 // send javascript for front-end
 app.use('*.js', function(req, res, next) {
   var path = './script'+req._parsedUrl.pathname;
-  console.log(req._parsedUrl);
+  //console.log(req._parsedUrl);
   fs.readFile(path, function(err, data) {
     if(err)
     {
