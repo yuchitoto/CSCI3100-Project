@@ -55,19 +55,13 @@ app.set('view engine', 'ejs');
 app.use(bdp.urlencoded({extended:true}));
 app.use(bdp.json());
 app.use(function(req, res, next){
-  if(req.session.sign){
-    res.locals.login = true;
-  }
-  else res.locals.login = false;
-  res.locals.logout = false;
-  console.log('sign');
-  console.log(res.locals.login);
+  res.locals.login = req.session.sign;
   next();
 });
 
 // prepare for homepage
 app.get('/', function(req, res) {
-  //console.log(req);
+  console.log(req);
   res.render('mainpage');
 });
 
@@ -331,8 +325,6 @@ app.get('/login', function(req, res) {
 
 app.post('/login', function(req, res) {
   /*authentication*/
-  console.log("ok");
-  console.log(req.body);
   if(req.session.sign){
     console.log("Already login");
     //res.send("Already login");
@@ -378,9 +370,9 @@ app.get('/logout', function(req, res){
       if(err){
         console.log(err);
       }
-      console.log("logout successfully");
+      console.log("logout success");
       console.log(req.session);
-      res.render('mainpage', {logout: true});
+      res.redirect('logout');
     })
   }
   else{
@@ -439,20 +431,34 @@ app.delete('/user', function(req, res) {
 // for account creation
 app.get('/create_account*', function(req, res) {
   /*fetch account create page*/
+  if(req.session.sign){
+    console.log('login');
+    console.log(req.session);
+    res.redirect('/user');
+  }
   return res.render('create_account');
 });
 
 app.post('/create_account*', function(req, res) {
   /*create new account*/
-  console.log(req.body);
-  console.log('hello');
-  if(req.body.name && req.body.email && req.body.password){
+  if(req.body.name && req.body.email && req.body.password && req.body.retype_password){
+    if(req.body.password.length < 8){
+      return res.render("create_account", {short_pw: true});
+    }
+    if(req.body.password != req.body.retype_password){
+      return res.render("create_account", {diff_pw: true});
+    }
     var data = {USERNAME: req.body.name, EMAIL: req.body.email, PASSWORD: req.body.password, ACC_TYPE: 0};
     var userObj = new User(data);
     userObj.registor(function(m){
-      if(!m){
+      if(m == 'exist_email' || m == 'exist_name'){
         console.log(m);
-        // return res.redirect("/404.html");
+        if(m == 'exist_email'){
+          return res.render("create_account", {same_email: true});
+        }
+        else{
+          return res.render("create_account", {same_name: true});
+        }
       }
       else{
         console.log(m)

@@ -7,10 +7,13 @@
   </head>
   <body>
     <%- include('forum_header.ejs') %>
-    <div class="code">
-      <pre><%-code.SRC%></pre>
+    <div class="post">
+      <h3><%-code.NAME%></h3>
+      <div class="code">
+        <pre><%-code.SRC%></pre>
+      </div>
     </div>
-    <div class="result">
+    <div class="result" style="text-align: center;">
       <form action=<%-"/code?code="+code.ID%> method="post" id="form1">
       </form>
       <button type="submit" form="form1" name="action" value="cpar">Run</button>
