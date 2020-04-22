@@ -2,6 +2,7 @@
 var express = require('express');
 var app = express();
 var http = require('http');
+var https = require('https');
 var url = require('url');
 var fs = require('fs');
 var {fork} = require('child_process');
@@ -50,10 +51,23 @@ function get_not_found(callback) {
 // setting up server not by using express directly so that htpps may be handled
 var httpServer = http.createServer(app);
 
+var hskey = fs.readFileSync('key.pem');
+var hscert = fs.readFileSync('cert.pem');
+var credentials = {
+  key:hskey,
+  cert:hscert,
+  passphrase:"CSCI3100GRP18"
+};
+var httpsServer = https.createServer(credentials, app);
+
 // use embedded javascript as html template generator
 app.set('view engine', 'ejs');
 app.use(bdp.urlencoded({extended:true}));
 app.use(bdp.json());
+app.use(function(req, res, next){
+  res.locals.login = req.session.sign;
+  next();
+});
 
 // prepare for homepage
 app.get('/', function(req, res) {
@@ -87,30 +101,34 @@ app.get('/code/write', function(req, res) {
   }
   var codehold = {NAME:"", USER:req.session['ID'], SRC:"", BLK:""};
   var tmp = {code:codehold, action:""};
-  res.render('write_code', tmp);
+  return res.render('Workspace', tmp);
 });
 
 app.post('/code', function(req, res) {
+  console.log(req.body);
+  console.log(`action on code: ${req.body.action}`);
+  const coder = new Code((req.session['ID'])?req.session['ID']:0);
 
-  if(!Object.keys(req.session).includes('ID'))
+  if(req.body.action=='cpar')
   {
-    var coder = new Code();
-    if(req.body.action=='cpar')
-    {
-      coder.cpar(req.query['code'], msg => {
-        var tmp = {res:msg, user:"", loc:req.query['code']};
-        return res.render('code_result',tmp);
-      });
-    }
+    coder.cpar(req.query['code'], msg => {
+      var tmp = {res:msg, loc:req.query['code']};
+
+      return res.render('code_result',tmp);
+    });
+  }
+
+  if(!Object.keys(req.session).includes('ID') && req.body.action!='cpar')
+  {
     return res.redirect('/404.html');
   }
   // previlleged actions
-  var coder = new Code(req.session['ID']);
+
   /*save code*/
   // if return is success, indicates an update, not fail a new code
   if(req.body.action=='save')
   {
-    coder.save(req.body.SRC, req.body.BLK, req.body.NAME, m => {
+    coder.save(req.body.SRC, "nothing", req.body.NAME, m => {
       if(m=='success')
       {
         return res.redirect(req.originalUrl);
@@ -125,7 +143,7 @@ app.post('/code', function(req, res) {
   /*compile and run*/
   if(req.body.action=='sacpar')
   {
-    coderT.sacpar(req.body.SRC, req.body.BLK, req.body.NAME, m => {
+    coderT.sacpar(req.body.SRC, "nothing", req.body.NAME, m => {
       if(m.loc=='success')
       {
         var tmp = {res:m.res, loc:req.query['code']};
@@ -133,7 +151,7 @@ app.post('/code', function(req, res) {
       }
       else if(m.loc != 'fail')
       {
-        var tmp = {res:m.res, loc:m.loc};
+        var tmp = {res:m.res, loc:m.loc, action:""};
         return res.render('code_result', tmp);
       }
       return res.redirect('/404.html');
@@ -244,7 +262,7 @@ app.get('/post/new', function(req, res) {
   console.log('/post/new');
   if(!Object.keys(req.session).includes('ID'))
   {
-    return res.redirect('/forum');
+    return res.redirect('/login');
   }
   const coda = fork("connect_sql.js", ["all_code"]);
   coda.send(JSON.stringify({USER:req.session['ID']}));
@@ -267,12 +285,9 @@ app.post('/post', function(req, res) {
   //console.log(req);
   if(!Object.keys(req.session).includes("ID"))
   {
-    res.redirect(req.originalUrl);
+    res.redirect('/login');
   }
   var user = req.session['ID'];
-  //console.log(req.query);
-  //console.log(req.body);
-  //console.log(user);
   var forumObj = new Forum(user);
   if(Object.keys(req.query).includes('post'))
   {
@@ -318,20 +333,18 @@ app.get('/login', function(req, res) {
 
 app.post('/login', function(req, res) {
   /*authentication*/
-  console.log("ok");
-  console.log(req.body);
   if(req.session.sign){
     console.log("Already login");
     //res.send("Already login");
     console.log(req.session);
     res.redirect('user');
   }
-  else if(req.body.password && (req.body.email || req.body.name)){
+  else if(req.body.password && req.body.name){
     var data;
-    if(req.body.email == ''){
-      data = {USERNAME: req.body.name, PASSWORD: req.body.password};
+    if(req.body.name.includes('@')){
+      data = {EMAIL: req.body.email, PASSWORD: req.body.password};
     }
-    else data = {EMAIL: req.body.email, PASSWORD: req.body.password};
+    else data = {USERNAME: req.body.name, PASSWORD: req.body.password};
     var userObj = new User(data);
     console.log(data);
     userObj.login(function(err, user){
@@ -352,7 +365,9 @@ app.post('/login', function(req, res) {
       }
     })
   }
-  else res.redirect('/login');
+  else{
+    res.render('login', {miss:true});
+  };
 });
 
 // user logout
@@ -363,14 +378,14 @@ app.get('/logout', function(req, res){
       if(err){
         console.log(err);
       }
-      console.log("logout successfully");
+      console.log("logout success");
       console.log(req.session);
-      res.redirect('/');
+      res.redirect('logout');
     })
   }
   else{
     console.log("did not login");
-    res.redirect('login');
+    res.redirect('/');
   }
 });
 
@@ -424,21 +439,36 @@ app.delete('/user', function(req, res) {
 // for account creation
 app.get('/create_account*', function(req, res) {
   /*fetch account create page*/
-  console.log('nonono');
+  if(req.session.sign){
+    console.log('login');
+    console.log(req.session);
+    res.redirect('/user');
+  }
   return res.render('create_account');
 });
 
 app.post('/create_account*', function(req, res) {
   /*create new account*/
-  console.log(req.body);
-  console.log('hello');
-  if(req.body.name && req.body.email && req.body.password){
+  if(req.body.name && req.body.email && req.body.password && req.body.retype_password){
+    if(req.body.name.includes('@')) return res.render("create_account", {invalid_name: true});
+    if(!req.body.email.includes('@')) return res.render("create_account", {invalid_email: true});
+    if(req.body.password.length < 8){
+      return res.render("create_account", {short_pw: true});
+    }
+    if(req.body.password != req.body.retype_password){
+      return res.render("create_account", {diff_pw: true});
+    }
     var data = {USERNAME: req.body.name, EMAIL: req.body.email, PASSWORD: req.body.password, ACC_TYPE: 0};
     var userObj = new User(data);
     userObj.registor(function(m){
-      if(!m){
+      if(m == 'exist_email' || m == 'exist_name'){
         console.log(m);
-        // return res.redirect("/404.html");
+        if(m == 'exist_email'){
+          return res.render("create_account", {same_email: true});
+        }
+        else{
+          return res.render("create_account", {same_name: true});
+        }
       }
       else{
         console.log(m)
@@ -447,7 +477,9 @@ app.post('/create_account*', function(req, res) {
       }
     })
   }
-  else return res.redirect('./404.html');
+  else{
+    res.render('create_account', {miss:true});
+  };
 });
 
 // general treatnebt for html pages
@@ -472,7 +504,7 @@ app.use('*.html', function(req, res, next) {
 // send javascript for front-end
 app.use('*.js', function(req, res, next) {
   var path = './script'+req._parsedUrl.pathname;
-  console.log(path);
+  //console.log(req._parsedUrl);
   fs.readFile(path, function(err, data) {
     if(err)
     {
@@ -548,4 +580,6 @@ app.use('*.css', function(req, res) {
   });
 });
 
+
 httpServer.listen(8080);
+httpsServer.listen(8443);

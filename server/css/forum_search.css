@@ -3,7 +3,7 @@
     margin-bottom:1rem;
     margin-left:5%;
     margin-right:5%;
-    background-color: white;
+    background-color: ghostwhite;
     box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
 }
 
@@ -18,17 +18,17 @@
     display:block;
 }
 
-.textarea{
-    font-size: 20px;
-    height:30px;
-    width:100%;
-}
-
 .post-text:hover{
     background-color:#4b5491;
-    color:white;
+    color:ghostwhite;
 }
 
 body{
     background-color: rgb(121, 121, 121);
+}
+
+.search{
+    cursor: default;
+    margin-top: 15px;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
 }

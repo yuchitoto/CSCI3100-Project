@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Result</title>
+    <link href="/css/code_result.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <%-include('forum_header.ejs')%>
+    <div class="block">
+      Program Result
+    <div class="code">
+      <pre><%-res.prog%></pre>
+    </div>
+    </div>
+    <div class="block">
+      Compiler Display
+    <div class="code">
+      <pre><%-res.comp%></pre>
+    </div>
+    </div>
+  </body>
+</html>

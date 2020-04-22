@@ -88,10 +88,15 @@ class MySQLDatabase {
 
   // universal update statement, problematic when 2nd level is obj
   update(val, cond, callback) {
-    var query = "UPDATE ?? SET ? WHERE ?";
+    var query = "UPDATE ?? SET ? ";
     const key = Object.keys(cond);
     const value = Object.values(cond);
     var pr = [this.table].push(val);
+    for (var i=1;i<val.length;i++)
+    {
+      query += ",? ";
+    }
+    query += "WHERE ?";
     for (var i=0;i<key.length;i++)
     {
       if(i>0)
@@ -248,9 +253,6 @@ class USER extends MySQLDatabase {
 
   newUser(data, callback) {
     /*new user*/
-    //console.log('wowo');
-    //console.log(data);
-    //console.log('wowo');
     this.insertUser(data, res => {
       if(res==0)
       {
@@ -588,6 +590,55 @@ class POST extends MySQLDatabase {
   }*/
 }
 
+class RATING extends MySQLDatabase{
+  constructor()
+  {
+    super("RATING");
+  }
+
+  insertRating(data, callback)
+  {
+    this.insert(data, function(err, res) {
+      if(err)
+      {
+        console.log(err);
+        return callback('fail');
+      }
+      return callback('success');
+    });
+  }
+
+  updateRating(data, callback)
+  {
+    this.update([{RATE:data.RATE}], {POSTID:data.POSTID, USERID:data.USERID}, function(err, res) {
+      if(err)
+      {
+        console.log(err);
+        return callback('fail');
+      }
+      return callback('success');
+    });
+  }
+
+  rating(data, callback)
+  {
+    var mark = 0;
+    const query = "SELECT a.COUNT(*) AS BASE, SUM(RATE) AS RATING FROM RATING WHERE ?";
+    this.connection.query(query, [data], function(err, res) {
+      if(err)
+      {
+        console.log(err);
+        return callback(-1);
+      }
+      if(res[0].BASE>0)
+      {
+        mark = res[0].RATING / res[0].BASE;
+      }
+      return callback(mark);
+    });
+  }
+}
+
 
 const userT = new USER();
 const codeT = new SRC_CODE();
@@ -757,26 +808,26 @@ process.on('message', m => {
   }
   if(myArgs[0]=='new_user')
   {
-    var flag = 0;
     exist_name(m, msg => {
       if(msg != 0){
-        flag = 1;
         return process.send('exist_name');
       }
-    });
-    exist_email(m, msg => {
-      if(msg != 0){
-        flag = 1;
-        return process.send('exist_email');
+      else{
+        exist_email(m, msg2 => {
+          if(msg2 != 0){
+            return process.send('exist_email');
+          }
+          else{
+            new_user(m, id => {
+              if(id==0){
+                return process.send('fail');
+              }
+            return process.send(id);
+            });
+          }
+        });
       }
-    });
-    if(flag) return;
-    new_user(m, id => {
-      if(id==0){
-        return process.send('fail');
-      }
-      return process.send(id);
-    });
+    })
   }
   if(myArgs[0]=='delete_user')
   {

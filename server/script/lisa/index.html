@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home | Lisa</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/lightbox.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/responsive.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+
+    <link rel="shortcut icon" href="images/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57-precomposed.png">
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body onload="start()">
+<!--<pre><code class="cpp">#include <iostream>
+
+    int main(int argc, char *argv[]) {
+
+    /* An annoying "Hello World" example */
+    for (auto i = 0; i < 0xFFFF; i++)
+    cout << "Hello, World!" << endl;
+
+    char c = '\n';
+    unordered_map <string, vector<string> > m;
+    m["key"] = "\\\\"; // this is an error
+
+    return -2e3 + 12l;
+    }</code></pre>-->
+<header id="header" style="border: 0px solid black">
+    <div class="container"style="border: 0px solid black">
+        <!--<div class="row" style="border: 1px solid black">-->
+            <!--<div class="col-sm-12 overflow" style="border: 1px solid black">-->
+                <!--<div class="social-icons pull-right">-->
+                    <!--<ul class="nav nav-pills">-->
+                        <!--<br>-->
+                    <!--</ul>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    </div>
+    <div class="navbar navbar-inverse" role="banner">
+        <div class="container">
+            <div class="navbar-header">
+
+                <a class="navbar-brand" href="index.html">
+                    <!--<h1 style="color: #9e9e9e; font-size: 300%; font-family: Webdings"><i><strong>P</strong>roject</i> <i><strong>L</strong>isa</i></h1>-->
+                    <img src="images/1.png" />
+
+                </a>
+            </div>
+        </div>
+        <style>
+            hr.style-five {
+                border: 0;
+                height: 0; /* Firefox... */
+                box-shadow: 2px 2px 1px 1px #e8f0fe;
+            }
+            hr.style-five:after {
+                content: "\00a0";
+            }
+        </style>
+        <br>
+        <hr class="style-five"/>
+    </div>
+</header>
+<!--/header-->
+
+<!--home-slider-->
+<section id="home-slider" style="border: 0px solid black">
+    <div class="container">
+        <div class="row">
+            <div class="main-slider">
+                <div class="slide-text">
+                    <h1>Let's learn Object Oriented Programming</h1>
+                    <p>Lisa is waiting for you to teach. You will learn the OOP concepts with C++ language. Play with these colorful blocks and you will understand what is OOP. Let's get started!</p>
+                    <a  id="playground" class="btn btn-common">C++ PLAYGROUD</a>
+                    <a href="Lisa4C.html"  class="btn btn-common">C PLAYGROUD</a>
+                </div>
+                <img src="images/home/slider/hill.png" class="slider-hill" alt="slider image">
+                <img src="images/home/slider/house.png" class="slider-house" alt="slider image">
+                <img src="images/home/slider/sun.png" class="slider-sun" alt="slider image">
+                <img src="images/home/slider/birds1.png" class="slider-birds1" alt="slider image">
+                <img src="images/home/slider/birds2.png" class="slider-birds2" alt="slider image">
+            </div>
+        </div>
+    </div>
+    <div class="preloader"><i class="fa fa-sun-o fa-spin"></i></div>
+</section>
+<!--/home-slider-->
+
+<!--content -->
+<section id="page-breadcrumb" >
+    <div class="vertical-center sun">
+        <div class="container">
+            <div class="row" >
+                <div class="action">
+                    <div class="col-sm-12" id="scrollingPosition">
+                        <h1 class="title">OOP CONCEPTS</h1>
+                        <p>Be Creative</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="container" style="padding:10px;border:0px solid #4a4a4a; margin: 0px;float: none;margin-left: auto;margin-right:auto; width: 90%; box-shadow: 4px 4px 8px 2px #999999">
+    <div class="row">
+        <section class="col-md-8 col-xs-12" style="border:0px solid #4a4a4a; border-style: inset;padding: 0px;">
+            <div id="blocklyDiv" class="col-md-12" style="height: 480px;margin: 0px;">
+            </div>
+            <!--<div id="blocklyToolBoxDiv" class="col-md-1" style="height: auto; float: left;margin:0px;border:1px solid purple">-->
+            <xml id="toolbox">
+                <category name="Containers">
+                    <category name="Class Container">
+                        <block type="class-container"></block>
+                        <block type="child-class-container"></block>
+                    </category>
+                    <category name="Varialble Container">
+                        <block type="variable-container"></block>
+                    </category>
+                    <category name="Method Container">
+                        <block type="method-container"></block>
+                    </category>
+                </category>
+                <category name="Methods">
+                    <category name="Method">
+                        <block type="method"></block>
+                    </category>
+                    <category name="Constructor Method">
+                        <block type="constructor"></block>
+                    </category>
+                </category>
+                <category name="Variables">
+                    <block type="variable"></block>
+                    <block type="class-instance-variable"></block>
+                     <block type="object-pointer"></block>
+                </category>
+                <category name="Parameters">
+                    <block type="parameter"></block>
+                </category>
+            </xml>
+            <!--</div>-->
+        </section>
+        <section class="col-md-4 col-xs-12" style="border:0px solid red ; float: left;padding: 0px;">
+
+            <div class="col-md-12 col-xs-12" style="height: 480px; overflow: auto;">
+                <div id="code-wrapper" class="panel panel-default col-md-12" style="border: 0px solid black;height: 95%;width:100%">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong>Code</strong></h3>
+                    </div>
+                    <pre style="height: 420px;margin: 0px; border:2px solid #CCCCCC" class="panel-body">
+                        <code id="code4Cplusplus" class="cpp"></code>
+                    </pre>
+                </div>
+            </div>
+
+        </section>
+    </div>
+</div>
+<div class="col-xs-4">
+
+    <!--<div id="terminal-wrapper" class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Console</h3>
+        </div>
+        <div class="panel-body" id="terminal"></div>
+    </div>-->
+</div>
+
+<section id="blog-details" class="padding-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9 col-sm-7">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="single-blog blog-details two-column">
+                            <!--<div class="post-thumb">-->
+                                <!--<div class="post-overlay">-->
+                                    <!--<span class="uppercase"><a href="#">14 <br><small>Feb</small></a></span>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <div class="post-content overflow" id="main_content">
+                                <h2 class="post-title bold"><a id="def_title">Class</a></h2>
+                             
+                                <p id="first_para">A class is used in object-oriented programming to describe one or more objects. It serves as a template for creating, or instantiating, specific objects within a program. While each object is created from a single class, one class can be used to instantiate multiple objects.Several programming languages support classes, including Java, C++, Objective C, and PHP 5 and later. While the syntax of a class definition varies between programming languages, classes serve the same purpose in each language. All classes may contain variable definitions and methods, or subroutines that can be run by the corresponding object.
+                                    <br/>Below is an example of a basic C++ class definition:</p>
+                                <pre><code class="cpp" id="def_code">
+    #include <strong><</strong>iostream<strong>></strong>
+ 
+    using namespace std;
+
+
+    class Shape  {
+         public:
+             void setWidth(int w) {
+                 width = w;
+             }
+		
+            void setHeight(int h) {
+                 height = h;
+            }
+		
+     protected:
+         int width;
+         int height;
+    };
+    <br/>
+</code></pre>
+
+                                <p id="second_para">
+                                    The above class, named Sample, includes a single method named main. Within main, the variable sampleText is defined as "Hello world!" The main method invokes the System class from Java's built-in core library, which contains the out.println method. This method is used to print the sample text to the text output window.<br/>
+
+                                    Classes are a fundamental part of object-oriented programming. They allow variables and methods to be isolated to specific objects instead of being accessible by all parts of the program. This encapsulation of data protects each class from changes in other parts of the program. By using classes, developers can create structured programs with source code that can be easily modified.<br/>
+
+                                    <b>NOTE:</b> While classes are foundational in object-oriented programming, they serve as blueprints, rather than the building blocks of each program. This is because classes must be instantiated as objects in order to be used within a program. Constructors are typically used to create objects from classes, while destructors are used to free up resources used by objects that are no longer needed.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5">
+                <div class="sidebar blog-sidebar">
+                    <div class="sidebar-item  recent">
+                        <h3><strong>Other Conecpts</strong></h3>
+                        <div class="media">
+                            <div class="pull-left">
+                                <a href="#"><img class="img-responsive" width="52px" height="52px" src="blockly/images/ic_dashboard_black_24dp_2x.png" alt=""></a>
+                            </div>
+                            <div class="media-body">
+                                <h4><a  onclick="ChangeContent(0)"><strong>Class</strong></a></h4>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="media">
+                            <div class="pull-left">
+                                <a href="#"><img class="img-responsive" width="52px" height="52px" src="blockly/images/ic_dashboard_black_24dp_2x.png" alt=""></a>
+                            </div>
+                            <div class="media-body">
+                                <h4><a  onclick="ChangeContent(1)"><strong>Inheritance</strong></a></h4>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="media">
+                            <div class="pull-left">
+                                <a href="#"><img class="img-responsive" width="52px" height="52px" src="blockly/images/ic_dashboard_black_24dp_2x.png" alt=""></a>
+                            </div>
+                            <div class="media-body">
+                                <h4><a onclick="ChangeContent(2)"><strong>Polymorphism</strong></a></h4>
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="media">
+                            <div class="pull-left">
+                                <a href="#"><img class="img-responsive" width="52px" height="52px" src="blockly/images/ic_dashboard_black_24dp_2x.png" alt=""></a>
+                            </div>
+                            <div class="media-body">
+                                <h4><a onclick="ChangeContent(3)"><strong>Abstraction</strong></a></h4>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--/content -->
+
+<!--footer-->
+<footer id="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 text-center bottom-separator">
+                <img src="images/home/under.png" class="img-responsive inline" alt="">
+            </div>
+            <div class="col-md-5 col-sm-6" style="padding-left:10%">
+                <div class="testimonial bottom">
+                    <h2>Testimonial</h2>
+                    <div class="media">
+                        <div class="pull-left">
+                            <a href="#"><img src="images/home/profile1.png" hidden alt=""></a>
+                        </div>
+                        <div class="media-body">
+                            <blockquote>Controlling complexity is the essence of computer programming.</blockquote>
+                            <h3><a href="#"> - Brian Kernighan</a></h3>
+                        </div>
+                    </div>
+                    <div class="media">
+                        <div class="pull-left">
+                            <a href="#"><img src="images/home/profile2.png" hidden alt=""></a>
+                        </div>
+                        <div class="media-body">
+                            <blockquote>Beauty is more important in computing than anywhere else in technology because software is so complicated. Beauty is the ultimate defence against complexity.</blockquote>
+                            <h3><a href="">- David Gelernter</a></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-6">
+                <div class="contact-info bottom">
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="contact-form bottom">
+                    <h2>Send a message</h2>
+                    <form id="main-contact-form" name="contact-form">
+                        <div class="form-group">
+                            <input type="text" name="name" id="name" class="form-control" required="required" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" id="email" class="form-control" required="required" placeholder="Email Id">
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" id="message" required="required" class="form-control" rows="8" placeholder="Your text here"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" name="submit" class="btn btn-submit" value="Submit" onclick="return sendMail() ">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="copyright-text text-center">
+                    <p>&copy; Lisa 2016. All Rights Reserved.</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<script>
+    function ChangeContent(id){
+
+         var title = ['Class','Inheritance','polymorphism','Abstraction'];
+         var paraOne = ['A class is used in object-oriented programming to describe one or more objects. It serves as a template for creating, or instantiating, specific objects within a program. While each object is created from a single class, one class can be used to instantiate multiple objects.Several programming languages support classes, including Java, C++, Objective C, and PHP 5 and later. While the syntax of a class definition varies between programming languages, classes serve the same purpose in each language. All classes may contain variable definitions and methods, or subroutines that can be run by the corresponding object.<br>Below is an example of a basic C++ class definition:'
+         
+         ,'One of the most important concepts in object-oriented programming is that of inheritance. Inheritance allows us to define a class in terms of another class, which makes it easier to create and maintain an application. This also provides an opportunity to reuse the code functionality and fast implementation time.<br/>When creating a class, instead of writing completely new data members and member functions, the programmer can designate that the new class should inherit the members of an existing class. This existing class is called the <b>base</b> class, and the new class is referred to as the <b>derived</b> class.<br/>The idea of inheritance implements the <b>is a</b> relationship. For example, mammal IS-A animal, dog IS-A mammal hence dog IS-A animal as well and so on.'
+         
+         ,'The word <b>polymorphism</b> means having many forms. Typically, polymorphism occurs when there is a hierarchy of classes and they are related by inheritance.<br>C++ polymorphism means that a call to a member function will cause a different function to be executed depending on the type of object that invokes the function.<br>Consider the following example where a base class has been derived by other two classes:'
+         
+         ,'Data abstraction refers to, providing only essential information to the outside world and hiding their background details, i.e., to represent the needed information in program without presenting the details.\n\n Data abstraction is a programming (and design) technique that relies on the separation of interface and implementation.\n Let\'s take one real life example of a TV, which you can turn on and off, change the channel, adjust the volume, and add external components such as speakers, VCRs, and DVD players, BUT you do not know its internal details, that is, you do not know how it receives signals over the air or through a cable, how it translates them, and finally displays them on the screen.\n Thus, we can say a television clearly separates its internal implementation from its external interface and you can play with its interfaces like the power button, channel changer, and volume control without having zero knowledge of its internals.\n\n Now, if we talk in terms of C++ Programming, C++ classes provides great level of <b>data abstraction</b>. They provide sufficient public methods to the outside world to play with the functionality of the object and to manipulate object data, i.e., state without actually knowing how class has been implemented internally.\n For example, your program can make a call to the sort() function without knowing what algorithm the function actually uses to sort the given values. In fact, the underlying implementation of the sorting functionality could change between releases of the library, and as long as the interface stays the same, your function call will still work.'
+         ];
+         var paraTwo = [' The above class, named Sample, includes a single method named main. Within main, the variable sampleText is defined as "Hello world!" The main method invokes the System class from Java\'s built-in core library, which contains the out.println method. This method is used to print the sample text to the text output window.<br/>Classes are a fundamental part of object-oriented programming. They allow variables and methods to be isolated to specific objects instead of being accessible by all parts of the program. This encapsulation of data protects each class from changes in other parts of the program. By using classes, developers can create structured programs with source code that can be easily modified.<br/><b>NOTE:</b> While classes are foundational in object-oriented programming, they serve as blueprints, rather than the building blocks of each program. This is because classes must be instantiated as objects in order to be used within a program. Constructors are typically used to create objects from classes, while destructors are used to free up resources used by objects that are no longer needed.'
+         
+         ,'When deriving a class from a base class, the base class may be inherited through <b>public</b>, <b>protected</b> or <b>private</b> inheritance. The type of inheritance is specified by the access-specifier as explained above.<br>We hardly use <b>protected</b> or <b>private</b> inheritance, but <b>public</b> inheritance is commonly used. While using different type of inheritance, following rules are applied:<br><br><b>Public Inheritance:</b> When deriving a class from a public base class, public members of the base class become public members of the derived class and protected members of the base class become protected members of the derived class. A base class\'s private members are never accessible directly from a derived class, but can be accessed through calls to the public and protected members of the base class.<br><br><b>Protected Inheritance:</b> When deriving from a protected base class, public and protected members of the base class become protected members of the derived class.<br><br><b>Private Inheritance:</b> When deriving from a private base class, public and protected members of the base class become private members of the derived class.'
+         
+         ,'A virtual function is a function in a base class that is declared using the keyword <b>virtual</b>. Defining in a base class a virtual function, with another version in a derived class, signals to the compiler that we don\'t want static linkage for this function.<br><br>What we do want is the selection of the function to be called at any given point in the program to be based on the kind of object for which it is called. This sort of operation is referred to as dynamic linkage, or late binding.'
+         
+         ,'Above class adds numbers together, and returns the sum. The public members addNum and getTotal are the interfaces to the outside world and a user needs to know them to use the class. The private member total is something that the user doesn\'t need to know about, but is needed for the class to operate properly.'
+         ];
+
+         var code = ['#include <strong><</strong>iostream<strong>></strong>\n\nusing namespace std;\n\n class Shape  {\n \t public:\n \t void setWidth(int w) { \n\t\t width = w;\n\t }\n\t void setHeight(int h) {\n\t\t height = h;\n\t }\n\n\t  protected:\n\t\t int width;\n\t\t int height; \n };'
+         
+         ,'#include <strong><</strong>iostream<strong>></strong> \n\n using namespace std; \n\n class Shape  {\n \t public:\n \t void setWidth(int w) { \n \t\t width = w;\n\t } \n\n \t void setHeight(int h) {\n \t\t height = h;\n \t }\n\n \t protected:\n \t\t int width; \n\t\t int height;\n};\n\n\n class Rectangle: public Shape { \n \t public:\n \t int getArea() { \n \t\t return (width * height); \n\t } \n};\n\n'
+         
+         ,'#include <strong><</strong>iostream<strong>></strong>\n\n using namespace std;\n\n class Shape {\n\t protected: \n\t\t int width, height; \n\t public: \n\t Shape( int a = 0, int b = 0) {\n\t\t width = a;\n\t\t height = b; \n\t } \n\t virtual int area() {\n\t\t cout << "Parent class area :"<strong><<</strong>endl; \n\t\t return 0; \n\t } \n }; \n\n class Rectangle: public Shape {\n\t public:\n\t Rectangle( int a = 0, int b = 0):Shape(a, b) { }\n\t int area () { \n\t\t out << "Rectangle class area :" <strong><<</strong>endl;\n\t\t return (width * height); \n\t }\n};\n\n class Triangle: public Shape{\n\t public:\n\t Triangle( int a = 0, int b = 0):Shape(a, b) { }\n\t\t int area () { \n\t\t\t cout <strong><<</strong> "Triangle class area :" <strong><<</strong>endl;\n\t\t\t return (width * height / 2); \n\t\t }\n };\n\n// Main function for the program \n int main( ) {\n\t Shape *shape;\n\t Rectangle rec(10,7);\n\t Triangle  tri(10,5);\n\n\t // store the address of Rectangle\n\tshape = &reg;\n\n\t// call rectangle area.\n\tshape->area();\n\n\t// store the address of Triangle\n\tshape = &triangle;\n\n\t // call triangle area.\n\t shape->area();\n\t return 0; \n }'
+         
+         ,'#include <strong><</strong>iostream<strong>></strong>\n\nusing namespace std;\n\nclass Adder {\n\t public:\n\t// constructor\n\tAdder(int i = 0) {\n\t\ttotal = i;\n\t}\n\n\t// interface to outside world\n\tvoid addNum(int number) {\n\ttotal += number;\n\t}\n\n\t// interface to outside world\n\t\tint getTotal() {\n\t\t\treturn total;\n\t };\n\n\tprivate:\n\t\t// hidden data from outside world\n\t\tint total;\n};\n\nint main( ) {\n\tAdder a;\n\ta.addNum(10);\n\ta.addNum(20);\n\ta.addNum(30);\n\tcout <strong><<</strong> "Total " <strong><<</strong> a.getTotal() <strong><<</strong>endl;\n\treturn 0;\n}'
+         ];
+
+           
+            document.getElementById('def_title').innerHTML   = title[id];
+            document.getElementById('first_para').innerHTML  = paraOne[id];
+            document.getElementById('def_code').innerHTML    = code[id];
+            document.getElementById('second_para').innerHTML = paraTwo[id];
+
+    }
+    function sendMail() {
+    var link = "mailto:email_address@gmail.com"
+             + "&subject=" + escape(escape(document.getElementById('email').value)+" "+document.getElementById('name').value)
+             + "&body=" + escape(document.getElementById('message').value);
+
+    window.location.href = link;
+
+    setTimeout(function(){ location.reload(); }, 3000);
+    
+}
+</script>
+<script>
+    
+    var blocklyArea = document.getElementById('blocklyArea');
+    var blocklyDiv = document.getElementById('blocklyDiv');
+    /*var onresize = function(e) {
+        // Compute the absolute coordinates and dimensions of blocklyArea.
+        var element = blocklyArea;
+        var x = 0;
+        var y = 0;
+        do {
+            x += element.offsetLeft;
+            y += element.offsetTop;
+            element = element.offsetParent;
+        } while (element);
+        // Position blocklyDiv over blocklyArea.
+        blocklyDiv.style.left = x + 'px';
+        blocklyDiv.style.top = y + 'px';
+        blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+        blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+    };
+    window.addEventListener('resize', onresize, false);*/
+    /*onresize();*/
+    /*Blockly.svgResize(workspace);*/
+
+</script>
+<!--/footer-->
+
+<script type="text/javascript" src="blockly/blockly_uncompressed.js"></script>
+<script type="text/javascript" src="blockly/msg/js/en.js"></script>
+<script type="text/javascript" src="blockly/generators/lisa.js"></script>
+<script type="text/javascript" src="blockly/generators/lisa/validator.js"></script>
+<script type="text/javascript" src="blockly/generators/lisa/containers.js"></script>
+<script type="text/javascript" src="blockly/generators/lisa/methods.js"></script>
+<script type="text/javascript" src="blockly/generators/lisa/constructors.js"></script>
+<script type="text/javascript" src="blockly/generators/lisa/variables.js"></script>
+<script type="text/javascript" src="blockly/blocks/containers.js"></script>
+<script type="text/javascript" src="blockly/blocks/constructors.js"></script>
+<script type="text/javascript" src="blockly/blocks/methods.js"></script>
+<script type="text/javascript" src="blockly/blocks/variables.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/code.js"></script>
+<script type="text/javascript" src="js/FileSaver.js"></script>
+<script type="text/javascript" src="js/prettify.js"></script>
+<script type="text/javascript" src="js/jquery.mousewheel.min.js"></script>
+<!--<script type="text/javascript" src="js/jquery.terminal-0.8.8.min.js"></script>-->
+<!-- Load the Google Drive SDK Realtime libraries. -->
+<!--<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>-->
+
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/jquery.isotope.min.js"></script>
+<script type="text/javascript" src="js/lightbox.min.js"></script>
+<script type="text/javascript" src="js/wow.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/scrolling.js" ></script>
+</body>
+</html>

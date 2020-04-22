@@ -12,14 +12,14 @@
       <div class="block">
         <h2 style="text-align:center">Login</h2>
       </div>
-      <div class="block">
+      <div class="block" style="text-align: center;">
         <form class="form" action= <%-"/login"%> method="post">
-            Username:<input class="input" name="name" placeholder="username"><br>
-            Email:<input class="input" name="email" placeholder="email"><br>
-            Password:<input class="input" name="password" placeholder="password" required><br>
+            <input class="input" name="name" placeholder="username/email"><br>
+            <input class="input" name="password" placeholder="password"><br>
       </div>
       <div style="text-align: center;">
         <input type="submit" value="Login" />
+        <p style="<%= (locals.miss)? 'display:block;color:red;':'display:none'%>">Please provide (username or email) and password</p>
       </div>
         </form>
 

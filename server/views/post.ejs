@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title><%= post[0].TITLE %></title>
     <link href="/css/post.css" rel="stylesheet" type="text/css">
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
     
   </head>
   <body>
@@ -25,11 +26,11 @@
       </div>
     <% } %>
     <div class="form">
-      <h4 style="color:white">Wrtie your reply</h4>
+      <h4 style="color:white" class="new_reply">Wrtie your reply</h4>
       <form action= <%-url%> method="post">
         <textarea class="textarea" id="CONTENT" name="CONTENT"></textarea>
         <br>
-        <input type="submit" value="Submit" />
+        <input class="button1" type="submit" value="Submit" />
       </form>
     </div>
   </body>
