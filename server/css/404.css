@@ -12,7 +12,9 @@ h1 {
 }
 
 button {
-  left: 50%;
+  position: fixed;
+  top:76.5%;
+  left:41%;
   margin-top:1rem;
   margin-bottom:1rem;
   margin-left:5%;
