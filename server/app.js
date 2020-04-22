@@ -105,6 +105,7 @@ app.get('/code/write', function(req, res) {
 });
 
 app.post('/code', function(req, res) {
+  console.log(req.body);
   console.log(`action on code: ${req.body.action}`);
   const coder = new Code((req.session['ID'])?req.session['ID']:0);
 
