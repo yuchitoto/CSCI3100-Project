@@ -71,7 +71,7 @@ app.use(function(req, res, next){
 
 // prepare for homepage
 app.get('/', function(req, res) {
-  console.log(req);
+  //console.log(req);
   res.render('mainpage');
 });
 
@@ -101,10 +101,11 @@ app.get('/code/write', function(req, res) {
   }
   var codehold = {NAME:"", USER:req.session['ID'], SRC:"", BLK:""};
   var tmp = {code:codehold, action:""};
-  res.render('write_code', tmp);
+  return res.render('Workspace', tmp);
 });
 
 app.post('/code', function(req, res) {
+  console.log(req.body);
   console.log(`action on code: ${req.body.action}`);
   const coder = new Code((req.session['ID'])?req.session['ID']:0);
 
@@ -127,7 +128,7 @@ app.post('/code', function(req, res) {
   // if return is success, indicates an update, not fail a new code
   if(req.body.action=='save')
   {
-    coder.save(req.body.SRC, req.body.BLK, req.body.NAME, m => {
+    coder.save(req.body.SRC, "nothing", req.body.NAME, m => {
       if(m=='success')
       {
         return res.redirect(req.originalUrl);
@@ -142,7 +143,7 @@ app.post('/code', function(req, res) {
   /*compile and run*/
   if(req.body.action=='sacpar')
   {
-    coderT.sacpar(req.body.SRC, req.body.BLK, req.body.NAME, m => {
+    coderT.sacpar(req.body.SRC, "nothing", req.body.NAME, m => {
       if(m.loc=='success')
       {
         var tmp = {res:m.res, loc:req.query['code']};
@@ -503,7 +504,7 @@ app.use('*.html', function(req, res, next) {
 // send javascript for front-end
 app.use('*.js', function(req, res, next) {
   var path = './script'+req._parsedUrl.pathname;
-  console.log(path);
+  //console.log(req._parsedUrl);
   fs.readFile(path, function(err, data) {
     if(err)
     {
