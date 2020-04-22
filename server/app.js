@@ -257,7 +257,7 @@ app.get('/post/new', function(req, res) {
   console.log('/post/new');
   if(!Object.keys(req.session).includes('ID'))
   {
-    return res.redirect('/forum');
+    return res.redirect('/login');
   }
   const coda = fork("connect_sql.js", ["all_code"]);
   coda.send(JSON.stringify({USER:req.session['ID']}));
@@ -280,7 +280,7 @@ app.post('/post', function(req, res) {
   //console.log(req);
   if(!Object.keys(req.session).includes("ID"))
   {
-    res.redirect(req.originalUrl);
+    res.redirect('/login');
   }
   var user = req.session['ID'];
   //console.log(req.query);
