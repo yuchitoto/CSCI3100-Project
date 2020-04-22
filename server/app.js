@@ -54,6 +54,10 @@ var httpServer = http.createServer(app);
 app.set('view engine', 'ejs');
 app.use(bdp.urlencoded({extended:true}));
 app.use(bdp.json());
+app.use(function(req, res, next){
+  res.locals.session = req.session;
+  next();
+});
 
 // prepare for homepage
 app.get('/', function(req, res) {
@@ -424,7 +428,6 @@ app.delete('/user', function(req, res) {
 // for account creation
 app.get('/create_account*', function(req, res) {
   /*fetch account create page*/
-  console.log('nonono');
   return res.render('create_account');
 });
 
@@ -547,5 +550,6 @@ app.use('*.css', function(req, res) {
     return res.end();
   });
 });
+
 
 httpServer.listen(8080);
