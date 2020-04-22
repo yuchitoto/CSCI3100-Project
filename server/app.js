@@ -277,9 +277,6 @@ app.post('/post', function(req, res) {
     res.redirect('/login');
   }
   var user = req.session['ID'];
-  //console.log(req.query);
-  //console.log(req.body);
-  //console.log(user);
   var forumObj = new Forum(user);
   if(Object.keys(req.query).includes('post'))
   {
@@ -331,12 +328,12 @@ app.post('/login', function(req, res) {
     console.log(req.session);
     res.redirect('user');
   }
-  else if(req.body.password && (req.body.email || req.body.name)){
+  else if(req.body.password && req.body.name){
     var data;
-    if(req.body.email == ''){
-      data = {USERNAME: req.body.name, PASSWORD: req.body.password};
+    if(req.body.name.includes('@')){
+      data = {EMAIL: req.body.email, PASSWORD: req.body.password};
     }
-    else data = {EMAIL: req.body.email, PASSWORD: req.body.password};
+    else data = {USERNAME: req.body.name, PASSWORD: req.body.password};
     var userObj = new User(data);
     console.log(data);
     userObj.login(function(err, user){
@@ -442,6 +439,7 @@ app.get('/create_account*', function(req, res) {
 app.post('/create_account*', function(req, res) {
   /*create new account*/
   if(req.body.name && req.body.email && req.body.password && req.body.retype_password){
+    if(req.body.name.includes('@')) return res.render("create_account", {invalid_name: true});
     if(req.body.password.length < 8){
       return res.render("create_account", {short_pw: true});
     }
