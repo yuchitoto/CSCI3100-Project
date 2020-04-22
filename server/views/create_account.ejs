@@ -3,25 +3,28 @@
   <head>
     <meta charset="utf-8">
     <title>Create new account</title>
-    <link href="/css/forum.css" rel="stylesheet" type="text/css">
+    <link href="/css/auth.css" rel="stylesheet" type="text/css">
   </head>
   <body>
     <%- include ('account_header.ejs') %>
     <div class="create_account">
-      <div>
-        <h2>Create new account</h2>
+      <div class="block">
+        <h2 style="text-align: center;">Create new account</h2>
+      </div>
+      <div class="block">
         <form action= <%-"/create_account"%> method="post">
-            <input class="input" name="name" placeholder="username" >
-            <input class="input" name="email" placeholder="email" >
-            <input class="input" name="password" placeholder="password" >
-            <input class="input" name="retype_password" placeholder="retype password" >
-        <br>
-        <input type="submit" value="create" />
-          <p style="<%= (locals.miss)? 'display:block':'display:none'%>">Please provide username, email and password</p>
-          <p style="<%= (locals.same_email)? 'display:block':'display:none'%>">This email has been registor</p>
-          <p style="<%= (locals.same_name)? 'display:block':'display:none'%>">This username has been registor</p>
-          <p style="<%= (locals.short_pw)? 'display:block':'display:none'%>">Password should contain at least 8 char</p>
-          <p style="<%= (locals.diff_pw)? 'display:block':'display:none'%>">Password and retype password are different</p>
+            Username:<input class="input" name="name" placeholder="username" ><br>
+            Email Address:<input class="input" name="email" placeholder="email" ><br>
+            Password<input class="input" name="password" placeholder="password" ><br>
+            Confirm Password<input class="input" name="retype_password" placeholder="password again" ><br>
+      </div>
+      <div style="text-align: center;">
+        <input type="submit" value="Create" />
+          <p style="<%= (locals.miss)? 'display:block;color:red;':'display:none'%>">Please provide username, email and password</p>
+          <p style="<%= (locals.same_email)? 'display:block;color:red;':'display:none'%>">This email has been registor</p>
+          <p style="<%= (locals.same_name)? 'display:block;color:red;':'display:none'%>">This username has been registor</p>
+          <p style="<%= (locals.short_pw)? 'display:block;color:red;':'display:none'%>">Password should contain at least 8 char</p>
+          <p style="<%= (locals.diff_pw)? 'display:block;color:red;':'display:none'%>">Password and retype password are different</p>
         </form>
       </div>
 
