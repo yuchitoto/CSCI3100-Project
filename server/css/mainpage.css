@@ -49,16 +49,16 @@ img.contrib {
   box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
 }
 
-p{
+#intro {
   font-size: 20px;
 }
 
-ul{
+#update{
   list-style-type: square;
   margin-top: 15px;
   margin-bottom: 10px;
 }
 
-li{
+.point{
   font-size: 20px;
 }
