@@ -450,6 +450,7 @@ app.post('/create_account*', function(req, res) {
   /*create new account*/
   if(req.body.name && req.body.email && req.body.password && req.body.retype_password){
     if(req.body.name.includes('@')) return res.render("create_account", {invalid_name: true});
+    if(!req.body.email.includes('@')) return res.render("create_account", {invalid_email: true});
     if(req.body.password.length < 8){
       return res.render("create_account", {short_pw: true});
     }
