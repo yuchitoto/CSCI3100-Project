@@ -1,6 +1,6 @@
 const util = require('util');
-const {spawn} = require("child_process");
-const exec = util.promisify(require('child_process').exec);
+const {spawn, exec} = require("child_process");
+const pexec = util.promisify(require('child_process').exec);
 
 // var myArgs = process.argv.slice(1); will be used when different compile is used
 
@@ -8,61 +8,77 @@ const exec = util.promisify(require('child_process').exec);
 /*async function tmpFile()*/
 
 // compile the file written on server
-async function compile(filename, user) {
+function compile(filename, user, callback) {
   const fln = 'gcc '+filename+' -o '+user;
-  const {error, stderr} = await exec(fln);
-
-  if(error)
-  {
-    console.log(`error: ${error.message}`);
-    return error;
-  }
-  return stderr;
-};
-
-// run the corresponding excutable
-async function run(filename, user) {
-  const comperr = compile(filename, user);
-
-  var result = {comp:false, prog:false, proger:false};
-
-  if(comperr)
-  {
-    console.log(`1: ${comperr}`);
-    result.comp = comperr;
-    return result;
-  }
-
-  const {stdout, stderr} = await exec(user+'.exe');
-  if(stderr)
-  {
-    console.log(`2: ${stderr}`);
-    result.proger = stderr;
-    return result;
-  }
-
-  result.prog = stdout;
-
-  spawn('del',[user+'.exe'], (error, stdout, stderr) => {
+  exec(fln, (error, stdout, stderr)=> {
     if(error)
     {
       console.log(`error: ${error.message}`);
-      return;
+      if(stderr)
+      {
+        console.log(`stderr: ${stderr}`);
+        return callback(stderr);
+      }
+      return callback(error);
     }
     if(stderr)
     {
       console.log(`stderr: ${stderr}`);
-      return;
+      return callback(stderr);
     }
-    return;
+    return callback(stdout);
   });
+};
 
-  return result;
+// run the corresponding excutable
+function run(filename, user, callback) {
+  console.log(filename);
+  var result = {comp:"", prog:""};
+  compile(filename, user, res => {
+    if(res)
+    {
+      result.comp = res;
+      return callback(result);
+    }
+    exec(user+'.exe', function(err, stdout, stderr) {
+      if(err)
+      {
+        console.log(err);
+        if(stderr)
+        {
+          console.log(stderr);
+          result.prog = stderr;
+        }
+        return callback(result);
+      }
+      if(stderr)
+      {
+        console.log(stderr);
+        result.prog = stderr;
+        return callback(result);
+      }
+      exec('del '+user+'.exe', (rerr) => {
+        if(rerr)
+        {
+          console.log(rerr);
+        }
+      });
+      exec('del '+filename, (rserr) => {
+        if(rserr)
+        {
+          console.log(rserr);
+        }
+      });
+      result.prog = stdout;
+      return callback(result);
+    });
+  });
 }
 
 // handle requests upon invoke
 process.on('message', m => {
     const data = JSON.parse(m); // user: userID, name: src code name
-    var result = run(data.USER, data.NAME);
-    process.send(JSON.stringify(result));
+    run(data.USER, data.NAME, msg => {
+      return process.send(JSON.stringify(msg));
+    })
 });

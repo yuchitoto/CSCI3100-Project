@@ -1,0 +1,33 @@
+.block{
+    width:60%;
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:auto;
+    margin-right:auto;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+    padding-left:1rem;
+    padding-right:1rem;
+    font-size: 30px;
+    background-color: white;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+    text-align: center;
+}
+
+.code{
+    margin-top:1rem;
+    padding-top:0.1rem;
+    padding-bottom:0.1rem;
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+    font-size:30px;
+    text-align:left;
+    width:99%;
+    min-height:100px;
+    background-color: black;
+    color:white;
+}
+
+body{
+    background-color: rgb(121, 121, 121);
+}

@@ -35,7 +35,7 @@ CREATE TABLE `post` (
   KEY `CODE` (`CODE`),
   CONSTRAINT `post_ibfk_1` FOREIGN KEY (`USER`) REFERENCES `user` (`ID`),
   CONSTRAINT `post_ibfk_2` FOREIGN KEY (`CODE`) REFERENCES `src_code` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,8 +44,38 @@ CREATE TABLE `post` (
 
 LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
-INSERT INTO `post` VALUES (1,1,'Welcome to Forum','Welcome to forum, you can post and comment on others code freely',0,1,'2020-03-25 13:32:05'),(2,1,NULL,'Please feel free to post anything related to code here',1,NULL,'2020-03-25 13:33:09'),(4,1,'Intro to C++','Website for introduction to C++\nhttps://www.tutorialspoint.com/cplusplus/index.htm\nWell, there are plenty of guides available on google also, so pls google it if you don\'t like it',0,1,'2020-04-19 16:35:34'),(5,1,NULL,'The C++ Programming Language written by Bjarne Stroustrup is also a good book to begin with',4,NULL,'2020-04-19 17:07:00'),(6,1,NULL,'Enjoy programming!',1,NULL,'2020-04-19 16:39:39');
+INSERT INTO `post` VALUES (1,1,'Welcome to Forum','Welcome to forum, you can post and comment on others code freely',0,1,'2020-03-25 13:32:05'),(2,1,NULL,'Please feel free to post anything related to code here',1,NULL,'2020-03-25 13:33:09'),(4,1,'Intro to C++','Website for introduction to C++\nhttps://www.tutorialspoint.com/cplusplus/index.htm\nWell, there are plenty of guides available on google also, so pls google it if you don\'t like it',0,1,'2020-04-19 16:35:34'),(5,1,NULL,'The C++ Programming Language written by Bjarne Stroustrup is also a good book to begin with',4,NULL,'2020-04-19 17:07:00'),(6,1,NULL,'Enjoy programming!',1,NULL,'2020-04-19 16:39:39'),(12,1,NULL,'Well, sadly this online IDE is not supporting C++, but C',4,NULL,'2020-04-22 04:12:11'),(13,1,'Intro to C','Again, tutorialspoint provide a good introduction to programming in C.\r\nhttps://www.tutorialspoint.com/cprogramming/index.htm',0,1,'2020-04-22 07:06:22');
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rating`
+--
+
+DROP TABLE IF EXISTS `rating`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ SET character_set_client = utf8mb4 ;
+CREATE TABLE `rating` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `USERID` bigint(20) NOT NULL,
+  `POSTID` bigint(20) NOT NULL,
+  `RATE` int(11) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `USERID` (`USERID`),
+  KEY `POSTID` (`POSTID`),
+  CONSTRAINT `rating_ibfk_1` FOREIGN KEY (`USERID`) REFERENCES `user` (`ID`),
+  CONSTRAINT `rating_ibfk_2` FOREIGN KEY (`POSTID`) REFERENCES `post` (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rating`
+--
+
+LOCK TABLES `rating` WRITE;
+/*!40000 ALTER TABLE `rating` DISABLE KEYS */;
+INSERT INTO `rating` VALUES (1,1,1,5);
+/*!40000 ALTER TABLE `rating` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -66,7 +96,7 @@ CREATE TABLE `src_code` (
   PRIMARY KEY (`ID`),
   KEY `USER` (`USER`),
   CONSTRAINT `src_code_ibfk_1` FOREIGN KEY (`USER`) REFERENCES `user` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,7 +105,7 @@ CREATE TABLE `src_code` (
 
 LOCK TABLES `src_code` WRITE;
 /*!40000 ALTER TABLE `src_code` DISABLE KEYS */;
-INSERT INTO `src_code` VALUES (1,'hello_world.cpp',1,'#include <iostream>\r\n\r\nusing namespace std;\r\n\r\nint main(void)\r\n{\r\n  // testing\r\n  cout << \"Hello world\" << endl;\r\n  return 0;\r\n}\r\n',130,NULL,0);
+INSERT INTO `src_code` VALUES (1,'hello_world.c',1,'#include <stdio.h>\n\nint main(void)\n{\n   printf(\"Hello world\\n\");\n   return 0;\n}\n',130,NULL,3),(4,'hello_world.cpp',1,'#include <iostream>\n\nusing namespace std;\n\nint main(void)\n{\n   cout << \"Hello world\" << endl;\n   return 0;\n}\n',130,NULL,0);
 /*!40000 ALTER TABLE `src_code` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +128,7 @@ CREATE TABLE `user` (
   UNIQUE KEY `ID_UNIQUE` (`ID`),
   UNIQUE KEY `USERNAME_UNIQUE` (`USERNAME`),
   UNIQUE KEY `EMAIL_UNIQUE` (`EMAIL`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +137,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'ADMIN','CSCI3100GRP18@localhost.net','CSCI3100GRP18',0,NULL,NULL);
+INSERT INTO `user` VALUES (1,'ADMIN','CSCI3100GRP18@localhost.net','CSCI3100GRP18',0,NULL,NULL),(7,'TEST','test@test.com','ABC',0,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -120,4 +150,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-20 22:38:22
+-- Dump completed on 2020-04-22 20:49:44

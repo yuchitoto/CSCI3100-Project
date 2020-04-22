@@ -12,7 +12,7 @@ body{
   padding:1rem;
   float:left;
   width: 25%;
-  background-color: white;
+  background-color: ghostwhite;
   color:#222f85;
   font-size:30px;
 }
@@ -27,12 +27,17 @@ body{
   padding-left:1rem;
   padding-right:1rem;
   font-size: 30px;
-  background-color: white;
+  background-color: ghostwhite;
   box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
 }
 
-h1 {
+h4 {
   color:#222f85;
+}
+
+h5{
+  margin-top: 5px;
+  margin-bottom: -10px;
 }
 
 img.contrib {
@@ -42,4 +47,18 @@ img.contrib {
   border-radius: 50%;
   border: 5px solid #222f85;
   box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+}
+
+#intro {
+  font-size: 20px;
+}
+
+#update{
+  list-style-type: square;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.point{
+  font-size: 20px;
 }
