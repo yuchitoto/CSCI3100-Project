@@ -53,14 +53,14 @@ return false for error, and compiler or program result
       {
         return callback(false);
       }
-      const name = msg[0].USER.toString(10)+"_"+codeID.toString(10)+".cpp";
+      const name = 'tmp_data\\'+msg[0].USER.toString(10)+"_"+codeID.toString(10)+".c";
       fs.writeFile(name, msg[0].SRC, (err) => {
         if(err)
         {
           console.log(`error: ${err.message}`);
           return callback(false);
         }
-        runner.send(JSON.stringify({USER:msg[0].USER.toString(10), NAME:codeID.toString(10)}));
+        runner.send(JSON.stringify({USER:name, NAME:codeID.toString(10)}));
         runner.on("message", res => {
           return callback(JSON.parse(res));
         });
@@ -86,3 +86,5 @@ return false for error, compiler or program result otherwise
     });
   }
 }
+
+module.exports = {Code:Code};

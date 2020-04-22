@@ -15,7 +15,7 @@
     </div>
     <% for(var i=0; i<code.length; i++) {%>
       <div class="block">
-        <%= i %><br>
+        <a href= <%-"/code?code="+code[i].ID%>><%= code[i].NAME %></a> <br>
         <div class="code">
           <pre><%= code[i].SRC %></pre>
         </div>
