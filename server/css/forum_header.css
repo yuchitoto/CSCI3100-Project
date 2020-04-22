@@ -47,7 +47,7 @@
     position:absolute;
     right:0;
     min-width:300px;
-    z-index:99;
+    z-index:10;
     background-color:#448aff;
     list-style: none;
 }
