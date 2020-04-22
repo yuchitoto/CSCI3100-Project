@@ -55,7 +55,13 @@ app.set('view engine', 'ejs');
 app.use(bdp.urlencoded({extended:true}));
 app.use(bdp.json());
 app.use(function(req, res, next){
-  res.locals.session = req.session;
+  if(req.session.sign){
+    res.locals.login = true;
+  }
+  else res.locals.login = false;
+  res.locals.logout = false;
+  console.log('sign');
+  console.log(res.locals.login);
   next();
 });
 
@@ -359,7 +365,9 @@ app.post('/login', function(req, res) {
       }
     })
   }
-  else res.redirect('/login');
+  else{
+    res.render('login', {miss:true});
+  };
 });
 
 // user logout
@@ -372,12 +380,12 @@ app.get('/logout', function(req, res){
       }
       console.log("logout successfully");
       console.log(req.session);
-      res.redirect('/');
+      res.render('mainpage', {logout: true});
     })
   }
   else{
     console.log("did not login");
-    res.redirect('login');
+    res.redirect('/');
   }
 });
 
@@ -453,7 +461,9 @@ app.post('/create_account*', function(req, res) {
       }
     })
   }
-  else return res.redirect('./404.html');
+  else{
+    res.render('create_account', {miss:true});
+  };
 });
 
 // general treatnebt for html pages
