@@ -325,8 +325,6 @@ app.get('/login', function(req, res) {
 
 app.post('/login', function(req, res) {
   /*authentication*/
-  console.log("ok");
-  console.log(req.body);
   if(req.session.sign){
     console.log("Already login");
     //res.send("Already login");
@@ -433,6 +431,11 @@ app.delete('/user', function(req, res) {
 // for account creation
 app.get('/create_account*', function(req, res) {
   /*fetch account create page*/
+  if(req.session.sign){
+    console.log('login');
+    console.log(req.session);
+    res.redirect('/user');
+  }
   return res.render('create_account');
 });
 
