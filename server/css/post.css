@@ -53,3 +53,19 @@
 body{
     background-color: rgb(121, 121, 121);
 }
+
+button[type="submit"]{
+    width:80%;
+    margin-top:1rem;
+    margin-bottom:1rem;
+    padding:0.5rem;
+    font-size:30px;
+    height:50px;
+    border: none;
+    background-color: white;
+    transition: all 0.3s;
+}
+
+button[type="submit"]:hover{
+    background-color: #7f8ad8;
+}
