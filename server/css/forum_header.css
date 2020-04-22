@@ -22,7 +22,6 @@
     color:ghostwhite;
     transition: all 0.3s;
     cursor: pointer;
-    font-family: 'Poppins', serif;
     font-size: 15px;
     border:none;
     background-color: transparent;
@@ -36,7 +35,7 @@
 }
 
 .navbar_submenu-container{
-    position:relative;
+    
 }
 
 .navbar_submenu-container:hover .navbar_submenu{
@@ -68,7 +67,6 @@
     display:block;
     padding:0.5rem;
     cursor: pointer;
-    font-family: 'Poppins', serif;
     font-size: 15px;
     border:none;
     background-color: transparent;
