@@ -11,11 +11,12 @@
       <div>
         <h2>Create new account</h2>
         <form action= <%-"/create_account"%> method="post">
-            <input class="input" name="name" placeholder="username" required>
-            <input class="input" name="email" placeholder="email" required>
-            <input class="input" name="password" placeholder="password" required>
+            <input class="input" name="name" placeholder="username" >
+            <input class="input" name="email" placeholder="email" >
+            <input class="input" name="password" placeholder="password" >
         <br>
         <button type="submit" value="create" >
+        <p style="<%= (locals.miss)? 'display:block':'display:none'%>">Please provide username, email and password</p>
         </form>
       </div>
 

@@ -16,10 +16,11 @@
         <form class="form" action= <%-"/login"%> method="post">
             Username:<input class="input" name="name" placeholder="username"><br>
             Email:<input class="input" name="email" placeholder="email"><br>
-            Password:<input class="input" name="password" placeholder="password" required><br>
+            Password:<input class="input" name="password" placeholder="password"><br>
       </div>
       <div style="text-align: center;">
         <input type="submit" value="Login" />
+        <p style="<%= (locals.miss)? 'display:block':'display:none'%>">Please provide (username or email) and password</p>
       </div>
         </form>
 

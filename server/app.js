@@ -362,7 +362,9 @@ app.post('/login', function(req, res) {
       }
     })
   }
-  else res.redirect('/login');
+  else{
+    res.render('login', {miss:true});
+  };
 });
 
 // user logout
@@ -456,7 +458,9 @@ app.post('/create_account*', function(req, res) {
       }
     })
   }
-  else return res.redirect('./404.html');
+  else{
+    res.render('create_account', {miss:true});
+  };
 });
 
 // general treatnebt for html pages
