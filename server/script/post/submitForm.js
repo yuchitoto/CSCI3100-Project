@@ -8,6 +8,10 @@ function validation(o)
       code=true;
     }
   }
+  if(document.getElementById('TITLE').value=="" || document.getElementById('TITLE').value.split(' ')[0]=="")
+  {
+    code=false;
+  }
   return code;
 }
 
@@ -19,6 +23,6 @@ function submitForm(o)
   }
   else
   {
-    window.alert("Please select code to mention");
+    window.alert("A new post needs a good title and a good source code for show off");
   }
 }

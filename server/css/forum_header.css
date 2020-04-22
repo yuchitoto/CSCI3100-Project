@@ -19,7 +19,7 @@
 
 .navbar_link{
     text-decoration: none;
-    color:white;
+    color:ghostwhite;
     transition: all 0.3s;
     cursor: pointer;
     font-size: 15px;
@@ -30,7 +30,7 @@
 }
 
 .navbar_link:hover{
-    background-color:white;
+    background-color:ghostwhite;
     color:#222f85;
 }
 
@@ -63,7 +63,7 @@
 
 .navbar_submenu-link{
     text-decoration: none;
-    color:white;
+    color:ghostwhite;
     display:block;
     padding:0.5rem;
     cursor: pointer;

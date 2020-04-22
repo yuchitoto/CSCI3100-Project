@@ -7,14 +7,14 @@
     padding-bottom:0.5rem;
     padding-left:1rem;
     padding-right:1rem;
-    font-size: 20px;
-    background-color: white;
+    font-size: 30px;
+    background-color: ghostwhite;
     box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
 }
 
 .code{
     background-color: black;
-    color:white;
+    color:ghostwhite;
     padding:0.8rem;
     font-size: 15px;
 }
