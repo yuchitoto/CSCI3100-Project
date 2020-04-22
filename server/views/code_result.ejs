@@ -3,10 +3,21 @@
   <head>
     <meta charset="utf-8">
     <title>Result</title>
+    <link href="/css/code_result.css" rel="stylesheet" type="text/css">
   </head>
   <body>
     <%-include('forum_header.ejs')%>
-    <p><%-res.comp%></p>
-    <p><%-res.prog%></p>
+    <div class="block">
+      <h3>Program Result</h3>
+    <div class="code">
+      <pre><%-res.prog%></pre>
+    </div>
+    </div>
+    <div class="block">
+      <h3>Compiler Display</h3>
+    <div class="code">
+      <pre><%-res.comp%></pre>
+    </div>
+    </div>
   </body>
 </html>
