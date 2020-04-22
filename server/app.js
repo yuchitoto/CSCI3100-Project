@@ -56,13 +56,12 @@ app.use(bdp.urlencoded({extended:true}));
 app.use(bdp.json());
 app.use(function(req, res, next){
   res.locals.login = req.session.sign;
-  res.locals.logout = false;
   next();
 });
 
 // prepare for homepage
 app.get('/', function(req, res) {
-  //console.log(req);
+  console.log(req);
   res.render('mainpage');
 });
 
@@ -373,9 +372,9 @@ app.get('/logout', function(req, res){
       if(err){
         console.log(err);
       }
-      console.log("logout successfully");
+      console.log("logout success");
       console.log(req.session);
-      res.render('mainpage', {logout: true});
+      res.redirect('logout');
     })
   }
   else{
