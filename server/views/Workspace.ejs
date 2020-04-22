@@ -195,8 +195,19 @@
                 </div>
             </div>
 
+            <input type="button" onclick="saveCode()" value="Save">
+            <input type="button" onclick="saveCode()" value="Save, Run and Compile">
         </section>
     </div>
+
+    <script type="text/javascript">function saveCode() {
+        var data = document.getElementById("code4C").value;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/code", true);
+        xhr.setRequestHeader('Content - Type', 'application / json');
+        xhr.send(data);
+
+        }</script>
 
 </body>
 </html>
