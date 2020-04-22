@@ -1,38 +1,6 @@
-body{
-    background-color: rgb(121, 121, 121);
-    align-items: center;
-}
-
-/* .login{
-    background-color: ghostwhite;
-    color: black;
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    margin: auto;
-} */
-
 .title{
     text-align: center;
     color: #4b5491;
-}
-
-.block{
-    width:50%;
-    margin-top:1rem;
-    margin-bottom:1rem;
-    margin-left:auto;
-    margin-right:auto;
-    padding-top:0.5rem;
-    padding-bottom:0.5rem;
-    padding-left:1rem;
-    padding-right:1rem;
-    font-size: 20px;
-    background-color: ghostwhite;
-    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
-    text-align: center;
 }
 
 .input{

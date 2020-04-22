@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
     <title>Code Editor</title>
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
 </head>
 
 <body onload="start()">
@@ -33,7 +34,7 @@
 
     </header>
 
-    <div class="container" style="padding: 10px; margin: 10px; margin-left: auto; margin-right: auto; width: 90%; box-shadow: 0px 4px 4px 4px #999999 ">
+    <div class="container" style="background-color:ghostwhite; padding: 10px; margin: 10px; margin-left: auto; margin-right: auto; width: 90%; box-shadow: 0px 4px 4px 4px #999999 ">
         <div class="row">
             <section class="col-md-8 col-xs-12" style="border:0px solid #4a4a4a; border-style: inset;padding: 0px;">
                 <div id="blocklyDiv" class="col-md-12" style="height: 400px;margin: 0px;">
@@ -179,7 +180,7 @@
         </div>
     </div>
     <div>
-        <section class="col-md-4 col-xs-12" style=" padding: 10px;margin: 10px ; margin-left: auto; margin-right:auto; box-shadow: 0px 4px 4px 4px #999999;width:90%">
+        <section class="col-md-4 col-xs-12" style="background-color:ghostwhite; padding: 10px;margin: 10px ; margin-left: auto; margin-right:auto; box-shadow: 0px 4px 4px 4px #999999;width:90%">
 
             <div class="col-md-12 col-xs-12" style="height: auto; overflow: auto;">
                 <div id="code-wrapper" class="panel panel-default col-md-12" style="border: 0px solid black;height: 95%;width:100%">
@@ -198,7 +199,7 @@
                 <label for="fname">(example.c)</label><br><br>
                 <label for="lname">Paste your code here:</label><br><br>
                 <input type="text" id="lname" name="SRC"><br><br>
-                <button type="submit" form="form1" name="action" value="save">Run</button>
+                <button class="button1" type="submit" form="form1" name="action" value="save">Run</button>
             </form>
 
         </section>
