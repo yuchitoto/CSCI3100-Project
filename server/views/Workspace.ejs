@@ -29,11 +29,8 @@
 
 
 
-    <header id="header" style="border: 1px solid black">
-        <div class="header" style="border: 30px solid #006fff">
-            <!--</div>-->
-        </div>
-
+    <header id="header" style="border: 0px solid black">
+        
     </header>
 
     <div class="container" style="padding: 10px; margin: 10px; margin-left: auto; margin-right: auto; width: 90%; box-shadow: 0px 4px 4px 4px #999999 ">
@@ -196,7 +193,7 @@
             </div>
 
             <input type="button" onclick="saveCode()" value="Save">
-            <input type="button" onclick="saveCode()" value="Save, Run and Compile">
+            <input type="button" onclick="saveRunCode()" value="Save, Run and Compile">
         </section>
     </div>
 
@@ -204,7 +201,16 @@
         var data = document.getElementById("code4C").value;
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/code", true);
-        xhr.setRequestHeader('Content - Type', 'application / json');
+        xhr.setRequestHeader('action', 'save');
+        xhr.send(data);
+
+        }</script>
+        
+    <script type="text/javascript">function saveRunCode() {
+        var data = document.getElementById("code4C").value;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/code", true);
+        xhr.setRequestHeader('action', 'sacpar');
         xhr.send(data);
 
         }</script>
