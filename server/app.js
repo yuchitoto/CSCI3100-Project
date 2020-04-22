@@ -472,7 +472,7 @@ app.use('*.html', function(req, res, next) {
 // send javascript for front-end
 app.use('*.js', function(req, res, next) {
   var path = './script'+req._parsedUrl.pathname;
-  console.log(path);
+  console.log(req._parsedUrl);
   fs.readFile(path, function(err, data) {
     if(err)
     {
