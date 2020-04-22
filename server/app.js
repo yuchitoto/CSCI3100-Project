@@ -56,13 +56,12 @@ app.use(bdp.urlencoded({extended:true}));
 app.use(bdp.json());
 app.use(function(req, res, next){
   res.locals.login = req.session.sign;
-  res.locals.logout = false;
   next();
 });
 
 // prepare for homepage
 app.get('/', function(req, res) {
-  //console.log(req);
+  console.log(req);
   res.render('mainpage');
 });
 
@@ -326,8 +325,6 @@ app.get('/login', function(req, res) {
 
 app.post('/login', function(req, res) {
   /*authentication*/
-  console.log("ok");
-  console.log(req.body);
   if(req.session.sign){
     console.log("Already login");
     //res.send("Already login");
@@ -373,9 +370,9 @@ app.get('/logout', function(req, res){
       if(err){
         console.log(err);
       }
-      console.log("logout successfully");
+      console.log("logout success");
       console.log(req.session);
-      res.render('mainpage', {logout: true});
+      res.redirect('logout');
     })
   }
   else{
@@ -434,6 +431,11 @@ app.delete('/user', function(req, res) {
 // for account creation
 app.get('/create_account*', function(req, res) {
   /*fetch account create page*/
+  if(req.session.sign){
+    console.log('login');
+    console.log(req.session);
+    res.redirect('/user');
+  }
   return res.render('create_account');
 });
 
