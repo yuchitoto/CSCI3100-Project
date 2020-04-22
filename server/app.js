@@ -81,7 +81,7 @@ app.get('/code', function(req, res) {
 });
 
 app.get('/code/write', function(req, res) {
-  if(!Object.keys(req.query).includes('user'))
+  if(!Object.keys(req.session).includes('ID'))
   {
     return res.redirect('/forum');
   }
