@@ -9,7 +9,7 @@ const fs = require('fs');
 //let POST = sql.POST;
 
 function main() {
-  const sql = fork('./connect_sql.js', ['new_user']);
+  const sql = fork('./connect_sql.js', ['find_user']);
   /*sql.send(JSON.stringify({existsTitle:[],user:[],inContext:['intro'],id:[]}));
   sql.on("message", msg => {
     if(msg=='fail')
@@ -20,7 +20,7 @@ function main() {
     const dep = JSON.parse(msg);
     console.log(dep);
   });*/
-  sql.send(JSON.stringify({USERNAME:"TEST", EMAIL:"TESTER", PASSWORD:"ABC", ACC_TYPE:0}));
+  sql.send(JSON.stringify({ID:1}));
   sql.on("message", msg => {
     console.log(msg);
   });
