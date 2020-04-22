@@ -27,7 +27,7 @@ function main() {
     console.log(msg);
   });*/
   const coder = new Code(1);
-  coder.save("#include <stdio.h>\n\nint main(void)\n{\n   printf(\"this is a test\n\");\n   return 0;\n}\n","","abc.c", msg => {
+  coder.fetch(5, msg => {
     console.log(msg);
   });
 }
