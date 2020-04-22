@@ -7,7 +7,6 @@
 
   </head>
   <body>
-    <p style="<%= (locals.logout)? 'display:block':'display:none'%>">Logout successfully</p>
     <%- include ('forum_header.ejs') %>
     <div class="intro">
       <div class="block">
@@ -15,14 +14,14 @@
       </div>
       <div class="block">
         <h5>This is an online visualised code editor</h5>
-        <p>The knowledge of programming become more and more important for poeple of all ages in this
+        <p id="intro">The knowledge of programming become more and more important for poeple of all ages in this
         era of information. Therefore we are creating this website to provide a simple introduction to beginners in code to help them understand how to do programming quickly.</p>
       </div>
       <div class="block">
       <h5>Undergoing Development</h5>
-        <ul>
-          <li>auto result comparison for teachers and others for code checking</li>
-          <li>auto module adder for programmer to add their own libraries and functions written and stored here</li>
+        <ul id="update">
+          <li class="point">auto result comparison for teachers and others for code checking</li>
+          <li class="point">auto module adder for programmer to add their own libraries and functions written and stored here</li>
         </ul>
       </div>
     </div>
