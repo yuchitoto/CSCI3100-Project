@@ -9,7 +9,7 @@
     padding-left:1rem;
     padding-right:1rem;
     font-size: 20px;
-    background-color: white;
+    background-color: ghostwhite;
     box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
     text-align: center;
 }
@@ -25,7 +25,7 @@
     width:99%;
     min-height:100px;
     background-color: black;
-    color:white;
+    color:ghostwhite;
     word-break: normal;
 }
 

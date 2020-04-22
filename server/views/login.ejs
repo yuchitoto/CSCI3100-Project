@@ -3,26 +3,28 @@
   <head>
     <meta charset="utf-8">
     <title>Code Block Login</title>
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
     <link href="/css/auth.css" rel="stylesheet" type="text/css">
     
   </head>
   <body>
     <%- include ('forum_header.ejs') %>
-    <div class="login">
+    <div style="padding-top: 20px;">
       <div class="block">
-        <h2 style="text-align:center">Login</h2>
-      </div>
-      <div class="block" style="text-align: center;">
-        <form class="form" action= <%-"/login"%> method="post">
+        <div>
+          <h2 class="title" >Login</h2>
+        </div>
+        <div style="text-align: center;">
+          <form class="form" action= <%-"/login"%> method="post">
             <input class="input" name="name" placeholder="username/email"><br>
             <input class="input" name="password" placeholder="password"><br>
+              <div id="login_button">
+                <input class="button1" type="submit" value="Login" />
+                <p style="<%= (locals.miss)? 'display:block;color:red;':'display:none'%>">Please provide (username or email) and password</p>
+              </div>
+          </form>
+        </div>
       </div>
-      <div style="text-align: center;">
-        <input type="submit" value="Login" />
-        <p style="<%= (locals.miss)? 'display:block;color:red;':'display:none'%>">Please provide (username or email) and password</p>
-      </div>
-        </form>
-
-  </div>
+    </div>
   </body>
 </html>
