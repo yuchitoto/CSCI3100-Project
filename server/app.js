@@ -2,6 +2,7 @@
 var express = require('express');
 var app = express();
 var http = require('http');
+var https = require('https');
 var url = require('url');
 var fs = require('fs');
 var {fork} = require('child_process');
@@ -49,6 +50,15 @@ function get_not_found(callback) {
 
 // setting up server not by using express directly so that htpps may be handled
 var httpServer = http.createServer(app);
+
+var hskey = fs.readFileSync('key.pem');
+var hscert = fs.readFileSync('cert.pem');
+var credentials = {
+  key:hskey,
+  cert:hscert,
+  passphrase:"CSCI3100GRP18"
+};
+var httpsServer = https.createServer(credentials, app);
 
 // use embedded javascript as html template generator
 app.set('view engine', 'ejs');
@@ -572,3 +582,4 @@ app.use('*.css', function(req, res) {
 
 
 httpServer.listen(8080);
+httpsServer.listen(8443);
