@@ -198,20 +198,24 @@
     </div>
 
     <script type="text/javascript">function saveCode() {
-        var data = document.getElementById("code4C").value;
+        var data = {
+          document.getElementById("code4C").value;
+        }
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/code", true);
         xhr.setRequestHeader('action', 'save');
-        xhr.send(data);
+        xhr.send(JSON.stringify(data))
 
         }</script>
         
-    <script type="text/javascript">function saveRunCode() {
-        var data = document.getElementById("code4C").value;
+    <script type="text/javascript">function saveCode() {
+        var data = {
+          document.getElementById("code4C").value;
+        }
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/code", true);
         xhr.setRequestHeader('action', 'sacpar');
-        xhr.send(data);
+        xhr.send(JSON.stringify(data))
 
         }</script>
 
