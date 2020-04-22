@@ -15,8 +15,10 @@
             <input class="input" name="email" placeholder="email" >
             <input class="input" name="password" placeholder="password" >
         <br>
-        <button type="submit" value="create" >
-        <p style="<%= (locals.miss)? 'display:block':'display:none'%>">Please provide username, email and password</p>
+        <input type="submit" value="create" />
+          <p style="<%= (locals.miss)? 'display:block':'display:none'%>">Please provide username, email and password</p>
+          <p style="<%= (locals.same_email)? 'display:block':'display:none'%>">This email has been registor</p>
+          <p style="<%= (locals.same_name)? 'display:block':'display:none'%>">This username has been registor</p>
         </form>
       </div>
 
