@@ -88,10 +88,15 @@ class MySQLDatabase {
 
   // universal update statement, problematic when 2nd level is obj
   update(val, cond, callback) {
-    var query = "UPDATE ?? SET ? WHERE ?";
+    var query = "UPDATE ?? SET ? ";
     const key = Object.keys(cond);
     const value = Object.values(cond);
     var pr = [this.table].push(val);
+    for (var i=1;i<val.length;i++)
+    {
+      query += ",? ";
+    }
+    query += "WHERE ?";
     for (var i=0;i<key.length;i++)
     {
       if(i>0)
@@ -583,6 +588,55 @@ class POST extends MySQLDatabase {
   calculateGrade(postID, callback) {
     //calc grade for post
   }*/
+}
+
+class RATING{
+  constructor()
+  {
+    super("RATING");
+  }
+
+  insertRating(data, callback)
+  {
+    this.insert(data, function(err, res) {
+      if(err)
+      {
+        console.log(err);
+        return callback('fail');
+      }
+      return callback('success');
+    });
+  }
+
+  updateRating(data, callback)
+  {
+    this.update([{RATE:data.RATE}], {POSTID:data.POSTID, USERID:data.USERID}, function(err, res) {
+      if(err)
+      {
+        console.log(err);
+        return callback('fail');
+      }
+      return callback('success');
+    });
+  }
+
+  rating(data, callback)
+  {
+    var mark = 0;
+    const query = "SELECT a.COUNT(*) AS BASE, SUM(RATE) AS RATING FROM RATING WHERE ?";
+    this.connection.query(query, [data], function(err, res) {
+      if(err)
+      {
+        console.log(err);
+        return callback(-1);
+      }
+      if(res[0].BASE>0)
+      {
+        mark = res[0].RATING / res[0].BASE;
+      }
+      return callback(mark);
+    });
+  }
 }
 
 
