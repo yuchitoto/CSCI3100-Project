@@ -87,7 +87,7 @@ app.get('/code/write', function(req, res) {
   }
   var codehold = {NAME:"", USER:req.session['ID'], SRC:"", BLK:""};
   var tmp = {code:codehold, action:""};
-  res.render('write_code', tmp);
+  return res.render('Workspace', tmp);
 });
 
 app.post('/code', function(req, res) {
