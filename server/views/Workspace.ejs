@@ -192,8 +192,14 @@
                 </div>
             </div>
 
-            <input type="button" onclick="saveCode()" value="Save">
-            <input type="button" onclick="saveRunCode()" value="Save, Run and Compile">
+            <form action="/action_page.php" method="get" target="_blank">
+                <label for="fname">File Name:</label>
+                <input type="text" id="fname" name="name"><br><br>
+                <label for="lname">Paste your code here:</label><br><br>
+                <input type="text" id="lname" name="sourceCode"><br><br>
+                <input type="submit" value="Save">
+            </form>
+
         </section>
     </div>
 
