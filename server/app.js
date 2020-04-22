@@ -95,21 +95,24 @@ app.get('/code/write', function(req, res) {
 });
 
 app.post('/code', function(req, res) {
+  console.log(`action on code: ${req.body.action}`);
+  const coder = new Code((req.session['ID'])?req.session['ID']:0);
 
-  if(!Object.keys(req.session).includes('ID'))
+  if(req.body.action=='cpar')
   {
-    var coder = new Code();
-    if(req.body.action=='cpar')
-    {
-      coder.cpar(req.query['code'], msg => {
-        var tmp = {res:msg, user:"", loc:req.query['code']};
-        return res.render('code_result',tmp);
-      });
-    }
+    coder.cpar(req.query['code'], msg => {
+      var tmp = {res:msg, loc:req.query['code']};
+
+      return res.render('code_result',tmp);
+    });
+  }
+
+  if(!Object.keys(req.session).includes('ID') && req.body.action!='cpar')
+  {
     return res.redirect('/404.html');
   }
   // previlleged actions
-  var coder = new Code(req.session['ID']);
+
   /*save code*/
   // if return is success, indicates an update, not fail a new code
   if(req.body.action=='save')
@@ -137,7 +140,7 @@ app.post('/code', function(req, res) {
       }
       else if(m.loc != 'fail')
       {
-        var tmp = {res:m.res, loc:m.loc};
+        var tmp = {res:m.res, loc:m.loc, action:""};
         return res.render('code_result', tmp);
       }
       return res.redirect('/404.html');
