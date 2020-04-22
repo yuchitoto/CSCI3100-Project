@@ -7,10 +7,10 @@ class Code{
     this.userid = userid;
   }
 
-  fetch(codeID, callback)
+  fetch(param, callback)
   {
     const fetcher = fork("connect_sql.js", ["fetch_code"]);
-    fetcher.send(JSON.stringify({ID:codeID}));
+    fetcher.send(JSON.stringify(param));
     fetcher.on("message", msg => {
       if(msg=='fail')
       {
@@ -48,7 +48,7 @@ return false for error, and compiler or program result
   cpar(codeID, callback)
   {
     const runner = fork("compAndRun.js");
-    this.fetch(codeID, msg => {
+    this.fetch({ID:codeID}, msg => {
       if(msg=='fail')
       {
         return callback(false);
