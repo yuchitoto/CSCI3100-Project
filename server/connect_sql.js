@@ -60,6 +60,10 @@ class MySQLDatabase {
       pr.push({[key[i]]:value[i]});
     }
     this.connection.query(query, pr, function(err, data) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+      }
       return callback(err, data);
     });
   }
@@ -87,7 +91,7 @@ class MySQLDatabase {
     var query = "UPDATE ?? SET ? WHERE ?";
     const key = Object.keys(cond);
     const value = Object.values(cond);
-    var pr = [this.table, val];
+    var pr = [this.table].push(val);
     for (var i=0;i<key.length;i++)
     {
       if(i>0)
@@ -194,7 +198,7 @@ class SRC_CODE extends MySQLDatabase {
             return callback('fail');
           }
           console.log(res);
-          return callback('success');
+          return callback(res.insertId);
         });
       }
       else if (tmpres['COUNT(*)'] == 1) {
@@ -212,14 +216,14 @@ class SRC_CODE extends MySQLDatabase {
     });
   }
 
-  allCode(user, callback)
-  {
+  allCode(user, callback) {
     this.selectWhenAllTrue(user, function(err, res) {
       if(err)
       {
         console.log(`error: ${err.message}`);
         return callback('fail');
       }
+      console.log(res);
       return callback(res);
     });
   }
@@ -231,36 +235,49 @@ class USER extends MySQLDatabase {
     super("USER");
   }
 
-  newUser(data, callback) {
-    /*new user*/
+  insertUser(data, callback){
     this.insert(data, function(err1, res1) {
       if(err1)
       {
         console.log(`error: ${err1.message}`);
         return callback(0);
       }
-      this.selectWhenAllTrue(data, function(err2, res2) {
-        if(err2)
+      return callback(res1);
+    });
+  }
+
+  newUser(data, callback) {
+    /*new user*/
+    //console.log('wowo');
+    //console.log(data);
+    //console.log('wowo');
+    this.insertUser(data, res => {
+      if(res==0)
+      {
+        return callback(0);
+      }
+      this.selectWhenAllTrue(data, function(err, result) {
+        if(err)
         {
-          console.log(`error: ${err2.message}`);
           return callback(0);
         }
-        if(res2.length==1)
+        if(result.length==1)
         {
-          return callback(res2[0].ID);
+          return callback(result[0].ID);
         }
         return callback(0);
-      })
-    })
+      });
+    });
   }
 
   existName(data, callback) {
     /*check if exists same name*/
-    this.selectWhenAllTrue(data, function(err, data) {
+    this.selectWhenAllTrue({USERNAME:data.USERNAME}, function(err, data) {
       if(err) {
         console.log(`error: ${err.message}`);
         return callback(-1);
       }
+      console.log(data.length);
       return callback(data.length);
     });
   }
@@ -283,7 +300,10 @@ class USER extends MySQLDatabase {
         console.log(`error: ${err.message}`);
         return callback('fail');
       }
-      return callback(data);
+      if(data.length == 0){
+        return callback('no_user');
+      }
+      return callback(data[0]);
     });
   }
 
@@ -313,7 +333,7 @@ class USER extends MySQLDatabase {
         return callback('fail');
       }
       //console.log(res);
-      return callback(res.length);
+      return callback(res.affectedRows);
     });
   }
 
@@ -327,6 +347,17 @@ class USER extends MySQLDatabase {
         return callback(-1);
       }
       return callback(data[0].ID);
+    });
+  }
+
+  updateUser(data, callback) {
+    this.update(data.val, data.cur, function(err, res) {
+      if(err)
+      {
+        console.log(`error: ${err.message}`);
+        return callback(false);
+      }
+      return callback(res.affectedRows);
     });
   }
 }
@@ -436,7 +467,7 @@ class POST extends MySQLDatabase {
         queryKey = queryKey.concat(' OR ');
       }
       k+=1;
-      queryKey = queryKey.concat('USERNAME=', item);
+      queryKey = queryKey.concat('USERNAME=\'', item, '\'');
     });
     inContext.forEach((item, i) => {
       if(k==0)
@@ -496,7 +527,7 @@ class POST extends MySQLDatabase {
         queryKey = queryKey.concat(' OR ');
       }
       k+=1;
-      queryKey = queryKey.concat('USERNAME=', item);
+      queryKey = queryKey.concat('USERNAME=\'', item, '\'');
     });
     inContext.forEach((item, i) => {
       if(k==0)
@@ -513,6 +544,7 @@ class POST extends MySQLDatabase {
       queryKey = queryKey.concat(') AND ');
     }
     queryKey = queryKey.concat('REPLY!=0');
+    console.log(queryKey);
     this.simpleSelect({data:'POST.REPLY AS ID', table:'USER, POST', query:queryKey}, function(err, res) {
       if(err)
       {
@@ -573,6 +605,7 @@ function save_code(param, callback) {
 // fetchCode wrapper
 function fetch_code(param, callback) {
   const data = JSON.parse(param);
+  //console.log(data);
   codeT.fetchCode(data, function(err, res) {
     return callback(err, res);
   });
@@ -596,7 +629,7 @@ function new_user(data, callback)
 }
 
 // existName wrapper
-function exist_name(data)
+function exist_name(data, callback)
 {
   const datan = JSON.parse(data);
   userT.existName(datan, msg => {return callback(msg);});
@@ -715,28 +748,29 @@ process.on('message', m => {
   if(myArgs[0]=='fetch_code')
   {
     fetch_code(m, function(err, data) {
-      var result = JSON.stringify(data);
       if(err){
-        console.log(err);
+        console.log(`error: ${err.message}`);
         return process.send('fail');
       }
-      return process.send(result);
+      return process.send(JSON.stringify(data));
     });
-  }
-  if(myArgs[0]=='exist_user')
-  {
-    if(exist_name(m) != 0){
-      process.send('exist_name');
-    }
-    else if(exist_email(m) != 0){
-      process.send('exist_email');
-    }
-    else {
-      process.send('success');
-    }
   }
   if(myArgs[0]=='new_user')
   {
+    var flag = 0;
+    exist_name(m, msg => {
+      if(msg != 0){
+        flag = 1;
+        return process.send('exist_name');
+      }
+    });
+    exist_email(m, msg => {
+      if(msg != 0){
+        flag = 1;
+        return process.send('exist_email');
+      }
+    });
+    if(flag) return;
     new_user(m, id => {
       if(id==0){
         return process.send('fail');
@@ -759,11 +793,11 @@ process.on('message', m => {
   }
   if (myArgs[0]=='find_user') {
     find_user(m, function(res) {
-      if(res=='fail')
+      if(res=='fail' || res=='no_user')
       {
-        return process.send('fail');
+        return process.send(res);
       }
-      return process.send(JSON.stringify(data));
+      return process.send(JSON.stringify(res));
     });
   }
   if (myArgs[0]=='search_post_head') {
@@ -800,13 +834,18 @@ process.on('message', m => {
     new_post(m, msg => {return process.send(msg);});
   }
   if(myArgs[0]=="all_code"){
-    codeT.allCode(JSON.parse(m), msg=>{
+    codeT.allCode(JSON.parse(m), msg => {
+      console.log(msg);
       if(msg=="fail")
       {
-        return callback(msg);
+        return process.send(msg);
       }
-      return callback(JSON.stringify(msg));
+      return process.send(JSON.stringify(msg));
     })
+  }
+  if(myArgs[0]=="update_user")
+  {
+    userT.updateUser(JSON.parse(m), m=>{return process.send(m);});
   }
 });
 

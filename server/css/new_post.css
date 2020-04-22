@@ -1,0 +1,49 @@
+.block{
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:5%;
+    margin-right:5%;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+    padding-left:1rem;
+    padding-right:1rem;
+    font-size: 30px;
+    background-color: white;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+}
+
+.textarea{
+    width: 100%; 
+    outline: 0;
+    border: 1px solid rgb(121, 121, 121);
+    font-size: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+input[type="radio"] {
+    width: 20px;
+    height: 20px;
+} 
+
+input[type="submit"]{
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:5%;
+    margin-right:5%;
+    padding:0.5rem;
+    font-size:30px;
+    width:150px;
+    height:50px;
+    border: none;
+    background-color: white;
+    transition: all 0.3s;
+}
+
+input[type="submit"]:hover{
+    background-color: #7f8ad8;
+}
+
+body{
+    background-color: rgb(121, 121, 121);
+}

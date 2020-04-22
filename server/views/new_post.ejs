@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>New Post</title>
+    <link href="/css/new_post.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <%- include ('forum_header.ejs') %>
+    <div>
+        <form action=<%-"/post?"%> method="post">
+            <div class="block">
+                Title:<br>
+                <textarea class="textarea" id="TITLE" name="TITLE" style="height: 30px;"></textarea>
+            </div>
+            <div class="block">
+                Content:<br>
+                <textarea class="textarea" id="CONTENT" name="CONTENT" style="min-height: 150px;"></textarea>
+            </div>
+            <div class="block">
+              Select your CODE:
+          </div>
+            <% for(var i=0; i<codes.length; i++) {%>
+            <div class="block">
+                <label><input type="radio" name="CODE" id="CODE" value=<%- codes[i].ID %> />  <%- codes[i].NAME %></label>
+            </div>
+            <% } %>
+            <div class="POST">
+              <input type="submit" value="POST">
+            </div>
+            </form>
+    </div>
+  </body>
+</html>
