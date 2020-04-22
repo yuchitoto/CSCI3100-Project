@@ -350,7 +350,7 @@ Blockly.Css.CONTENT = [
   '  height: 16px;',
   '  width: 16px;',
   '  vertical-align: middle;',
-  '  background-image: url(<<<PATH>>>/media/tree.png);',
+  '  background-image: url(<<<PATH>>>/script/lisa/blockly/media/tree.png);',
   '}',
 
   '.blocklyTreeIconClosedLtr {',
