@@ -439,7 +439,13 @@ app.get('/create_account*', function(req, res) {
 
 app.post('/create_account*', function(req, res) {
   /*create new account*/
-  if(req.body.name && req.body.email && req.body.password){
+  if(req.body.name && req.body.email && req.body.password && req.body.retype_password){
+    if(req.body.password.length < 8){
+      return res.render("create_account", {short_pw: true});
+    }
+    if(req.body.password != req.body.retype_password){
+      return res.render("create_account", {diff_pw: true});
+    }
     var data = {USERNAME: req.body.name, EMAIL: req.body.email, PASSWORD: req.body.password, ACC_TYPE: 0};
     var userObj = new User(data);
     userObj.registor(function(m){

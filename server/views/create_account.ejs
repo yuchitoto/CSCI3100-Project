@@ -14,11 +14,14 @@
             <input class="input" name="name" placeholder="username" >
             <input class="input" name="email" placeholder="email" >
             <input class="input" name="password" placeholder="password" >
+            <input class="input" name="retype_password" placeholder="retype password" >
         <br>
         <input type="submit" value="create" />
           <p style="<%= (locals.miss)? 'display:block':'display:none'%>">Please provide username, email and password</p>
           <p style="<%= (locals.same_email)? 'display:block':'display:none'%>">This email has been registor</p>
           <p style="<%= (locals.same_name)? 'display:block':'display:none'%>">This username has been registor</p>
+          <p style="<%= (locals.short_pw)? 'display:block':'display:none'%>">Password should contain at least 8 char</p>
+          <p style="<%= (locals.diff_pw)? 'display:block':'display:none'%>">Password and retype password are different</p>
         </form>
       </div>
 
