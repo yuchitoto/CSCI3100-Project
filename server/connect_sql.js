@@ -590,7 +590,7 @@ class POST extends MySQLDatabase {
   }*/
 }
 
-class RATING{
+class RATING extends MySQLDatabase{
   constructor()
   {
     super("RATING");
