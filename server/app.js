@@ -128,7 +128,7 @@ app.post('/code', function(req, res) {
   // if return is success, indicates an update, not fail a new code
   if(req.body.action=='save')
   {
-    coder.save(req.body.SRC, req.body.BLK, req.body.NAME, m => {
+    coder.save(req.body.SRC, "nothing", req.body.NAME, m => {
       if(m=='success')
       {
         return res.redirect(req.originalUrl);
@@ -143,7 +143,7 @@ app.post('/code', function(req, res) {
   /*compile and run*/
   if(req.body.action=='sacpar')
   {
-    coderT.sacpar(req.body.SRC, req.body.BLK, req.body.NAME, m => {
+    coderT.sacpar(req.body.SRC, "nothing", req.body.NAME, m => {
       if(m.loc=='success')
       {
         var tmp = {res:m.res, loc:req.query['code']};
