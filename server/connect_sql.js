@@ -248,9 +248,6 @@ class USER extends MySQLDatabase {
 
   newUser(data, callback) {
     /*new user*/
-    //console.log('wowo');
-    //console.log(data);
-    //console.log('wowo');
     this.insertUser(data, res => {
       if(res==0)
       {
@@ -757,26 +754,26 @@ process.on('message', m => {
   }
   if(myArgs[0]=='new_user')
   {
-    var flag = 0;
     exist_name(m, msg => {
       if(msg != 0){
-        flag = 1;
         return process.send('exist_name');
       }
-    });
-    exist_email(m, msg => {
-      if(msg != 0){
-        flag = 1;
-        return process.send('exist_email');
+      else{
+        exist_email(m, msg2 => {
+          if(msg2 != 0){
+            return process.send('exist_email');
+          }
+          else{
+            new_user(m, id => {
+              if(id==0){
+                return process.send('fail');
+              }
+            return process.send(id);
+            });
+          }
+        });
       }
-    });
-    if(flag) return;
-    new_user(m, id => {
-      if(id==0){
-        return process.send('fail');
-      }
-      return process.send(id);
-    });
+    })
   }
   if(myArgs[0]=='delete_user')
   {

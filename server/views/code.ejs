@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title> <%-code.NAME%> </title>
+    <link rel="stylesheet" href="/css/post.css" style="text/css">
+  </head>
+  <body>
+    <%- include('forum_header.ejs') %>
+    <div class="code">
+      <pre><%-code.SRC%></pre>
+    </div>
+    <div class="result">
+      <form action=<%-"/code?code="+code.ID%> method="post" id="form1">
+      </form>
+      <button type="submit" form="form1" name="action" value="cpar">Run</button>
+    </div>
+  </body>
+</html>

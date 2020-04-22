@@ -54,6 +54,11 @@ var httpServer = http.createServer(app);
 app.set('view engine', 'ejs');
 app.use(bdp.urlencoded({extended:true}));
 app.use(bdp.json());
+app.use(function(req, res, next){
+  res.locals.login = req.session.sign;
+  res.locals.logout = false;
+  next();
+});
 
 // prepare for homepage
 app.get('/', function(req, res) {
@@ -81,7 +86,7 @@ app.get('/code', function(req, res) {
 });
 
 app.get('/code/write', function(req, res) {
-  if(!Object.keys(req.query).includes('user'))
+  if(!Object.keys(req.session).includes('ID'))
   {
     return res.redirect('/forum');
   }
@@ -91,21 +96,24 @@ app.get('/code/write', function(req, res) {
 });
 
 app.post('/code', function(req, res) {
+  console.log(`action on code: ${req.body.action}`);
+  const coder = new Code((req.session['ID'])?req.session['ID']:0);
 
-  if(!Object.keys(req.session).includes('ID'))
+  if(req.body.action=='cpar')
   {
-    var coder = new Code();
-    if(req.body.action=='cpar')
-    {
-      coder.cpar(req.query['code'], msg => {
-        var tmp = {res:msg, user:"", loc:req.query['code']};
-        return res.render('code_result',tmp);
-      });
-    }
+    coder.cpar(req.query['code'], msg => {
+      var tmp = {res:msg, loc:req.query['code']};
+
+      return res.render('code_result',tmp);
+    });
+  }
+
+  if(!Object.keys(req.session).includes('ID') && req.body.action!='cpar')
+  {
     return res.redirect('/404.html');
   }
   // previlleged actions
-  var coder = new Code(req.session['ID']);
+
   /*save code*/
   // if return is success, indicates an update, not fail a new code
   if(req.body.action=='save')
@@ -133,7 +141,7 @@ app.post('/code', function(req, res) {
       }
       else if(m.loc != 'fail')
       {
-        var tmp = {res:m.res, loc:m.loc};
+        var tmp = {res:m.res, loc:m.loc, action:""};
         return res.render('code_result', tmp);
       }
       return res.redirect('/404.html');
@@ -342,6 +350,7 @@ app.post('/login', function(req, res) {
       else{
         sess = req.session;
         console.log(user);
+        user = JSON.parse(user);
         console.log("Login success");
         sess.sign = true;
         sess.ID = user.ID;
@@ -351,7 +360,9 @@ app.post('/login', function(req, res) {
       }
     })
   }
-  else res.redirect('/login');
+  else{
+    res.render('login', {miss:true});
+  };
 });
 
 // user logout
@@ -364,12 +375,12 @@ app.get('/logout', function(req, res){
       }
       console.log("logout successfully");
       console.log(req.session);
-      res.redirect('/');
+      res.render('mainpage', {logout: true});
     })
   }
   else{
     console.log("did not login");
-    res.redirect('login');
+    res.redirect('/');
   }
 });
 
@@ -423,21 +434,23 @@ app.delete('/user', function(req, res) {
 // for account creation
 app.get('/create_account*', function(req, res) {
   /*fetch account create page*/
-  console.log('nonono');
   return res.render('create_account');
 });
 
 app.post('/create_account*', function(req, res) {
   /*create new account*/
-  console.log(req.body);
-  console.log('hello');
   if(req.body.name && req.body.email && req.body.password){
     var data = {USERNAME: req.body.name, EMAIL: req.body.email, PASSWORD: req.body.password, ACC_TYPE: 0};
     var userObj = new User(data);
     userObj.registor(function(m){
-      if(!m){
+      if(m == 'exist_email' || m == 'exist_name'){
         console.log(m);
-        // return res.redirect("/404.html");
+        if(m == 'exist_email'){
+          return res.render("create_account", {same_email: true});
+        }
+        else{
+          return res.render("create_account", {same_name: true});
+        }
       }
       else{
         console.log(m)
@@ -446,7 +459,9 @@ app.post('/create_account*', function(req, res) {
       }
     })
   }
-  else return res.redirect('./404.html');
+  else{
+    res.render('create_account', {miss:true});
+  };
 });
 
 // general treatnebt for html pages
@@ -546,5 +561,6 @@ app.use('*.css', function(req, res) {
     return res.end();
   });
 });
+
 
 httpServer.listen(8080);
