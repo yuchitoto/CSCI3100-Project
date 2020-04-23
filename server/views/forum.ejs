@@ -9,7 +9,9 @@
   </head>
   <body>
     <%- include ('forum_header.ejs') %>
-    <%- include('search.ejs')%>
+    <div id="search_box">
+      <%- include('search.ejs')%>
+    </div>
     <div class="forum">
     <% for(var i=0; i<post.length; i++) {%>
        <% if(post[i].TITLE != null) {%>

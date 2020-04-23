@@ -21,7 +21,7 @@
     text-decoration: none;
     color:ghostwhite;
     transition: all 0.3s;
-    cursor: pointer;
+    cursor: default;
     font-size: 15px;
     border:none;
     background-color: transparent;
@@ -50,6 +50,7 @@
     z-index:99;
     background-color:#448aff;
     list-style: none;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
 }
 
 .navbar_submenu-item{
@@ -66,7 +67,7 @@
     color:ghostwhite;
     display:block;
     padding:0.5rem;
-    cursor: pointer;
+    cursor: default;
     font-size: 15px;
     border:none;
     background-color: transparent;

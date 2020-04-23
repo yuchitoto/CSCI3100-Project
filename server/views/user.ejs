@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Code Block Forum</title>
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
     <link href="/css/user.css" rel="stylesheet" type="text/css">
   </head>
   <body>
@@ -15,10 +16,13 @@
     </div>
     <% for(var i=0; i<code.length; i++) {%>
       <div class="block">
+      <div>
         <a href= <%-"/code?code="+code[i].ID%>><%= code[i].NAME %></a> <br>
+        <div class="space"></div>
         <div class="code">
           <pre><%= code[i].SRC %></pre>
         </div>
+      </div>
       </div>
     <% } %>
   </div>

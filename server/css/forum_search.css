@@ -28,7 +28,18 @@ body{
 }
 
 .search{
+    text-align: center;
     cursor: default;
     margin-top: 15px;
     box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+}
+
+#search_button{
+    width: 100%;
+    padding: 20;
+    text-align: center;
+}
+
+.button1{
+    width: 100%;
 }

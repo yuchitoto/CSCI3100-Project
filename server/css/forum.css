@@ -23,6 +23,10 @@
     width:70%;
 }
 
+#search_box{
+    padding: 5px;
+}
+
 .search{
     padding:1rem;
     float:left;

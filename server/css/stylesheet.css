@@ -1,3 +1,24 @@
+body{
+    background-color: rgb(121, 121, 121);
+    align-items: center;
+}
+
+.block{
+    width:50%;
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:auto;
+    margin-right:auto;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+    padding-left:1rem;
+    padding-right:1rem;
+    font-size: 20px;
+    background-color: ghostwhite;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+    text-align: center;
+}
+
 .button1 {
     margin-top: 5px;
     background-color: #004080;
@@ -8,10 +29,11 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+    transition: all 0.5s;
 }
 
 .button1:hover{
-    background-color: #838B8B;
+    background-color: #7f8ad8;
 }
 
 .post-title{
