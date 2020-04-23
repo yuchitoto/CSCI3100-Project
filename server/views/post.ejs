@@ -25,6 +25,7 @@
         <h5>reply no.<%= i %></h5>
       </div>
     <% } %>
+    <% if(login) {%>
     <div class="form">
       <h4 style="color:white" class="new_reply">Wrtie your reply</h4>
       <form action= <%-url%> method="post">
@@ -33,5 +34,6 @@
         <input class="button1" type="submit" value="Submit" />
       </form>
     </div>
+    <% } %>
   </body>
 </html>

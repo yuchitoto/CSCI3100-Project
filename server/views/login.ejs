@@ -17,10 +17,11 @@
         <div style="text-align: center;">
           <form class="form" action= <%-"/login"%> method="post">
             <input class="input" name="name" placeholder="username/email"><br>
-            <input class="input" name="password" placeholder="password"><br>
+            <input type="password" class="input" name="password" placeholder="password"><br>
               <div id="login_button">
                 <input class="button1" type="submit" value="Login" />
                 <p style="<%= (locals.miss)? 'display:block;color:red;':'display:none'%>">Please provide (username or email) and password</p>
+                <p style="<%= (locals.no_user)? 'display:block;color:red;':'display:none'%>">No user or wrong password</p>
               </div>
           </form>
         </div>
