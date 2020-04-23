@@ -120,6 +120,7 @@ app.post('/code', function(req, res) {
 
   if(!Object.keys(req.session).includes('ID') && req.body.action!='cpar')
   {
+    console.log(req.session);
     return res.redirect('/404.html');
   }
   // previlleged actions
@@ -144,7 +145,8 @@ app.post('/code', function(req, res) {
       {
         return res.redirect('/code?code='+m);
       }
-      return res.redirect('/404.html');
+      else
+        return res.redirect('/404.html');
     });
   }
   /*compile and run*/
