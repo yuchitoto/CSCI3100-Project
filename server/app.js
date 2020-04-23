@@ -359,7 +359,7 @@ app.post('/login', function(req, res) {
     userObj.login(function(err, user){
       if(err){
         console.log(err);
-        return res.redirect('login');
+        return res.render('login', {no_user:true});
       }
       else{
         sess = req.session;

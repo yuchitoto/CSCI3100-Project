@@ -17,8 +17,8 @@
           <form action= <%-"/create_account"%> method="post">
             <input class="input" name="name" placeholder="username" ><br>
             <input class="input" name="email" placeholder="email" ><br>
-            <input class="input" name="password" placeholder="password" ><br>
-            <input class="input" name="retype_password" placeholder="confirm password" ><br>
+            <input type="password" class="input" name="password" placeholder="password" ><br>
+            <input type="password" class="input" name="retype_password" placeholder="confirm password" ><br>
             <div id="login_button">
               <input class="button1" type="submit" value="Create" />
               <p style="<%= (locals.miss)? 'display:block;color:red;':'display:none'%>">Please provide username, email and password</p>
