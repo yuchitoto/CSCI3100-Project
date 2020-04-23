@@ -97,7 +97,7 @@ app.get('/code', function(req, res) {
 app.get('/code/write', function(req, res) {
   if(!Object.keys(req.session).includes('ID'))
   {
-    return res.redirect('/forum');
+    return res.redirect('/login');
   }
   var codehold = {NAME:"", USER:req.session['ID'], SRC:"", BLK:""};
   var tmp = {code:codehold, action:""};
@@ -294,7 +294,7 @@ app.post('/post', function(req, res) {
   //console.log(req);
   if(!Object.keys(req.session).includes("ID"))
   {
-    res.redirect('/login');
+    return res.redirect('/login');
   }
   var user = req.session['ID'];
   var forumObj = new Forum(user);
