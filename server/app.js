@@ -72,7 +72,7 @@ app.use(function(req, res, next){
 // prepare for homepage
 app.get('/', function(req, res) {
   //console.log(req);
-  res.render('mainpage');
+  return res.render('mainpage');
 });
 
 // for online ide show code
@@ -87,17 +87,17 @@ app.get('/code', function(req, res) {
   coder.fetch({ID:req.query['code']}, ret => {
     if(ret=="fail")
     {
-      res.redirect('/404.html');
+      return res.redirect('/404.html');
     }
     var tmp = {code:ret[0], action:""};
-    res.render('code', tmp);
+    return res.render('code', tmp);
   });
 });
 
 app.get('/code/write', function(req, res) {
   if(!Object.keys(req.session).includes('ID'))
   {
-    return res.redirect('/forum');
+    return res.redirect('/login');
   }
   var codehold = {NAME:"", USER:req.session['ID'], SRC:"", BLK:""};
   var tmp = {code:codehold, action:""};
@@ -120,6 +120,7 @@ app.post('/code', function(req, res) {
 
   if(!Object.keys(req.session).includes('ID') && req.body.action!='cpar')
   {
+    console.log(req.session);
     return res.redirect('/404.html');
   }
   // previlleged actions
@@ -144,7 +145,8 @@ app.post('/code', function(req, res) {
       {
         return res.redirect('/code?code='+m);
       }
-      return res.redirect('/404.html');
+      else
+        return res.redirect('/404.html');
     });
   }
   /*compile and run*/
@@ -277,13 +279,13 @@ app.get('/post/new', function(req, res) {
     // give all code to choose, and prepare for response
     if(msg=='fail')
     {
-      res.redirect('/404.html');
+      return res.redirect('/404.html');
     }
     var tmp = {
       newPost:[{TITLE:"", CONTENT:"", CODE:0}],
       codes:JSON.parse(msg)
     };
-    res.render('new_post',tmp);
+    return res.render('new_post',tmp);
   });
 });
 
@@ -292,7 +294,7 @@ app.post('/post', function(req, res) {
   //console.log(req);
   if(!Object.keys(req.session).includes("ID"))
   {
-    res.redirect('/login');
+    return res.redirect('/login');
   }
   var user = req.session['ID'];
   var forumObj = new Forum(user);
@@ -331,10 +333,10 @@ app.get('/login', function(req, res) {
   if(req.session.sign){
     console.log('login');
     console.log(req.session);
-    res.redirect('/user');
+    return res.redirect('/user');
   }
   else{
-    res.render('login');
+    return res.render('login');
   }
 });
 
@@ -344,7 +346,7 @@ app.post('/login', function(req, res) {
     console.log("Already login");
     //res.send("Already login");
     console.log(req.session);
-    res.redirect('user');
+    return res.redirect('user');
   }
   else if(req.body.password && req.body.name){
     var data;
@@ -373,7 +375,7 @@ app.post('/login', function(req, res) {
     })
   }
   else{
-    res.render('login', {miss:true});
+    return res.render('login', {miss:true});
   };
 });
 
@@ -387,12 +389,12 @@ app.get('/logout', function(req, res){
       }
       console.log("logout success");
       console.log(req.session);
-      res.redirect('logout');
+      return res.redirect('logout');
     })
   }
   else{
     console.log("did not login");
-    res.redirect('/');
+    return res.redirect('/');
   }
 });
 
@@ -449,7 +451,7 @@ app.get('/create_account*', function(req, res) {
   if(req.session.sign){
     console.log('login');
     console.log(req.session);
-    res.redirect('/user');
+    return res.redirect('/user');
   }
   return res.render('create_account');
 });
@@ -485,7 +487,7 @@ app.post('/create_account*', function(req, res) {
     })
   }
   else{
-    res.render('create_account', {miss:true});
+    return res.render('create_account', {miss:true});
   };
 });
 

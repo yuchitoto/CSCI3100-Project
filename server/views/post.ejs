@@ -16,12 +16,12 @@
         <pre><%= post[0].CODE %></pre>
       </div>
       <p></p>
-      <p><%= post[0].CONTENT %></p>
+      <pre style="font-family: Arial, Helvetica, sans-serif;"><%= post[0].CONTENT %></pre>
     </div>
     <% for(var i=1; i<post.length; i++) {%>
       <div class="reply">
         <h4><%= post[0].USER %></h4>
-        <p><%= post[i].CONTENT %></p>
+        <pre style="font-family: Arial, Helvetica, sans-serif;"><%= post[i].CONTENT %></pre>
         <h5>reply no.<%= i %></h5>
       </div>
     <% } %>
