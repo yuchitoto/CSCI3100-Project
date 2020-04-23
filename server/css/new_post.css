@@ -1,21 +1,15 @@
 .block{
-    margin-top:1rem;
-    margin-bottom:1rem;
-    margin-left:5%;
-    margin-right:5%;
-    padding-top:0.5rem;
-    padding-bottom:0.5rem;
-    padding-left:1rem;
-    padding-right:1rem;
-    font-size: 30px;
+    font-size: 20px;
     background-color: ghostwhite;
     box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+    width: 90%;
+    text-align: left;
 }
 
 .textarea{
     width: 100%; 
     outline: 0;
-    border: 1px solid rgb(121, 121, 121);
+    border: 0.5px solid rgb(121, 121, 121);
     font-size: 20px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -25,23 +19,28 @@ input[type="radio"] {
     width: 15px;
     height: 15px;
 } 
+.code_file{
+    padding: 10px 10px 10px 10px;
+    border-bottom: 2px solid #4b5491;
+}
 
-button[type="button"]{
-    margin-top:1rem;
-    margin-bottom:1rem;
-    margin-left:5%;
-    margin-right:5%;
-    padding:0.5rem;
-    font-size:30px;
-    width:150px;
-    height:50px;
-    border: none;
-    background-color: white;
-    transition: all 0.3s;
+button{
+    width: 90%;
 }
 
 button[type="button"]:hover{
     background-color: #7f8ad8;
+    width: 90%;
+}
+
+input[type="radio"]{
+    padding: 0;
+    margin: 0;
+}
+
+input[type="radio"]{
+    padding: 0;
+    margin: 0;
 }
 
 body{

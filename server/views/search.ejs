@@ -1,13 +1,16 @@
 <head>
-    <meta charset="utf-8">
-    <link href="/css/search.css" rel="stylesheet" type="text/css">
-    
-  </head>
-<div class="search" style="background-color: rgb(100, 131, 194);">
-    <h2 style="color:#000000">Search Title</h2>
+  <meta charset="utf-8">
+  <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
+  <link href="/css/forum_search.css" rel="stylesheet" type="text/css">
+  
+</head>
+<div class="search" style="background-color: #4b5491;">
+    <h2 style="color:#e6e6e6">Search</h2>
     <form action= <%-"/forum/search"%> method="post">
-    <textarea class="textarea" id="keywords" name="keywords"></textarea>
-    <br><br>
-    <input type="submit" value="Search" />
+      <textarea class="textarea" id="keywords" name="keywords"></textarea>
+      <br><br>
+      <div id="search_button">
+        <input class="button1" type="submit" value="Search" />
+      </div>
     </form>
 </div>

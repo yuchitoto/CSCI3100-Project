@@ -84,7 +84,7 @@ app.get('/code', function(req, res) {
     return res.redirect('/forum');
   }*/
   var coder = new Code();
-  coder.fetch(req.query['code'], ret => {
+  coder.fetch({ID:req.query['code']}, ret => {
     if(ret=="fail")
     {
       res.redirect('/404.html');
@@ -131,7 +131,14 @@ app.post('/code', function(req, res) {
     coder.save(req.body.SRC, "nothing", req.body.NAME, m => {
       if(m=='success')
       {
-        return res.redirect(req.originalUrl);
+        coder.fetch({USER:req.session['ID'], NAME:req.body.NAME}, codec => {
+          if(codec!='fail')
+          {
+            var tmp = {code:codec[0], action:""};
+            return res.render('code',tmp);
+          }
+          return res.redirect('/404.html');
+        });
       }
       else if(m != 'fail')
       {

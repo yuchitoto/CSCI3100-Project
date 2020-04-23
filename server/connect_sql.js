@@ -88,10 +88,12 @@ class MySQLDatabase {
 
   // universal update statement, problematic when 2nd level is obj
   update(val, cond, callback) {
+    console.log(val);
+    console.log(cond);
     var query = "UPDATE ?? SET ? ";
     const key = Object.keys(cond);
     const value = Object.values(cond);
-    var pr = [this.table].push(val);
+    var pr = [this.table].concat(val);
     for (var i=1;i<val.length;i++)
     {
       query += ",? ";

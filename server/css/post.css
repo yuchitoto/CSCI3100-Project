@@ -38,6 +38,7 @@
     padding-right:1rem;
     padding-top:0.5rem;
     padding-bottom:0.5rem;
+    cursor: default;
 }
 
 .textarea{
@@ -54,7 +55,7 @@ body{
     background-color: rgb(121, 121, 121);
 }
 
-button[type="submit"]{
+/* button[type="submit"]{
     width:80%;
     margin-top:1rem;
     margin-bottom:1rem;
@@ -64,8 +65,19 @@ button[type="submit"]{
     border: none;
     background-color: ghostwhite;
     transition: all 0.3s;
+} */
+
+.new_post{
+    padding: 2px 2px 2px 2px;
+    margin: 2px 2px 2px 2px;
 }
 
-button[type="submit"]:hover{
-    background-color: #7f8ad8;
+.block{
+    font-size: 15px;
+    width: 90%;
+    text-align: left;
+}
+
+.button1{
+    width: 90%;
 }

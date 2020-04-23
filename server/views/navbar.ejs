@@ -26,9 +26,9 @@
                 <a href="/" class="navbar_link">Home</a>
             </li>
             <li class="navbar_item navbar_submenu-container">
-                <button class="navbar_link">Account</button>
+                <a class="navbar_link">Account</a>
                 <ul class="navbar_submenu">
-                    <% if(login == true) {%>
+                    <% if(login) {%>
                     <li class="navbar_submenu-item">
                         <a href="/user" class="navbar_submenu-link">User</a>
                     </li>
