@@ -170,6 +170,25 @@ app.post('/code', function(req, res) {
 
 app.delete('/code', function(req, res) {
   /*delete code from database*/
+  if(!Object.keys(req.session).includes('ID'))
+  {
+    console.log("not logged in");
+    return res.redirect('/');
+  }
+  if(!Object.keys(req.query).includes('code'))
+  {
+    console.log("no code id");
+    return res.redirect('/');
+  }
+  var deleter = fork("./connect_sql.js",["delete_code"]);
+  deleter.send(JSON.stringify({USER:req.session['ID'], ID:req.query['code']}));
+  deleter.on("message", msg => {
+    if(msg=="fail")
+    {
+      return res.redirect('/404.html');
+    }
+    return res.redirect('/');
+  })
 });
 
 // for forum
