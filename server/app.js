@@ -394,7 +394,7 @@ app.post('/login', function(req, res) {
     })
   }
   else{
-    return res.render('login', {miss:true});
+    return res.redirect("404.html");
   };
 });
 
@@ -478,14 +478,6 @@ app.get('/create_account*', function(req, res) {
 app.post('/create_account*', function(req, res) {
   /*create new account*/
   if(req.body.name && req.body.email && req.body.password && req.body.retype_password){
-    if(req.body.name.includes('@')) return res.render("create_account", {invalid_name: true});
-    if(!req.body.email.includes('@')) return res.render("create_account", {invalid_email: true});
-    if(req.body.password.length < 8){
-      return res.render("create_account", {short_pw: true});
-    }
-    if(req.body.password != req.body.retype_password){
-      return res.render("create_account", {diff_pw: true});
-    }
     var data = {USERNAME: req.body.name, EMAIL: req.body.email, PASSWORD: req.body.password, ACC_TYPE: 0};
     var userObj = new User(data);
     userObj.registor(function(m){
@@ -506,7 +498,7 @@ app.post('/create_account*', function(req, res) {
     })
   }
   else{
-    return res.render('create_account', {miss:true});
+    return res.render('create_account');
   };
 });
 
@@ -532,7 +524,7 @@ app.use('*.html', function(req, res, next) {
 // send javascript for front-end
 app.use('*.js', function(req, res, next) {
   var path = './script'+req._parsedUrl.pathname;
-  //console.log(req._parsedUrl);
+  console.log(req._parsedUrl);
   fs.readFile(path, function(err, data) {
     if(err)
     {

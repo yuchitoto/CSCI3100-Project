@@ -17,7 +17,7 @@ input[type=submit]{
     width: 40%;
 }
 
-#login_button{
+#submit_button{
     text-align: center; 
     padding-top: 20px;
     padding-bottom: 20px;

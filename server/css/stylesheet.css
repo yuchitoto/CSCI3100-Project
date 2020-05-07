@@ -55,3 +55,7 @@ body{
     padding: 1rem;
     display:block;
 }
+
+#alert{
+    color: red;
+}
