@@ -1,4 +1,30 @@
-/*express version*/
+/*
+  MODULE TO HANDLE HTTP REQUESTS
+
+  PROGRAMMER: YU CHI TO, Lee Tsz Yan
+  VERSION: 2.1.0 (10-5-2020)
+
+  Purpose:
+  Handles http request of the codeblock IDE from http(8080) and https(8443)
+  Provides as a controller to redirect the server to handle different request using different modules
+  Checks upon login session from user and render corresponding pages using ejs
+
+  Dependencies:
+    express
+    http
+    https
+    url
+    fs
+    child_process
+    querystring
+    express-session
+    cookie-parser
+    nedb-session-store
+    body-parser
+    forum
+    user
+    code
+*/
 var express = require('express');
 var app = express();
 var http = require('http');

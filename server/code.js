@@ -1,3 +1,20 @@
+/*
+  MODULE FOR SOURCE CODE SAVING AND COMPILATION AND RUNNING
+
+  CLASS NAME: Code
+  PROGRAMMER: YU CHI TO
+  VERSION: 1.1 (10-5-2020)
+
+  Purpose:
+  Provides an interface to communicate between master module (app.js) and slave modules (compAndRun.js, connect_sql.js) to handle requests related to source codes
+  Provides specific methods and parse input into suitable format for slave modules to process on the input such as saving and update of code or compilation of code
+  Returns the result of the slave modules
+
+  Dependencies:
+  child_process
+  compAndRun
+  connect_sql
+*/
 const {fork} = require('child_process');
 const fs = require('fs');
 

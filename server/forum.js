@@ -1,3 +1,18 @@
+/*
+  MODULE FOR POSTS MANIPULATION
+
+  CLASS NAME: Forum
+  PROGRAMMER: YU CHI TO
+  VERSION: 1.1 (10-5-2020)
+
+  Purpose:
+  Provides an interface between master module (app.js) and slave module (connect_sql.js) on posts manipulations
+  Allows manipulation on posts such as post new posts, delete posts, post replies and search specific posts
+
+  Dependencies:
+  child_process
+  connect_sql
+*/
 const {fork} = require("child_process");
 
 // forum definition
@@ -56,7 +71,7 @@ class Forum {
   post_post(title, content, codeID, callback)
   {
     var msg = {USER: this.userid, CODE:codeID, TITLE:title, CONTENT:content, REPLY:0};
-    console.log(msg);
+    //console.log(msg);
     const poster = fork("connect_sql.js", ["new_post"]);
     poster.send(JSON.stringify(msg));
     poster.on("message", m => {
@@ -73,7 +88,7 @@ class Forum {
       USER:this.userid,
       CONTENT:content
     };
-    console.log(data);
+    //console.log(data);
     const eng = fork("connect_sql.js", ["new_post"]);
     eng.send(JSON.stringify(data));
     eng.on("message", msg => {return callback(msg);});
