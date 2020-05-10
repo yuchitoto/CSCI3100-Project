@@ -89,7 +89,7 @@ app.get('/code', function(req, res) {
     {
       return res.redirect('/404.html');
     }
-    var tmp = {code:ret[0], action:""};
+    var tmp = {code:ret[0], action:"", stdin:""};
     return res.render('code', tmp);
   });
 });
@@ -108,10 +108,11 @@ app.post('/code', function(req, res) {
   console.log(req.body);
   console.log(`action on code: ${req.body.action}`);
   const coder = new Code((req.session['ID'])?req.session['ID']:0);
+  var stdin = req.body.stdin;
 
   if(req.body.action=='cpar')
   {
-    coder.cpar(req.query['code'], msg => {
+    coder.cpar(req.query['code'], stdin, msg => {
       var tmp = {res:msg, loc:req.query['code']};
 
       return res.render('code_result',tmp);
@@ -194,7 +195,7 @@ app.delete('/code', function(req, res) {
 // for forum
 app.get('/forum', function(req, res) {
   /*return forum page*/
-  console.log(req);
+  //console.log(req);
   var id = -1;
   var postID = 1;
   if(Object.keys(req.session).includes("ID"))
@@ -242,7 +243,7 @@ app.post('/forum/search', function(req, res) {
 app.get('/post', function(req, res) {
   /*return post page*/
   console.log("GET post");
-  console.log(req.query);
+  //console.log(req.query);
   var id = 0;
   var postID = 1;
   if(Object.keys(req.session).includes("ID"))
@@ -273,12 +274,12 @@ app.get('/post', function(req, res) {
 app.delete('/post', function(req, res) {
   /*delete post*/
   console.log("delete post");
-  console.log(req.query);
+  //console.log(req.query);
   if(Object.keys(req.session).includes('ID'))
   {
     var forumObj = new Forum(req.session['ID']);
     forumObj.delete(req.query['post'], m => {
-      console.log(m);
+      //console.log(m);
       if(m=="fail")
       {
         console.log("delete post failed");
@@ -474,7 +475,7 @@ app.post('/change_password', function(req, res) {
   db.send(JSON.stringify({ID:req.session['ID'], PASSWORD:req.body.password}));
   db.on("message", msg => {
     if(msg){
-      console.log(msg);
+      //console.log(msg);
       return res.redirect('/user'); //shd create new page
     }
     return res.redirect('/404.html');

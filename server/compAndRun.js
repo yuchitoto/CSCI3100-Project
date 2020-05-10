@@ -40,7 +40,7 @@ function run(filename, user, callback) {
       result.comp = res;
       return callback(result);
     }
-    exec(user+'.exe', function(err, stdout, stderr) {
+    exec(user+'.exe < '+user+'.txt', function(err, stdout, stderr) {
       if(err)
       {
         console.log(err);
@@ -57,7 +57,7 @@ function run(filename, user, callback) {
         result.prog = stderr;
         return callback(result);
       }
-      exec('del '+user+'.exe', (rerr) => {
+      exec('del '+user+'.exe '+user+'.txt', (rerr) => {
         if(rerr)
         {
           console.log(rerr);
