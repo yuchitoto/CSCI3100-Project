@@ -17,8 +17,17 @@
         <div class="block">
             My CODEs:
         </div>
-      </div>
-      </div>
+        <% for(var i=0; i<code.length; i++) {%>
+        <div class="block">
+        <div>
+          <a href= <%-"/code?code="+code[i].ID%>><%= code[i].NAME %></a> <br>
+          <div class="space"></div>
+          <div class="code">
+            <pre><%= code[i].SRC %></pre>
+          </div>
+        </div>
+        </div>
+      <% } %>
     <% } %>
     <div class="block">
       POSTs:
