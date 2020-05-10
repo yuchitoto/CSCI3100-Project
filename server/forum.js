@@ -84,14 +84,14 @@ class Forum {
   {
     /*delete reply or post*/
     const eng = fork("connect_sql.js", ["delete_post"]);
-    eng.send({ID:id});
+    eng.send(JSON.stringify({ID:id}));
     eng.on("message", msg => {
       if(msg=="success")
       {
-        return callback(true);
+        return callback("success");
       }
       else {
-        return callback(false);
+        return callback("fail");
       }
     });
   }

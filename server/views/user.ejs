@@ -28,6 +28,18 @@
       </div>
       </div>
     <% } %>
+    <div class="block">
+      POSTs:
+    </div>
+    <% for(var i=0; i<post.length; i++) {%>
+      <% if (post[i].USER == USERNAME) {%>
+        <div class="block">
+          <a href= <%-"/post?post="+post[i].ID%>><%= post[i].TITLE %></a> <br>
+          <button type="button" name="button" value="delete" onclick=<%-"deletePost("+post[i].ID+")"%>>Delete Post</button>
+        </div>
+      <% } %>
+    <% } %>
+    <script src="deletePost.js" charset="utf-8"></script>
   </div>
   </body>
 </html>

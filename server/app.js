@@ -194,7 +194,7 @@ app.delete('/code', function(req, res) {
 // for forum
 app.get('/forum', function(req, res) {
   /*return forum page*/
-  //console.log(req);
+  console.log(req);
   var id = -1;
   var postID = 1;
   if(Object.keys(req.session).includes("ID"))
@@ -241,6 +241,7 @@ app.post('/forum/search', function(req, res) {
 // for post
 app.get('/post', function(req, res) {
   /*return post page*/
+  console.log("GET post");
   console.log(req.query);
   var id = 0;
   var postID = 1;
@@ -271,18 +272,23 @@ app.get('/post', function(req, res) {
 
 app.delete('/post', function(req, res) {
   /*delete post*/
+  console.log("delete post");
+  console.log(req.query);
   if(Object.keys(req.session).includes('ID'))
   {
     var forumObj = new Forum(req.session['ID']);
     forumObj.delete(req.query['post'], m => {
-      if(!m)
+      console.log(m);
+      if(m=="fail")
       {
-        return res.redirect('/404.html'); // no right to do the delete
+        console.log("delete post failed");
+        return res.status(400).send(); // no right to do the delete
       }
-      return res.redirect('/forum');
-    })
+      console.log("delete post success");
+      return res.status(200).send();
+    });
   }
-  return res.redirect('/forum');
+  return res.status(200).send();
 });
 
 app.get('/post/new', function(req, res) {
@@ -426,6 +432,7 @@ app.get('/user', function(req, res) {
   }
   const db1 = fork("connect_sql.js", ["fetch_code"]);
   const db2 = fork("connect_sql.js", ["find_user"]);
+  const posts = new Forum(req.session['ID']);
   db1.send(JSON.stringify({USER:req.session['ID']}));
   db1.on("message", msg => {
     if(msg=='fail')
@@ -441,8 +448,18 @@ app.get('/user', function(req, res) {
       var code = JSON.parse(msg);
       //console.log(code);
       //console.log(code.length);
-      var tmp = {code:code, USERNAME:JSON.parse(msg2).USERNAME};
-      return res.render('user', tmp);
+      posts.titles(function(post_title) {
+        var post = [];
+        if (post_title=='fail')
+        {
+          console.log("failed to fetch titles");
+          //console.log(post_title);
+          var tmp = {code:code, USERNAME:JSON.parse(msg2).USERNAME, post:post};
+          return res.render('user',tmp);
+        }
+        var tmp = {code:code, USERNAME:JSON.parse(msg2).USERNAME, post:post_title};
+        return res.render('user', tmp);
+      });
     });
   });
 });
