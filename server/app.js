@@ -561,12 +561,37 @@ app.post('/create_account*', function(req, res) {
 
 app.get('/change_password', function(req, res) {
   /*login page*/
-  if(!req.session.sign){
-    return res.redirect('/404.html');
+  // if(!req.session.sign){
+  //   return res.redirect('/404.html');
+  // }
+  // else{
+  //   return res.render('change_password');
+  // }
+  if(!Object.keys(req.session).includes('ID'))
+  {
+    return res.redirect('/');
   }
-  else{
-    return res.render('change_password');
-  }
+  const db1 = fork("connect_sql.js", ["fetch_code"]);
+  const db2 = fork("connect_sql.js", ["find_user"]);
+  db1.send(JSON.stringify({USER:req.session['ID']}));
+  db1.on("message", msg => {
+    if(msg=='fail')
+    {
+      return res.redirect('/');
+    }
+    db2.send(JSON.stringify({ID:req.session['ID']}));
+    db2.on("message", msg2 => {
+      if(msg2=="fail"||msg2=="no_user")
+      {
+        return res.redirect('/404.html');
+      }
+      var code = JSON.parse(msg);
+      //console.log(code);
+      //console.log(code.length);
+      var tmp = {code:code, USERNAME:JSON.parse(msg2).USERNAME};
+      return res.render('change_password', tmp);
+    });
+  });
 });
 
 // general treatnebt for html pages

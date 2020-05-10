@@ -64,7 +64,7 @@ function submitNewUser(){
         flag = 0;
     }
     else if(!nm.match(nameRegex)){
-        text = document.createTextNode("Just give me a name with only alphabets and -");
+        text = document.createTextNode("Just give me a name with only alphabets, characters and -");
         flag = 0;
     }
     else if(!mail.match(mailRegex)){
@@ -92,5 +92,29 @@ function submitNewUser(){
 }
 
 function submitUpdate(){
-    document.getElementById("update_submit").submit();
+    var pw = password.value;
+    var rePw = rePassword.value;
+    var text;
+
+    var alert = document.createElement("p");
+    alert.setAttribute("id", "alert");
+
+    // remove the previous alert before creating a new one
+    var prevAlt = document.getElementById("alert");
+    if(prevAlt != null){
+        prevAlt.parentNode.removeChild(prevAlt);
+    }
+
+    if(pw.length < 8){
+        text = document.createTextNode("Your password should contain at least 8 char so that you can forget password easily");
+        flag = 0;
+    }
+    else if(rePw != pw){
+        text = document.createTextNode("Passeword should be the same as retype password");
+        flag = 0;
+    }
+    else
+        document.getElementById("update_submit").submit();
+    alert.appendChild(text);
+    button_div.appendChild(alert);
 }
