@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Code Block Forum</title>
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
+    <link href="/css/user.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <%- include ('forum_header.ejs') %>
+    <section id="side_bar"><%- include ('user_profile.ejs', {code:code, USERNAME:USERNAME}) %></section>
+    <section id="main">
+      <% if(code.length == 0){%>
+        <div class="block">Hello new user</div>
+        <div class="block">Go and write your code</div>
+      <% }else{%>
+        <div class="block">
+            My CODEs:
+        </div>
+        <% for(var i=0; i<code.length; i++) {%>
+        <div class="block">
+        <div>
+          <a href= <%-"/code?code="+code[i].ID%>><%= code[i].NAME %></a> <br>
+          <div class="space"></div>
+          <div class="code">
+            <pre><%= code[i].SRC %></pre>
+          </div>
+        </div>
+        </div>
+      <% } %>
+    <% } %>
+    <div class="block">
+      POSTs:
+    </div>
+    <% for(var i=0; i<post.length; i++) {%>
+      <% if (post[i].USER == USERNAME) {%>
+        <div class="block">
+          <a href= <%-"/post?post="+post[i].ID%>><%= post[i].TITLE %></a> <br>
+          <button type="button" name="button" value="delete" onclick=<%-"deletePost("+post[i].ID+")"%>>Delete Post</button>
+        </div>
+      <% } %>
+    <% } %>
+    <div class="block">
+      Students:
+    </div>
+    <% for(var i=0; i<students.length; i++) { if (students[i].USERNAME!=USERNAME) {%>
+      <div class="block">
+        <a href=<%-"/student?user="+students[i].ID%>><%= students[i].USERNAME %></a><br>
+      </div>
+    <% }}%>
+    <script src="deletePost.js" charset="utf-8"></script>
+  </body>
+</html>

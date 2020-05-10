@@ -416,7 +416,6 @@ app.post('/login', function(req, res) {
       else{
         sess = req.session;
         console.log(user);
-        user = JSON.parse(user);
         console.log("Login success");
         sess.sign = true;
         sess.ID = user.ID;
@@ -473,22 +472,103 @@ app.get('/user', function(req, res) {
         return res.redirect('/404.html');
       }
       var code = JSON.parse(msg);
+      msg2 = JSON.parse(msg2)[0];
+      //console.log(msg2);
       //console.log(code);
       //console.log(code.length);
-      posts.titles(function(post_title) {
+      if (msg2["ACC_TYPE"]==0)
+      {
+        posts.titles(function(post_title) {
         var post = [];
         if (post_title=='fail')
         {
           console.log("failed to fetch titles");
           //console.log(post_title);
-          var tmp = {code:code, USERNAME:JSON.parse(msg2).USERNAME, post:post};
+          var tmp = {code:code, USERNAME:msg2.USERNAME, post:post};
           return res.render('user',tmp);
         }
-        var tmp = {code:code, USERNAME:JSON.parse(msg2).USERNAME, post:post_title};
+        var tmp = {code:code, USERNAME:msg2.USERNAME, post:post_title};
         return res.render('user', tmp);
-      });
+        });
+      }
+      else if(msg2["ACC_TYPE"]==1)
+      {
+        posts.titles(function(post_title) {
+        var post = [];
+        if (post_title=='fail')
+        {
+          console.log("failed to fetch titles");
+          //console.log(post_title);
+          var tmp = {code:code, USERNAME:msg2.USERNAME, post:post};
+          return res.render('user',tmp);
+        }
+        const search = fork("connect_sql", ["find_user"]);
+        search.send(JSON.stringify({GROUP:msg2["GROUP"]}));
+        search.on("message", msg3 => {
+          if(msg3=="fail"||msg3=="no_user")
+          {
+            console.log("failed to find group");
+            var tmp = {code:code, USERNAME:msg2.USERNAME, post:post};
+            return res.render('user',tmp);
+          }
+          var student = JSON.parse(msg3);
+          //console.log(student);
+          var tmp = {code:code, USERNAME:msg2.USERNAME, post:post_title, students:student};
+          return res.render('teacher',tmp)
+        });
+        });
+      }
     });
   });
+});
+
+app.get('/student', function(req, res) {
+  if(!Object.keys(req.session).includes('ID'))
+  {
+    return res.redirect('/');
+  }
+  const authen = fork("connect_sql", ["find_user"]);
+  authen.send(JSON.stringify({ID:req.session['ID']}));
+  authen.on("message", au => {
+    if (au=="fail"||au=="no_user"||JSON.parse(au)[0]['ACC_TYPE']!=1)
+    {
+      return res.redirect('/user');
+    }
+    const db1 = fork("connect_sql.js", ["fetch_code"]);
+    const db2 = fork("connect_sql.js", ["find_user"]);
+    const post = new Forum();
+    db1.send(JSON.stringify({USER:req.query['user']}));
+    db1.on("message", msg=>{
+      if(msg=='fail')
+      {
+        return res.redirect('/');
+      }
+      db2.send(JSON.stringify({ID:req.query['user']}));
+      db2.on("message", msg2 => {
+        if(msg2=="fail"||msg2=="no_user")
+        {
+          return res.redirect('/404.html');
+        }
+        var code = JSON.parse(msg);
+        msg2 = JSON.parse(msg2)[0];
+        //console.log(msg2);
+        //console.log(code);
+        //console.log(code.length);
+        post.titles(function(post_title) {
+        var post = [];
+        if (post_title=='fail')
+        {
+          console.log("failed to fetch titles");
+          //console.log(post_title);
+          var tmp = {code:code, USERNAME:msg2.USERNAME, post:post};
+          return res.render('student',tmp);
+        }
+        var tmp = {code:code, USERNAME:msg2.USERNAME, post:post_title};
+        return res.render('student', tmp);
+        });
+    });
+  });
+});
 });
 
 app.post('/change_password', function(req, res) {
