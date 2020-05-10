@@ -15,15 +15,17 @@
           <h2 class="title" >Login</h2>
         </div>
         <div style="text-align: center;">
-          <form class="form" action= <%-"/login"%> method="post">
-            <input class="input" name="name" placeholder="username/email"><br>
-            <input type="password" class="input" name="password" placeholder="password"><br>
-              <div id="login_button">
-                <input class="button1" type="submit" value="Login" />
-                <p style="<%= (locals.miss)? 'display:block;color:red;':'display:none'%>">Please provide (username or email) and password</p>
-                <p style="<%= (locals.no_user)? 'display:block;color:red;':'display:none'%>">No user or wrong password</p>
-              </div>
+          <form class="form" action=<%-"/login"%> method="post" id="user_submit">
+            <input class="input" name="name" id="name" placeholder="username/email"><br>
+            <input type="password" class="input" name="password" id="password" placeholder="password"><br>
           </form>
+          <div><a class="link" href="create_account">Still don't have an account?</a></div>
+          <div id="submit_button">
+            <button class="button1" type="button" name="button" value="submit" onclick=<%-"submitLogin()"%>>Login</button>
+            <script src="submitUser.js" charset="utf-8"></script>
+            <p style="<%= (locals.no_user)? 'display:block;color:#8B0000;':'display:none'%>">Check your username, email and password!</p>
+          </div>
+          
         </div>
       </div>
     </div>

@@ -1,4 +1,30 @@
-/*express version*/
+/*
+  MODULE TO HANDLE HTTP REQUESTS
+
+  PROGRAMMER: YU CHI TO, Lee Tsz Yan
+  VERSION: 2.1.0 (10-5-2020)
+
+  Purpose:
+  Handles http request of the codeblock IDE from http(8080) and https(8443)
+  Provides as a controller to redirect the server to handle different request using different modules
+  Checks upon login session from user and render corresponding pages using ejs
+
+  Dependencies:
+    express
+    http
+    https
+    url
+    fs
+    child_process
+    querystring
+    express-session
+    cookie-parser
+    nedb-session-store
+    body-parser
+    forum
+    user
+    code
+*/
 var express = require('express');
 var app = express();
 var http = require('http');
@@ -89,7 +115,7 @@ app.get('/code', function(req, res) {
     {
       return res.redirect('/404.html');
     }
-    var tmp = {code:ret[0], action:""};
+    var tmp = {code:ret[0], action:"", stdin:""};
     return res.render('code', tmp);
   });
 });
@@ -108,10 +134,11 @@ app.post('/code', function(req, res) {
   console.log(req.body);
   console.log(`action on code: ${req.body.action}`);
   const coder = new Code((req.session['ID'])?req.session['ID']:0);
+  var stdin = req.body.stdin;
 
   if(req.body.action=='cpar')
   {
-    coder.cpar(req.query['code'], msg => {
+    coder.cpar(req.query['code'], stdin, msg => {
       var tmp = {res:msg, loc:req.query['code']};
 
       return res.render('code_result',tmp);
@@ -241,7 +268,8 @@ app.post('/forum/search', function(req, res) {
 // for post
 app.get('/post', function(req, res) {
   /*return post page*/
-  console.log(req.query);
+  console.log("GET post");
+  //console.log(req.query);
   var id = 0;
   var postID = 1;
   if(Object.keys(req.session).includes("ID"))
@@ -271,18 +299,23 @@ app.get('/post', function(req, res) {
 
 app.delete('/post', function(req, res) {
   /*delete post*/
+  console.log("delete post");
+  //console.log(req.query);
   if(Object.keys(req.session).includes('ID'))
   {
     var forumObj = new Forum(req.session['ID']);
     forumObj.delete(req.query['post'], m => {
-      if(!m)
+      //console.log(m);
+      if(m=="fail")
       {
-        return res.redirect('/404.html'); // no right to do the delete
+        console.log("delete post failed");
+        return res.status(400).send(); // no right to do the delete
       }
-      return res.redirect('/forum');
-    })
+      console.log("delete post success");
+      return res.status(200).send();
+    });
   }
-  return res.redirect('/forum');
+  return res.status(200).send();
 });
 
 app.get('/post/new', function(req, res) {
@@ -394,7 +427,7 @@ app.post('/login', function(req, res) {
     })
   }
   else{
-    return res.render('login', {miss:true});
+    return res.redirect("404.html");
   };
 });
 
@@ -426,6 +459,7 @@ app.get('/user', function(req, res) {
   }
   const db1 = fork("connect_sql.js", ["fetch_code"]);
   const db2 = fork("connect_sql.js", ["find_user"]);
+  const posts = new Forum(req.session['ID']);
   db1.send(JSON.stringify({USER:req.session['ID']}));
   db1.on("message", msg => {
     if(msg=='fail')
@@ -441,14 +475,37 @@ app.get('/user', function(req, res) {
       var code = JSON.parse(msg);
       //console.log(code);
       //console.log(code.length);
-      var tmp = {code:code, USERNAME:JSON.parse(msg2).USERNAME};
-      return res.render('user', tmp);
+      posts.titles(function(post_title) {
+        var post = [];
+        if (post_title=='fail')
+        {
+          console.log("failed to fetch titles");
+          //console.log(post_title);
+          var tmp = {code:code, USERNAME:JSON.parse(msg2).USERNAME, post:post};
+          return res.render('user',tmp);
+        }
+        var tmp = {code:code, USERNAME:JSON.parse(msg2).USERNAME, post:post_title};
+        return res.render('user', tmp);
+      });
     });
   });
 });
 
-app.put('/user', function(req, res) {
+app.post('/change_password', function(req, res) {
   /*update user data*/
+  if(!Object.keys(req.session).includes('ID'))
+  {
+    return res.redirect('/');
+  }
+  const db = fork("connect_sql.js", ["update_user"]);
+  db.send(JSON.stringify({ID:req.session['ID'], PASSWORD:req.body.password}));
+  db.on("message", msg => {
+    if(msg){
+      //console.log(msg);
+      return res.redirect('/user'); //shd create new page
+    }
+    return res.redirect('/404.html');
+  })
 });
 
 app.delete('/user', function(req, res) {
@@ -478,14 +535,6 @@ app.get('/create_account*', function(req, res) {
 app.post('/create_account*', function(req, res) {
   /*create new account*/
   if(req.body.name && req.body.email && req.body.password && req.body.retype_password){
-    if(req.body.name.includes('@')) return res.render("create_account", {invalid_name: true});
-    if(!req.body.email.includes('@')) return res.render("create_account", {invalid_email: true});
-    if(req.body.password.length < 8){
-      return res.render("create_account", {short_pw: true});
-    }
-    if(req.body.password != req.body.retype_password){
-      return res.render("create_account", {diff_pw: true});
-    }
     var data = {USERNAME: req.body.name, EMAIL: req.body.email, PASSWORD: req.body.password, ACC_TYPE: 0};
     var userObj = new User(data);
     userObj.registor(function(m){
@@ -506,8 +555,43 @@ app.post('/create_account*', function(req, res) {
     })
   }
   else{
-    return res.render('create_account', {miss:true});
+    return res.render('create_account');
   };
+});
+
+app.get('/change_password', function(req, res) {
+  /*login page*/
+  // if(!req.session.sign){
+  //   return res.redirect('/404.html');
+  // }
+  // else{
+  //   return res.render('change_password');
+  // }
+  if(!Object.keys(req.session).includes('ID'))
+  {
+    return res.redirect('/');
+  }
+  const db1 = fork("connect_sql.js", ["fetch_code"]);
+  const db2 = fork("connect_sql.js", ["find_user"]);
+  db1.send(JSON.stringify({USER:req.session['ID']}));
+  db1.on("message", msg => {
+    if(msg=='fail')
+    {
+      return res.redirect('/');
+    }
+    db2.send(JSON.stringify({ID:req.session['ID']}));
+    db2.on("message", msg2 => {
+      if(msg2=="fail"||msg2=="no_user")
+      {
+        return res.redirect('/404.html');
+      }
+      var code = JSON.parse(msg);
+      //console.log(code);
+      //console.log(code.length);
+      var tmp = {code:code, USERNAME:JSON.parse(msg2).USERNAME};
+      return res.render('change_password', tmp);
+    });
+  });
 });
 
 // general treatnebt for html pages

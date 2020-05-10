@@ -1,0 +1,83 @@
+.post{
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:2%;
+    margin-right:2%;
+    background-color: ghostwhite;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+    padding:1rem;
+}
+
+.code{
+    background-color: black;
+    color:ghostwhite;
+    padding:0.8rem;
+}
+
+.reply{
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:2%;
+    margin-right:2%;
+    background-color: ghostwhite;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+    padding-left:1rem;
+    padding-right:1rem;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+}
+
+.form{
+    margin-top:1rem;
+    margin-bottom:1rem;
+    margin-left:2%;
+    margin-right:2%;
+    background-color: #4b5491;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+    padding-left:1rem;
+    padding-right:1rem;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+    cursor: default;
+}
+
+.textarea{
+    width:90%;
+    min-height:150px;
+    outline: 0;
+    border: 1px solid ghostwhite;
+    font-size: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body{
+    background-color: rgb(121, 121, 121);
+}
+
+/* button[type="submit"]{
+    width:80%;
+    margin-top:1rem;
+    margin-bottom:1rem;
+    padding:0.5rem;
+    font-size:30px;
+    height:50px;
+    border: none;
+    background-color: ghostwhite;
+    transition: all 0.3s;
+} */
+
+.new_post{
+    padding: 2px 2px 2px 2px;
+    margin: 2px 2px 2px 2px;
+}
+
+.block{
+    font-size: 15px;
+    width: 90%;
+    text-align: left;
+}
+
+.button1{
+    width: 100%;
+}

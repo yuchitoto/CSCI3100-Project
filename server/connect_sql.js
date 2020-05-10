@@ -1,3 +1,59 @@
+/**
+* MODULES TO CONNECT TO MYSQL DATABASE
+*
+* CLASS NAME: MySQLDatabase
+* PROGRAMMER: YU CHI TO
+* VERSION: 1.1 (10-5-2020)
+*
+* Purpose:
+* Provides the basic framework for querying in MySQL database
+* This module provides basic functions for select, insert, delete and update queries.
+*
+*
+* CLASS NAME: SRC_CODE
+* PROGRAMMER: YU CHI TO
+* VERSION: 1.1 (10-5-2020)
+*
+* Purpose: Provides interface to SRC_CODE table in MySQL database for
+          customized queries related to operations of source codes.
+          Extends MySQLDatabase.
+*
+* Dependencies:
+* mysql
+* fs
+* querystring
+*
+* Environment:
+* MySQL installed
+*
+*
+* CLASS NAME: POST
+* PROGRAMMER: YU CHI TO
+* VERSION: 1.1 (10-5-2020)
+*
+* Purpose: Provides interface to POST table in MySQL database for
+          customized queries related to operations of posts and replies.
+          Extends MySQLDatabase.
+*
+*
+* CLASS NAME: USER
+* PROGRAMMER: YU CHI TO, Lee Tsz Yan
+* VERSION: 1.1 (10-5-2020)
+*
+* Purpose: Provides interface to USER table in MySQL database for
+          customized queries related to operations of user data.
+          Extends MySQLDatabase.
+*
+*
+* CLASS NAME: RATING
+* PROGRAMMER: YU CHI TO
+* VERSION: 1.0 (10-5-2020)
+*
+* Purpose: Provides interface to RATING table in MySQL database for
+          customized queries related to operations of ratings.
+          Extends MySQLDatabase.
+*/
+
 const fs = require('fs');
 
 const mysql = require('mysql');
@@ -24,7 +80,7 @@ class MySQLDatabase {
 
   insert(values, callback) {
     var query = "INSERT INTO ?? SET ?";
-    console.log(values);
+    //console.log(values);
     const key = Object.keys(values);
     const value = Object.values(values);
     var pr = [this.table];
@@ -88,8 +144,8 @@ class MySQLDatabase {
 
   // universal update statement, problematic when 2nd level is obj
   update(val, cond, callback) {
-    console.log(val);
-    console.log(cond);
+    //console.log(val);
+    //console.log(cond);
     var query = "UPDATE ?? SET ? ";
     const key = Object.keys(cond);
     const value = Object.values(cond);
@@ -107,7 +163,7 @@ class MySQLDatabase {
       }
       pr.push({[key[i]]:value[i]});
     }
-    console.log(pr);
+    //console.log(pr);
     this.connection.query(query, pr, function(err, data) {
       if(err) console.log('error');
       return callback(err, data);
@@ -169,7 +225,7 @@ class SRC_CODE extends MySQLDatabase {
         console.log(`error: ${err.message}`);
         return callback('fail');
       }
-      console.log(res);
+      //console.log(res);
       if(res.affectedRows>0)
       {
         return callback('success');
@@ -191,7 +247,7 @@ class SRC_CODE extends MySQLDatabase {
 
   saveCode(data, callback) {
     // basic handler for updating or saving code entry
-    console.log(data);
+    //console.log(data);
     this.validateSave(data, tmpres => {
       if(tmpres['COUNT(*)'] < 0)
       {
@@ -204,7 +260,7 @@ class SRC_CODE extends MySQLDatabase {
             console.log(`error: ${err.message}`);
             return callback('fail');
           }
-          console.log(res);
+          //console.log(res);
           return callback(res.insertId);
         });
       }
@@ -214,7 +270,7 @@ class SRC_CODE extends MySQLDatabase {
             console.log(`error: ${err.message}`);
             return callback('fail');
           }
-          console.log(res);
+          //console.log(res);
           return callback('success');
         });
       }
@@ -230,7 +286,7 @@ class SRC_CODE extends MySQLDatabase {
         console.log(`error: ${err.message}`);
         return callback('fail');
       }
-      console.log(res);
+      //console.log(res);
       return callback(res);
     });
   }
@@ -354,8 +410,10 @@ class USER extends MySQLDatabase {
     });
   }
 
-  updateUser(data, callback) {
-    this.update(data.val, data.cur, function(err, res) {
+  updateUser(val, cond, callback) {
+    //console.log(cond);
+    this.update(val, cond, function(err, res) {
+      console.log("update time");
       if(err)
       {
         console.log(`error: ${err.message}`);
@@ -548,7 +606,7 @@ class POST extends MySQLDatabase {
       queryKey = queryKey.concat(') AND ');
     }
     queryKey = queryKey.concat('REPLY!=0');
-    console.log(queryKey);
+    //console.log(queryKey);
     this.simpleSelect({data:'POST.REPLY AS ID', table:'USER, POST', query:queryKey}, function(err, res) {
       if(err)
       {
@@ -707,6 +765,16 @@ function verify_password(user, callback){
   // verify password
   const data = JSON.parse(user)
   userT.verifyPassword(data, msg => {return callback(msg);});
+}
+
+// update password
+function update_user(param, callback){
+  const data = JSON.parse(param);
+  const val = {PASSWORD:data.PASSWORD};
+  const cond = {ID:data.ID};
+  //console.log(val);
+  //console.log(cond);
+  userT.updateUser(val, cond, msg=>{return callback(msg);});
 }
 
 // deleteUser wrapper
@@ -888,7 +956,7 @@ process.on('message', m => {
   }
   if(myArgs[0]=="all_code"){
     codeT.allCode(JSON.parse(m), msg => {
-      console.log(msg);
+      //console.log(msg);
       if(msg=="fail")
       {
         return process.send(msg);
@@ -898,7 +966,12 @@ process.on('message', m => {
   }
   if(myArgs[0]=="update_user")
   {
-    userT.updateUser(JSON.parse(m), m=>{return process.send(m);});
+    var msg = JSON.parse(m);
+    var val = {PASSWORD: msg.PASSWORD};
+    var cond = {ID: msg.ID};
+    //console.log(val);
+    //console.log(cond);
+    update_user(m, msg=>{return process.send(msg);});
   }
 });
 

@@ -1,3 +1,20 @@
+/*
+  MODULE FOR SOURCE CODE SAVING AND COMPILATION AND RUNNING
+
+  CLASS NAME: Code
+  PROGRAMMER: YU CHI TO
+  VERSION: 1.1 (10-5-2020)
+
+  Purpose:
+  Provides an interface to communicate between master module (app.js) and slave modules (compAndRun.js, connect_sql.js) to handle requests related to source codes
+  Provides specific methods and parse input into suitable format for slave modules to process on the input such as saving and update of code or compilation of code
+  Returns the result of the slave modules
+
+  Dependencies:
+  child_process
+  compAndRun
+  connect_sql
+*/
 const {fork} = require('child_process');
 const fs = require('fs');
 
@@ -45,7 +62,7 @@ compile and run
 
 return false for error, and compiler or program result
 */
-  cpar(codeID, callback)
+  cpar(codeID, stdin, callback)
   {
     const runner = fork("compAndRun.js");
     this.fetch({ID:codeID}, msg => {
@@ -60,9 +77,16 @@ return false for error, and compiler or program result
           console.log(`error: ${err.message}`);
           return callback(false);
         }
-        runner.send(JSON.stringify({USER:name, NAME:codeID.toString(10)}));
-        runner.on("message", res => {
-          return callback(JSON.parse(res));
+        fs.writeFile(codeID.toString(10)+".txt", stdin, (err1)=>{
+          if(err1)
+          {
+            console.log(`error: ${err1.message}`);
+            return callback(false)
+          }
+          runner.send(JSON.stringify({USER:name, NAME:codeID.toString(10)}));
+          runner.on("message", res => {
+            return callback(JSON.parse(res));
+        });
         });
       });
     });
@@ -73,14 +97,14 @@ save and compile and run
 
 return false for error, compiler or program result otherwise
 */
-  sacpar(code, block, name, callback)
+  sacpar(code, block, stdin, name, callback)
   {
     this.save(codeID, code, block, name, sres => {
       if(sres=='fail')
       {
         return callback(false);
       }
-      this.cpar(codeID, pres => {
+      this.cpar(codeID, stdin, pres => {
         return callback({res:pres, loc:sres});
       });
     });

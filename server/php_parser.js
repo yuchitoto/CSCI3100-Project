@@ -1,6 +1,17 @@
 /*
-parser ammended from https://medium.com/@MartinMouritzen/how-to-run-php-in-node-js-and-why-you-probably-shouldnt-do-that-fb12abe955b0
-to adapt to this project
+	MODULE FOR COMPILATION OF PHP
+
+	CLASS NAME: ExecPHP
+	PROGRAMMER: Martin Mouritzen, YU CHI TO
+
+	Purpose:
+	parser ammended from https://medium.com/@MartinMouritzen/how-to-run-php-in-node-js-and-why-you-probably-shouldnt-do-that-fb12abe955b0
+	Adaptations added for adding parameters and multiple file parsing in this project.
+	Unused and deprecated
+	Will be removed in future
+
+	Environment:
+	Microsoft Windows with PHP installed
 */
 const {exec} = require('child_process');
 

@@ -1,3 +1,19 @@
+/*
+  MODULE TO COMPILE AND RUN SOURCE CODE
+
+  PROGRAMMER: YU CHI TO
+  VERSION: 1.1 (10-5-2020)
+
+  Purpose:
+  A slave module to compile and run C source code and return compilation errors and output of the source code
+
+  Dependencies:
+  util
+  child_process
+
+  Environment
+  Microsoft Windows with GNU C COMPILER installed
+*/
 const util = require('util');
 const {spawn, exec} = require("child_process");
 const pexec = util.promisify(require('child_process').exec);
@@ -40,7 +56,7 @@ function run(filename, user, callback) {
       result.comp = res;
       return callback(result);
     }
-    exec(user+'.exe', function(err, stdout, stderr) {
+    exec(user+'.exe < '+user+'.txt', function(err, stdout, stderr) {
       if(err)
       {
         console.log(err);
@@ -57,7 +73,7 @@ function run(filename, user, callback) {
         result.prog = stderr;
         return callback(result);
       }
-      exec('del '+user+'.exe', (rerr) => {
+      exec('del '+user+'.exe '+user+'.txt', (rerr) => {
         if(rerr)
         {
           console.log(rerr);

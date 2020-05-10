@@ -1,7 +1,12 @@
 /*
-this script is for testing each module,
-or demonstrating actions to others,
-not related to the website directly
+  MODULE FOR MODULE TESTING
+
+  PROGRAMMER: YU CHI TO
+
+  Purpose
+  this script is for testing each module,
+  or demonstrating actions to others,
+  not related to the website server
 */
 const {fork} = require('child_process');
 const fs = require('fs');

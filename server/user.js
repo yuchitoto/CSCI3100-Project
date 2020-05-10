@@ -1,5 +1,19 @@
+/*
+  MODULE FOR USER INFORMATION MANIPULATION
+
+  CLASS NAME: User
+  PROGRAMMER: Lee Tsz Yan
+
+  Purpose:
+  Provides an interface to communicate between master module (app.js) and slave module (connect_sql.js) for manipulation on user information
+  Allows verification, registration and update of user account
+
+  Dependencies:
+  child_process
+  connect_sql
+*/
 const {fork} = require("child_process");
-const sql = require("./connect_sql.js");
+//const sql = require("./connect_sql.js");
 
 class User {
     constructor(data){
@@ -65,8 +79,14 @@ class User {
       callback(/*msg*/);
     }
 
-    update(param, callback) {
+    updateUser(val, cond, callback) {
       /* update user data */
+      this.data.ID = param.ID;
+      const db = fork("connect_sql,js", ["update_user"]);
+      db.send(JSON.stringify(this.data));
+      db.on("message", m => {
+        return callback(m);
+      })
     }
 
     verifyData(param, callback) {

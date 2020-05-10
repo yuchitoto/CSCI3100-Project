@@ -20,6 +20,30 @@ body{
     padding: 5px;
 }
 
+
+#main{
+    float: left;
+    padding-left:30px;
+    width: 1200px;
+}
+
+#side_bar{
+    font-size: 20px;
+    color: aliceblue;
+    padding: 20px;
+    margin-top: 15px;
+    margin-left: 15px;
+    background-color: #4b5491;
+    float: left;
+    width: 30vh;
+    height: 75vh;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+}
+
+#profile{
+    text-align: justify;
+}
+
 a{
     color: #4b5491;
     text-decoration: none;
