@@ -91,3 +91,6 @@ function submitNewUser(){
         
 }
 
+function submitUpdate(){
+    document.getElementById("update_submit").submit();
+}

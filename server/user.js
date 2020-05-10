@@ -65,8 +65,14 @@ class User {
       callback(/*msg*/);
     }
 
-    update(param, callback) {
+    updateUser(val, cond, callback) {
       /* update user data */
+      this.data.ID = param.ID;
+      const db = fork("connect_sql,js", ["update_user"]);
+      db.send(JSON.stringify(this.data));
+      db.on("message", m => {
+        return callback(m);
+      })
     }
 
     verifyData(param, callback) {

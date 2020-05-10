@@ -447,8 +447,21 @@ app.get('/user', function(req, res) {
   });
 });
 
-app.put('/user', function(req, res) {
+app.post('/change_password', function(req, res) {
   /*update user data*/
+  if(!Object.keys(req.session).includes('ID'))
+  {
+    return res.redirect('/');
+  }
+  const db = fork("connect_sql.js", ["update_user"]);
+  db.send(JSON.stringify({ID:req.session['ID'], PASSWORD:req.body.password}));
+  db.on("message", msg => {
+    if(msg){
+      console.log(msg);
+      return res.redirect('/user'); //shd create new page
+    }
+    return res.redirect('/404.html');
+  })
 });
 
 app.delete('/user', function(req, res) {
@@ -502,6 +515,16 @@ app.post('/create_account*', function(req, res) {
   };
 });
 
+app.get('/change_password', function(req, res) {
+  /*login page*/
+  if(!req.session.sign){
+    return res.redirect('/404.html');
+  }
+  else{
+    return res.render('change_password');
+  }
+});
+
 // general treatnebt for html pages
 app.use('*.html', function(req, res, next) {
   //console.log(req.headers); use headers to detect mobile
@@ -524,7 +547,7 @@ app.use('*.html', function(req, res, next) {
 // send javascript for front-end
 app.use('*.js', function(req, res, next) {
   var path = './script'+req._parsedUrl.pathname;
-  console.log(req._parsedUrl);
+  //console.log(req._parsedUrl);
   fs.readFile(path, function(err, data) {
     if(err)
     {

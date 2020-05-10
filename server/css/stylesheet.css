@@ -1,6 +1,9 @@
 body{
     background-color: rgb(121, 121, 121);
     align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
 }
 
 .block{
@@ -56,6 +59,11 @@ body{
     display:block;
 }
 
+a{
+    text-decoration: none;
+    color: #004080;
+}
+
 #alert{
-    color: red;
+    color: #8b0000;
 }

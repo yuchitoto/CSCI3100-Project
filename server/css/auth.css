@@ -22,3 +22,12 @@ input[type=submit]{
     padding-top: 20px;
     padding-bottom: 20px;
 }
+
+.link{
+    padding: 0;
+    margin: 0px;
+}
+
+.button1{
+    margin: 0;
+}

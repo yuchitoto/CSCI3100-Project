@@ -354,8 +354,10 @@ class USER extends MySQLDatabase {
     });
   }
 
-  updateUser(data, callback) {
-    this.update(data.val, data.cur, function(err, res) {
+  updateUser(val, cond, callback) {
+    console.log(cond);
+    this.update(val, cond, function(err, res) {
+      console.log("update time");
       if(err)
       {
         console.log(`error: ${err.message}`);
@@ -709,6 +711,16 @@ function verify_password(user, callback){
   userT.verifyPassword(data, msg => {return callback(msg);});
 }
 
+// update password
+function update_user(param, callback){
+  const data = JSON.parse(param);
+  const val = {PASSWORD:data.PASSWORD};
+  const cond = {ID:data.ID};
+  console.log(val);
+  console.log(cond);
+  userT.updateUser(val, cond, msg=>{return callback(msg);});
+}
+
 // deleteUser wrapper
 function delete_user(param, callback){
   // delete given id in USER
@@ -898,7 +910,12 @@ process.on('message', m => {
   }
   if(myArgs[0]=="update_user")
   {
-    userT.updateUser(JSON.parse(m), m=>{return process.send(m);});
+    var msg = JSON.parse(m);
+    var val = {PASSWORD: msg.PASSWORD};
+    var cond = {ID: msg.ID};
+    console.log(val);
+    console.log(cond);
+    update_user(m, msg=>{return process.send(msg);});
   }
 });
 
