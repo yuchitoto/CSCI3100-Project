@@ -8,26 +8,27 @@
   </head>
   <body>
     <%- include ('forum_header.ejs') %>
-    <div class="block">
-        Username:&nbsp;&nbsp;&nbsp;<%= USERNAME %>
-    </div>
-    <div class="block">
-        <a href="change_password">Change Password
-    </div>
-    <div class="block">
-        CODEs:
-    </div>
-    <% for(var i=0; i<code.length; i++) {%>
-      <div class="block">
-      <div>
-        <a href= <%-"/code?code="+code[i].ID%>><%= code[i].NAME %></a> <br>
-        <div class="space"></div>
-        <div class="code">
-          <pre><%= code[i].SRC %></pre>
+    <section id="side_bar"><%- include ('user_profile.ejs', {code:code, USERNAME:USERNAME}) %></section>
+    <section id="main">
+      <% if(code.length == 0){%>
+        <div class="block">Hello new user</div>
+        <div class="block">Go and write your code</div>
+      <% }else{%>
+        <div class="block">
+            My CODEs:
         </div>
-      </div>
-      </div>
-    <% } %>
-  </div>
+        <% for(var i=0; i<code.length; i++) {%>
+          <div class="block">
+            <div>
+              <a href= <%-"/code?code="+code[i].ID%>><%= code[i].NAME %></a> <br>
+              <div class="space"></div>
+              <div class="code">
+                <pre><%= code[i].SRC %></pre>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      <% } %>
+      </section>
   </body>
 </html>

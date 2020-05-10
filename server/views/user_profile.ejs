@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
+    <link href="/css/user.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <section>
+        <div id="profile">
+            <div>Username:&nbsp;&nbsp;&nbsp;<%= USERNAME %></div><br>
+            <div>
+                <% if(code.length == 0){%>
+                    You don't have any code!
+                <% }else if(code.length == 1){%>
+                    You have 1 piece of code.
+                <% }else{%>
+                    You have <%=code.length%> pieces of code.
+                <% }%>
+            </div><br>
+            <hr style="color: ghostwhite; margin-bottom:25px">
+            <div><a href="change_password" style="color: aliceblue;padding-top: 20px;">Change Password</a></div><br>
+            <div><a style="color: aliceblue;" href="/logout">Logout</a><div>
+        </div>
+    </section>
+</body>
+</html>
