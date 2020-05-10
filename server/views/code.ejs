@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title> <%-code.NAME%> </title>
     <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="/css/post.css" style="text/css">
+    <link rel="stylesheet" href="/css/code.css" style="text/css">
   </head>
   <body>
     <%- include('forum_header.ejs') %>
@@ -16,6 +16,7 @@
     </div>
     <div class="result" style="text-align: center;">
       <form action=<%-"/code?code="+code.ID%> method="post" id="form1">
+        <textarea class="textarea" id="stdin" name="stdin"></textarea>
       </form>
       <button style="width:90%;" class="button1" type="submit" form="form1" name="action" value="cpar">Run</button>
     </div>
