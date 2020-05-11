@@ -1,1 +1,93 @@
 \chapter{Test}
+\section{Overview and Plan}
+The system is tested using black-box testing and bottom-up integration test. Black-box testing is used as the functions and modules designed may not act according to our specification. Bottom-up integration test is chosen for the system as the system relies heavily on two slave modules. Thus the correctness of the system relies heavily on the two slave modules. Module inputs and user activities are tested using black-box testing to ensure correctness of the system.
+
+\section{MySQL Database Interface Module}
+\subsection{Purpose}
+The connect\_sql.js is tested in this testcase to ensure the correctness of this slave module that act as an interface to communicate between the server and the database. All child classes inherits and reuses the methods of parent class MySQLDatabase, therefore only the major functions of parent class is tested using methods of child classes
+
+\subsection{Inputs}
+\subsubsection{Insert}
+Test cases of USER used (USERNAME, EMAIL, PASSWORD, ACC\_TYPE):
+\begin{enumerate}
+  \item newUser, newUser@localhost.net, 11111111, 0 (valid)
+  \item (empty), no@here, (empty), 0 (invalid empty input)
+  \item no, no, no, no (wrong ACC\_TYPE type)
+\end{enumerate}
+
+\subsubsection{Select When All Conditions Are True}
+Test cases of SRC\_CODE used (NAME, USER):
+\begin{enumerate}
+  \item hello\_world.c, 1 (valid)
+  \item (empty), 1 (empty name)
+  \item here, ADMIN (wrong USER type)
+\end{enumerate}
+
+\subsubsection{Delete When All Conditions Are True}
+Test cases of SRC\_CODE used (NAME, USER)
+\begin{enumerate}
+  \item hello-world.c, 1 (valid)
+  \item (empty), 1 (empty NAME)
+  \item here, ADMIN (wrong USER type)
+\end{enumerate}
+
+\subsubsection{Update}
+Test cases of USER used (PASSWORD, ID):
+\begin{enumerate}
+  \item 88888888, 10 (valid)
+  \item (empty), 10 (empty PASSWORD)
+  \item hello\_goodbye, newUser (wrong ID type)
+  \item 88888888, 0 (invalid ID)
+\end{enumerate}
+
+\subsection{Expected Outputs \& Pass/Fail Criteria}
+The testcases demonstrates the return of the module when different input is provided, both valid and invalid queries to the MySQL database. The module should handle the exception and provide error message for unaccepted invalid testcases and return a ``fail'' message, and provide result for accepted valid or invalid testcases.
+\subsubsection{Insert}
+Case 1:
+\verbatiminput{Doc/test/case1-1-1.txt}
+
+Case 2:
+\verbatiminput{Doc/test/case1-1-2.txt}
+
+Case 3:
+\lstinputlisting[breaklines]{Doc/test/case1-1-3.txt}
+
+\subsubsection{Select When All Conditions Are True}
+Case 1:
+\lstinputlisting[breaklines]{Doc/test/case1-2-1.txt}
+
+Case 2:
+\verbatiminput{Doc/test/case1-2-2.txt}
+
+Case 3:
+\verbatiminput{Doc/test/case1-2-3.txt}
+
+\subsubsection{Delete When All Conditions Are True}
+Case 1:
+\verbatiminput{Doc/test/case1-3-1.txt}
+
+Case 2:
+\verbatiminput{Doc/test/case1-3-2.txt}
+
+Case 3;
+\verbatiminput{Doc/test/case1-3-3.txt}
+
+\subsubsection{Update}
+Case 1:
+\verbatiminput{Doc/test/case1-4-1.txt}
+
+Case 2:
+\verbatiminput{Doc/test/case1-4-2.txt}
+
+Case 3:
+\verbatiminput{Doc/test/case1-4-3.txt}
+
+Case 4:
+\verbatiminput{Doc/test/case1-4-4.txt}
+
+\section{Source Code Compilation and Execution Module}
+\subsection{Purpose}
+
+\subsection{Inputs}
+
+\subsection{Expected Outputs \& Pass/Fail Criteria}
