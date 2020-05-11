@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Code Block Forum</title>
+    <link href="/css/stylesheet.css" rel="stylesheet" type="text/css">
+    <link href="/css/user.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <%- include ('forum_header.ejs') %>
+    <div class="block">
+        Username:&nbsp;&nbsp;&nbsp;<%= USERNAME %>
+    </div>
+    <div class="block">
+        Codes:
+    </div>
+    <% for(var i=0; i<code.length; i++) {%>
+      <div class="block">
+      <div>
+        <a href= <%-"/code?code="+code[i].ID%>><%= code[i].NAME %></a>
+      </div>
+      </div>
+    <% } %>
+    <div class="block">
+      Posts:
+    </div>
+    <% for(var i=0; i<post.length; i++) if (post[i].USER==USERNAME){%>
+      <div class="block">
+        <a href=<%-"/post?post="+post[i].ID%>><%= post[i].TITLE %></a>
+      </div>
+    <% } %>
+  </body>
+</html>
