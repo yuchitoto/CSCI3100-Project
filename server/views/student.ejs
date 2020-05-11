@@ -41,11 +41,11 @@
       <% } %>
     <% } %>
     <div class="block">
-      Students:
+      Teacher's Posts:
     </div>
-    <% for(var i=0; i<students.length; i++) { if (students[i].USERNAME!=USERNAME) {%>
+    <% for(var i=0; i<post.length; i++) { if (teacher.USERNAME==post[i].USER) {%>
       <div class="block">
-        <a href=<%-"/student?user="+students[i].ID%>><%= students[i].USERNAME %></a><br>
+        <a href=<%-"/post?post="+post[i].ID%>><%= post[i].TITLE %></a><br>
       </div>
     <% }}%>
     <script src="deletePost.js" charset="utf-8"></script>
