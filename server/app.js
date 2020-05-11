@@ -131,8 +131,8 @@ app.get('/code/write', function(req, res) {
 });
 
 app.post('/code', function(req, res) {
-  console.log(req.body);
-  console.log(`action on code: ${req.body.action}`);
+  //console.log(req.body);
+  //console.log(`action on code: ${req.body.action}`);
   const coder = new Code((req.session['ID'])?req.session['ID']:0);
   var stdin = req.body.stdin;
 
@@ -147,7 +147,7 @@ app.post('/code', function(req, res) {
 
   if(!Object.keys(req.session).includes('ID') && req.body.action!='cpar')
   {
-    console.log(req.session);
+    //console.log(req.session);
     return res.redirect('/404.html');
   }
   // previlleged actions
@@ -384,7 +384,7 @@ app.get('/login', function(req, res) {
   /*login page*/
   if(req.session.sign){
     console.log('login');
-    console.log(req.session);
+    //console.log(req.session);
     return res.redirect('/user');
   }
   else{
@@ -397,7 +397,7 @@ app.post('/login', function(req, res) {
   if(req.session.sign){
     console.log("Already login");
     //res.send("Already login");
-    console.log(req.session);
+    //console.log(req.session);
     return res.redirect('user');
   }
   else if(req.body.password && req.body.name){
@@ -407,7 +407,7 @@ app.post('/login', function(req, res) {
     }
     else data = {USERNAME: req.body.name, PASSWORD: req.body.password};
     var userObj = new User(data);
-    console.log(data);
+    //console.log(data);
     userObj.login(function(err, user){
       if(err){
         console.log(err);
@@ -415,11 +415,11 @@ app.post('/login', function(req, res) {
       }
       else{
         sess = req.session;
-        console.log(user);
+        //console.log(user);
         console.log("Login success");
         sess.sign = true;
         sess.ID = user.ID;
-        console.log(sess);
+        //console.log(sess);
         //res.redirect('/user/' + user.name);
         return res.redirect('user');
       }
@@ -432,14 +432,14 @@ app.post('/login', function(req, res) {
 
 // user logout
 app.get('/logout', function(req, res){
-  console.log(req.session);
+  //console.log(req.session);
   if(req.session.sign){
     req.session.destroy((err)=>{
       if(err){
         console.log(err);
       }
       console.log("logout success");
-      console.log(req.session);
+      //console.log(req.session);
       return res.redirect('logout');
     })
   }
@@ -460,13 +460,13 @@ app.get('/user', function(req, res) {
   const db2 = fork("connect_sql.js", ["find_user"]);
   const posts = new Forum(req.session['ID']);
   db1.send(JSON.stringify({USER:req.session['ID']}));
-  db1.on("message", msg => {
+  db1.on("message", msg => { // fetch code of user
     if(msg=='fail')
     {
       return res.redirect('/');
     }
     db2.send(JSON.stringify({ID:req.session['ID']}));
-    db2.on("message", msg2 => {
+    db2.on("message", msg2 => { // fetch user data
       if(msg2=="fail"||msg2=="no_user")
       {
         return res.redirect('/404.html');
@@ -478,7 +478,7 @@ app.get('/user', function(req, res) {
       //console.log(code.length);
       if (msg2["ACC_TYPE"]==0) // normal
       {
-        posts.titles(function(post_title) {
+        posts.titles(function(post_title) { // fetch all post titles
         var post = [];
         if (post_title=='fail')
         {
@@ -493,7 +493,7 @@ app.get('/user', function(req, res) {
       }
       else if(msg2["ACC_TYPE"]==1) // teacher
       {
-        posts.titles(function(post_title) {
+        posts.titles(function(post_title) { // fetch all post titles
         var post = [];
         if (post_title=='fail')
         {
@@ -504,7 +504,7 @@ app.get('/user', function(req, res) {
         }
         const search = fork("connect_sql", ["find_user"]);
         search.send(JSON.stringify({GROUP:msg2["GROUP"]}));
-        search.on("message", msg3 => {
+        search.on("message", msg3 => { // find all related students
           if(msg3=="fail"||msg3=="no_user")
           {
             console.log("failed to find group");
@@ -520,7 +520,7 @@ app.get('/user', function(req, res) {
       }
       else if(msg2["ACC_TYPE"]==2) // student
       {
-        posts.titles(function(post_title) {
+        posts.titles(function(post_title) { // post_title for all posts
         var post = [];
         if (post_title=='fail')
         {
@@ -538,10 +538,10 @@ app.get('/user', function(req, res) {
             var tmp = {code:code, USERNAME:msg2.USERNAME, post:post};
             return res.render('user',tmp);
           }
-          var teacher = JSON.parse(msg3)[0];
-          console.log(teacher);
-          console.log(post_title);
-          console.log(code);
+          var teacher = JSON.parse(msg3)[0]; // msg3 and teacher for fetching teacher's info
+          //console.log(teacher);
+          //console.log(post_title);
+          //console.log(code);
           var tmp = {code:code, USERNAME:msg2.USERNAME, post:post_title, teacher:teacher};
           return res.render('student',tmp)
         });
@@ -639,7 +639,7 @@ app.get('/create_account*', function(req, res) {
   /*fetch account create page*/
   if(req.session.sign){
     console.log('login');
-    console.log(req.session);
+    //console.log(req.session);
     return res.redirect('/user');
   }
   return res.render('create_account');
@@ -652,7 +652,7 @@ app.post('/create_account*', function(req, res) {
     var userObj = new User(data);
     userObj.registor(function(m){
       if(m == 'exist_email' || m == 'exist_name'){
-        console.log(m);
+        //console.log(m);
         if(m == 'exist_email'){
           return res.render("create_account", {same_email: true});
         }
@@ -661,7 +661,7 @@ app.post('/create_account*', function(req, res) {
         }
       }
       else{
-        console.log(m)
+        //console.log(m)
         console.log("registor success");
         return res.redirect('login');
       }
@@ -729,7 +729,7 @@ app.use('*.html', function(req, res, next) {
 // send javascript for front-end
 app.use('*.js', function(req, res, next) {
   var path = './script'+req._parsedUrl.pathname;
-  console.log(req._parsedUrl['path']);
+  //console.log(req._parsedUrl['path']);
   fs.readFile(path, function(err, data) {
     if(err)
     {
