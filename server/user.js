@@ -30,8 +30,8 @@ class User {
         // handle message
         console.log(m);
         var msg = JSON.parse(m);
-        console.log(msg);
-        return msg;
+        console.log(msg[0]);
+        return msg[0];
       });
     }
 
@@ -42,7 +42,7 @@ class User {
       check.on("message", m =>{
         /* handle message */
         return callback(m);
-      })
+      });
     }
 
     login(callback){
@@ -53,7 +53,7 @@ class User {
         if(m == "fail" || m == "no_user"){
           return callback(m, 0);
         }
-        else return callback(0, m);
+        else return callback(0, JSON.parse(m)[0]);
       })
     }
 
@@ -65,7 +65,7 @@ class User {
         if(m == "fail"){
           return callback(m, 0);
         }
-        else return callback(0, m);
+        else return callback(0, JSON.parse(m)[0]);
       })
     }
 
