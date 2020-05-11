@@ -113,8 +113,10 @@ function submitUpdate(){
         text = document.createTextNode("Passeword should be the same as retype password");
         flag = 0;
     }
-    else
+    else{
+        window.alert("Your password will be changed");
         document.getElementById("update_submit").submit();
+    }
     alert.appendChild(text);
     button_div.appendChild(alert);
 }
