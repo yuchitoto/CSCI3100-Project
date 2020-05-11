@@ -518,6 +518,33 @@ app.get('/user', function(req, res) {
         });
         });
       }
+      else if(msg2["ACC_TYPE"]==2)
+      {
+        posts.titles(function(post_title) {
+        var post = [];
+        if (post_title=='fail')
+        {
+          console.log("failed to fetch titles");
+          //console.log(post_title);
+          var tmp = {code:code, USERNAME:msg2.USERNAME, post:post};
+          return res.render('user',tmp);
+        }
+        const search = fork("connect_sql", ["find_user"]);
+        search.send(JSON.stringify({GROUP:msg2["GROUP"], ACC_TYPE:1}));
+        search.on("message", msg3 => {
+          if(msg3=="fail"||msg3=="no_user")
+          {
+            console.log("failed to find group");
+            var tmp = {code:code, USERNAME:msg2.USERNAME, post:post};
+            return res.render('user',tmp);
+          }
+          var teacher = JSON.parse(msg3);
+          //console.log(student);
+          var tmp = {code:code, USERNAME:msg2.USERNAME, post:post_title, teacher:teacher};
+          return res.render('student',tmp)
+        });
+        });
+      }
     });
   });
 });
@@ -564,7 +591,7 @@ app.get('/student', function(req, res) {
           return res.render('student',tmp);
         }
         var tmp = {code:code, USERNAME:msg2.USERNAME, post:post_title};
-        return res.render('student', tmp);
+        return res.render('student_profile', tmp);
         });
     });
   });
