@@ -363,7 +363,7 @@ class USER extends MySQLDatabase {
       if(data.length == 0){
         return callback('no_user');
       }
-      return callback(data[0]);
+      return callback(data);
     });
   }
 
