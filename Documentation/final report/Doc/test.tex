@@ -357,3 +357,12 @@ The method should return title, post id, author and created time of all posts, n
 
 Case 1: (pass)
 \lstinputlisting[breaklines]{Doc/test/case4-6-1.txt}
+
+\section{User Data Handling Module}
+Because the module acts as an interface which spawns process of connect\_sql.js MySQL database connection interface module. Therefore the testing of this intermediate module is merged into tests of root server module as decisions are done in root server module and webpage javascripts.
+
+\section{Root Server Module and Webpage Javascripts}
+\subsection{Purpose}
+The root server module must be tested via sending http requests. Therefore its testing is merged with the testing of webpages. And its tests are seperated according to major features of the websites.
+
+The testcases will observe the behaviour of the system upon different user's activities. All 4 major features, user account manipulations, code editing and saving, code compilation and forum will be tested.
