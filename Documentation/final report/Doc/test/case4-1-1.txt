@@ -1,0 +1,24 @@
+fetch_post
+0
+[
+  {
+    ID: 1,
+    USER: 'ADMIN',
+    TITLE: 'Welcome to Forum',
+    CONTENT: 'Welcome to forum, you can post and comment on others code freely',
+    CODE: '#include <stdio.h>\n' +
+      '\n' +
+      'int main(void)\n' +
+      '{\n' +
+      '   printf("Hello world\\n");\n' +
+      '   return 0;\n' +
+      '}\n'
+  },
+  {
+    USER: 'ADMIN',
+    CONTENT: 'Please feel free to post anything related to code here'
+  },
+  { USER: 'ADMIN', CONTENT: 'Enjoy programming!' },
+  { USER: 'ADMIN', CONTENT: 'test\r\ntest again\r\ngood program' },
+  { USER: 'ADMIN', CONTENT: '' }
+]

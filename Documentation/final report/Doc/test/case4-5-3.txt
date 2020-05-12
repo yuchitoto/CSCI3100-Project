@@ -1,0 +1,94 @@
+search_post
+0
+[
+  {
+    ID: 1,
+    USER: 'abc',
+    TITLE: 'Welcome to Forum',
+    CREATE_TIME: '2020-03-25T13:32:05.000Z'
+  },
+  {
+    ID: 4,
+    USER: 'abc',
+    TITLE: 'Intro to C++',
+    CREATE_TIME: '2020-04-19T16:35:34.000Z'
+  },
+  {
+    ID: 20,
+    USER: 'abc',
+    TITLE: 'CSCI3100',
+    CREATE_TIME: '2020-04-22T16:57:42.000Z'
+  },
+  {
+    ID: 1,
+    USER: 'ADMIN',
+    TITLE: 'Welcome to Forum',
+    CREATE_TIME: '2020-03-25T13:32:05.000Z'
+  },
+  {
+    ID: 4,
+    USER: 'ADMIN',
+    TITLE: 'Intro to C++',
+    CREATE_TIME: '2020-04-19T16:35:34.000Z'
+  },
+  {
+    ID: 20,
+    USER: 'ADMIN',
+    TITLE: 'CSCI3100',
+    CREATE_TIME: '2020-04-22T16:57:42.000Z'
+  },
+  {
+    ID: 1,
+    USER: 'helloworld',
+    TITLE: 'Welcome to Forum',
+    CREATE_TIME: '2020-03-25T13:32:05.000Z'
+  },
+  {
+    ID: 4,
+    USER: 'helloworld',
+    TITLE: 'Intro to C++',
+    CREATE_TIME: '2020-04-19T16:35:34.000Z'
+  },
+  {
+    ID: 20,
+    USER: 'helloworld',
+    TITLE: 'CSCI3100',
+    CREATE_TIME: '2020-04-22T16:57:42.000Z'
+  },
+  {
+    ID: 1,
+    USER: 'newUser',
+    TITLE: 'Welcome to Forum',
+    CREATE_TIME: '2020-03-25T13:32:05.000Z'
+  },
+  {
+    ID: 4,
+    USER: 'newUser',
+    TITLE: 'Intro to C++',
+    CREATE_TIME: '2020-04-19T16:35:34.000Z'
+  },
+  {
+    ID: 20,
+    USER: 'newUser',
+    TITLE: 'CSCI3100',
+    CREATE_TIME: '2020-04-22T16:57:42.000Z'
+  },
+  {
+    ID: 1,
+    USER: 'TEST',
+    TITLE: 'Welcome to Forum',
+    CREATE_TIME: '2020-03-25T13:32:05.000Z'
+  },
+  {
+    ID: 4,
+    USER: 'TEST',
+    TITLE: 'Intro to C++',
+    CREATE_TIME: '2020-04-19T16:35:34.000Z'
+  },
+  {
+    ID: 20,
+    USER: 'TEST',
+    TITLE: 'CSCI3100',
+    CREATE_TIME: '2020-04-22T16:57:42.000Z'
+  }
+]
