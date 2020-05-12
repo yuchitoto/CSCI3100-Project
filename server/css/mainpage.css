@@ -9,17 +9,17 @@ body{
 
 .intro{
   float:right;
-  width:70%;
+  width:75%;
 }
 
 .contrib{
   margin:1rem;
   padding:1rem;
   float:left;
-  width: 25%;
+  width: 20%;
   background-color: ghostwhite;
   color:#222f85;
-  font-size:30px;
+  font-size:20px;
   box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
 }
 
@@ -44,6 +44,45 @@ h4 {
 h5{
   margin-top: 5px;
   margin-bottom: -10px;
+  color: #0066cc;
+}
+
+.link-container{
+  margin-left:5%;
+  margin-right:5%;
+  padding-top:0.1rem;
+  min-height: 250px;
+  text-align: center;
+}
+
+.link{
+  padding-left: 60px;
+  padding-right: 60px;
+  display: inline-block;
+}
+
+img.link-img{
+  width: 200px;
+  border-radius: 10px;
+  border-radius: 50%;
+  background-color: #004080;
+  box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
+}
+
+.link:hover{
+  transform: scale(1.02);
+  transition: all 0.1s;
+}
+
+.link-text-container{
+  display: block;
+}
+
+a.link-text{
+  text-decoration: none;
+  color: antiquewhite;
+  font-size: 25px;
+  text-shadow: black 0.1em 0.1em 0.2em
 }
 
 img.contrib {
@@ -55,8 +94,19 @@ img.contrib {
   box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
 }
 
+img.contrib:hover{
+  transform: scale(1.05);
+  transition: all 0.1s;
+}
+
 #intro {
-  font-size: 20px;
+  font-size: 16px;
+}
+
+.inline-link{
+  text-decoration: none;
+  color: #0066cc;
+  font-weight: bold;
 }
 
 #update{
@@ -66,7 +116,7 @@ img.contrib {
 }
 
 .point{
-  font-size: 20px;
+  font-size: 16px;
 }
 
 #title{
@@ -78,20 +128,20 @@ img.contrib {
   margin:1rem;
   padding:1rem;
   float:left;
-  width: 25%;
+  width: 20%;
   text-align: center;
   border: none;
-  background-color: #004080;
+  background-color: #0066cc;
   margin-top: 5px;
   border: none;
   color: ghostwhite;
   text-align: center;
   text-decoration: none;
-  font-size: 22px;
+  font-size: 18px;
   box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
   transition: all 0.5s;
 }
 
-.button1:hover{
+.button:hover{
   background-color: #7f8ad8;
 }
