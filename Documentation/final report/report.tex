@@ -8,8 +8,17 @@
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 \usepackage[backend=bibtex, style=ieee]{biblatex}
+\usepackage{verbatim}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage{listings}
 
 \addbibresource{bib.bib}
+
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  keepspaces=true,
+}
 
 \title{\huge{Code Block Online IDE}\\
 ~\\

@@ -1,0 +1,5 @@
+update_user
+error
+update time
+error: ER_TRUNCATED_WRONG_VALUE: Truncated incorrect DOUBLE value: 'newUser'
+false
