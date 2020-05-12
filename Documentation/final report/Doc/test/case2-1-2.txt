@@ -1,0 +1,11 @@
+hello_world.c
+error: Command failed: gcc hello_world.c -o 1
+gcc: error: hello_world.c: No such file or directory
+gcc: fatal error: no input files
+compilation terminated.
+
+stderr: gcc: error: hello_world.c: No such file or directory
+gcc: fatal error: no input files
+compilation terminated.
+
+{"comp":"gcc: error: hello_world.c: No such file or directory\ngcc: fatal error: no input files\ncompilation terminated.\r\n","prog":""}

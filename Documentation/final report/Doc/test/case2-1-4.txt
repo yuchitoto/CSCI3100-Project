@@ -1,0 +1,19 @@
+tmp_data\writer.c
+error: Command failed: gcc tmp_data\writer.c -o 1
+tmp_data\writer.c: In function 'main':
+tmp_data\writer.c:5:18: error: expected ';' before '}' token
+   printf("hello")
+                  ^
+                  ;
+ }
+ ~                 
+
+stderr: tmp_data\writer.c: In function 'main':
+tmp_data\writer.c:5:18: error: expected ';' before '}' token
+   printf("hello")
+                  ^
+                  ;
+ }
+ ~                 
+
+{"comp":"tmp_data\\writer.c: In function 'main':\ntmp_data\\writer.c:5:18: error: expected ';' before '}' token\n   printf(\"hello\")\n                  ^\n                  ;\n }\n ~                 \n","prog":""}
