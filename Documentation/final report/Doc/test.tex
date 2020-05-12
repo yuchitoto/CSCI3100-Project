@@ -43,51 +43,144 @@ Test cases of USER used (PASSWORD, ID):
 \subsection{Expected Outputs \& Pass/Fail Criteria}
 The testcases demonstrates the return of the module when different input is provided, both valid and invalid queries to the MySQL database. The module should handle the exception and provide error message for unaccepted invalid testcases and return a ``fail'' message, and provide result for accepted valid or invalid testcases.
 \subsubsection{Insert}
-Case 1:
+Case 1: (pass)
 \verbatiminput{Doc/test/case1-1-1.txt}
 
-Case 2:
+Case 2: (pass)
 \verbatiminput{Doc/test/case1-1-2.txt}
 
-Case 3:
+Case 3: (pass)
 \lstinputlisting[breaklines]{Doc/test/case1-1-3.txt}
 
 \subsubsection{Select When All Conditions Are True}
-Case 1:
+Case 1: (pass)
 \lstinputlisting[breaklines]{Doc/test/case1-2-1.txt}
 
-Case 2:
+Case 2: (pass)
 \verbatiminput{Doc/test/case1-2-2.txt}
 
-Case 3:
+Case 3: (pass)
 \verbatiminput{Doc/test/case1-2-3.txt}
 
 \subsubsection{Delete When All Conditions Are True}
-Case 1:
+Case 1: (pass)
 \verbatiminput{Doc/test/case1-3-1.txt}
 
-Case 2:
+Case 2: (pass)
 \verbatiminput{Doc/test/case1-3-2.txt}
 
-Case 3;
+Case 3: (pass)
 \verbatiminput{Doc/test/case1-3-3.txt}
 
 \subsubsection{Update}
-Case 1:
+Case 1: (pass)
 \verbatiminput{Doc/test/case1-4-1.txt}
 
-Case 2:
+Case 2: (pass)
 \verbatiminput{Doc/test/case1-4-2.txt}
 
-Case 3:
+Case 3: (pass)
 \verbatiminput{Doc/test/case1-4-3.txt}
 
-Case 4:
+Case 4: (pass)
 \verbatiminput{Doc/test/case1-4-4.txt}
 
 \section{Source Code Compilation and Execution Module}
 \subsection{Purpose}
+The compAndRun.js module contains 2 feature, invoke the computer the compile the C source code on the computer, and execute it if there is no error in compilation.
+
+And the testcases observes the result of the compilation and execution.
 
 \subsection{Inputs}
+\begin{enumerate}
+  \item tmp\_data/hello\_world.c, 1 (valid)
+  \item hello\_world.c, 1 (invalid path)
+  \item tmp\_data/tmp.txt, 1 (text file instead of c source code file)
+  \item tmp\_data/writer.c, 1 (compilation error)
+\end{enumerate}
 
 \subsection{Expected Outputs \& Pass/Fail Criteria}
+The testcases are supposed to show the possible error message in the middle and show the compilation and execution result in an object at last.
+
+~
+
+Case 1: (pass)
+\lstinputlisting[breaklines]{Doc/test/case2-1-1.txt}
+
+Case 2: (pass)
+\lstinputlisting[breaklines]{Doc/test/case2-1-2.txt}
+
+Case 3: (pass)
+\lstinputlisting[breaklines]{Doc/test/case2-1-3.txt}
+
+Case 4: (pass)
+\lstinputlisting[breaklines]{Doc/test/case2-1-4.txt}
+
+\section{Code Handling Module}
+\subsection{Purpose}
+The code.js module allows save code and compile and execution of source code. Extension names and file names are not concerned by the server.
+
+The testcases observes the result of valid code names and invalid code names when saving and correct code and incorrect code in compilation. The correctness of code fetching will be tested with code compilation as code compilation uses code fetching for source code.
+
+\subsection{Inputs}
+\subsubsection{Save Code}
+Testcases used (userid, filename, source code):
+\begin{enumerate}
+  \item 10, hello.c, \verb|#include <stdio.h>\nint main(void)\n{\nprintf("hello world\n");\nreturn 0;\n}| (valid, new code)
+  \item 4, hello.c, \verb|#include <stdio.h>\nint main(void)\n{\nprintf("hello world\n");\nreturn 0;\n}| (invalid userid)
+  \item 10, hello.c, \verb|#include <stdio.h>\nint main(void)\n{\nprintf("hello world\n");\nreturn 0;\n}| (valid, update code)
+  \item 10, (empty string), \verb|#include <stdio.h>\nint main(void)\n{\nprintf("hello world\n");\nreturn 0;\n}| (invalid name)
+\end{enumerate}
+
+\subsubsection{Compile and Run}
+Testcases used (code id, stdin):
+\begin{enumerate}
+  \item 12, \verb|""| (valid)
+  \item 5, \verb|"98 56\r\n"| (valid with stdin)
+  \item 10, \verb|""| (nonexistent code)
+  \item 4, \verb|""| (wrong code)
+  \item 5, \verb|""| (valid code with invalid input)
+\end{enumerate}
+
+\subsection{Expected Outputs \& Pass/Fail Criteria}
+
+\subsubsection{Save Code}
+The testcases allows observation of the behaviour of the methos on valid and invalid inputs.
+
+A number indicates a new file created, success indicates successfully updated, and fail indicates failure.
+
+~
+
+Case 1: (pass)
+\lstinputlisting[breaklines]{Doc/test/case3-1-1.txt}
+
+Case 2: (pass)
+\lstinputlisting[breaklines]{Doc/test/case3-1-2.txt}
+
+Case 3: (pass)
+\lstinputlisting[breaklines]{Doc/test/case3-1-3.txt}
+
+Case 4: (pass)
+\lstinputlisting[breaklines]{Doc/test/case3-1-4.txt}
+
+\subsubsection{Compile and Run}
+The testcases allows us ot observe the behaviour of the fetch method and compile and run methos on valid and invalid inputs.
+
+The return of the function should return an object with compilation result and program output on success, and false on failure.
+
+~
+
+Case 1: (pass)
+\lstinputlisting[breaklines]{Doc/test/case3-2-1.txt}
+
+Case 2: (pass)
+\lstinputlisting[breaklines]{Doc/test/case3-2-2.txt}
+
+Case 3: (pass)
+\lstinputlisting[breaklines]{Doc/test/case3-2-3.txt}
+
+Case 4: (pass)
+\lstinputlisting[breaklines]{Doc/test/case3-2-4.txt}
+
+Case 5: (pass, random output with invalid stdin)
+\lstinputlisting[breaklines]{Doc/test/case3-2-5.txt}

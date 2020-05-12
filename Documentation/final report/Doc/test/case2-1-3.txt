@@ -1,0 +1,11 @@
+tmp_data\tmp.txt
+error: Command failed: gcc tmp_data\tmp.txt -o 1
+C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe:tmp_data\tmp.txt: file format not recognized; treating as linker script
+C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe:tmp_data\tmp.txt:1: syntax error
+collect2.exe: error: ld returned 1 exit status
+
+stderr: C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe:tmp_data\tmp.txt: file format not recognized; treating as linker script
+C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe:tmp_data\tmp.txt:1: syntax error
+collect2.exe: error: ld returned 1 exit status
+
+{"comp":"C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe:tmp_data\\tmp.txt: file format not recognized; treating as linker script\r\nC:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/bin/ld.exe:tmp_data\\tmp.txt:1: syntax error\r\ncollect2.exe: error: ld returned 1 exit status\n","prog":""}
