@@ -966,11 +966,11 @@ process.on('message', m => {
   }
   if(myArgs[0]=="update_user")
   {
-    var msg = JSON.parse(m);
+    /*var msg = JSON.parse(m);
     var val = {PASSWORD: msg.PASSWORD};
     var cond = {ID: msg.ID};
-    //console.log(val);
-    //console.log(cond);
+    console.log(val);
+    console.log(cond);*/
     update_user(m, msg=>{return process.send(msg);});
   }
 });
