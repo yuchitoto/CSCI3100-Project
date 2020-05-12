@@ -8,6 +8,10 @@
     color:white;
 }
 
+#code_opt{
+    border: 2px solid ghostwhite;
+}
+
 .navbar_logo{
     height: 30px;
 }
@@ -15,6 +19,10 @@
 .navbar_list{
     display:flex;
     list-style:none;
+}
+
+.navbar_item{
+    padding-left: 25px;
 }
 
 .navbar_link{

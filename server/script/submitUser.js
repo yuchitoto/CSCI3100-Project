@@ -72,7 +72,7 @@ function submitNewUser(){
         flag = 0;
     }
     else if(pw.length < 8){
-        text = document.createTextNode("Your password should contain at least 8 char so that you can forget password easily");
+        text = document.createTextNode("Your password should be at least 8 char long so that you can forget password easily");
         flag = 0;
     }
     else if(rePw != pw){
@@ -106,7 +106,7 @@ function submitUpdate(){
     }
 
     if(pw.length < 8){
-        text = document.createTextNode("Your password should contain at least 8 char so that you can forget password easily");
+        text = document.createTextNode("Your password should be at least 8 char long so that you can forget password easily");
         flag = 0;
     }
     else if(rePw != pw){
