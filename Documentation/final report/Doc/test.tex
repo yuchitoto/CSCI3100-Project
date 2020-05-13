@@ -1,6 +1,6 @@
 \chapter{Test}
 \section{Overview and Plan}
-The system is tested using bottom-up integration test. Bottom-up integration test is chosen for the system as the system relies heavily on two slave modules. Thus the correctness of the system relies heavily on the two slave modules. Module inputs and user activities are tested using black-box testing to ensure correctness of the system.
+The system is tested using bottom-up integration test. Bottom-up integration test is chosen for the system as the system relies heavily on two slave modules. Thus the correctness of the system relies heavily on the two slave modules. Module inputs and user activities are tested using black-box testing to ensure correctness of the system. The root server module (app.js) will be tested alongside with the website functions and its javascripts as http requests must be sent to the server to test its correctness. The test for root server module and website javascripts will be seperated according to the 4 features of the system, user account manipulations, code editing and saving, code compilation and forum.
 
 \section{MySQL Database Interface Module}
 \subsection{Purpose}
@@ -266,6 +266,8 @@ Case 4: (pass)
 Case 5: (pass)
 \lstinputlisting[breaklines]{Doc/test/case4-1-5.txt}
 
+For case 5, although the behaviour of it was unexpected, and returns all post heads, but it follows the return format required, therefore it is considered to have the test passed
+
 \subsubsection{Post Post}
 The method should return post id upon success.
 
@@ -361,8 +363,155 @@ Case 1: (pass)
 \section{User Data Handling Module}
 Because the module acts as an interface which spawns process of connect\_sql.js MySQL database connection interface module. Therefore the testing of this intermediate module is merged into tests of root server module as decisions are done in root server module and webpage javascripts.
 
-\section{Root Server Module and Webpage Javascripts}
+\section{User Account Feature}
 \subsection{Purpose}
-The root server module must be tested via sending http requests. Therefore its testing is merged with the testing of webpages. And its tests are seperated according to major features of the websites.
+The system provides user account registration, authentication and personal data retrieval functions to users. Account registration will be tested separately to check whether there is any unwanted behaviour such as allowing blank username or password or repetition of username or user email. User authentication will be checked with user data retrieval as the two functions are closly related.
 
-The testcases will observe the behaviour of the system upon different user's activities. All 4 major features, user account manipulations, code editing and saving, code compilation and forum will be tested.
+\subsection{Inputs}
+\subsubsection{User Account Registration}
+Used testcases (username, email, password, password):
+\begin{enumerate}
+  \item Joker, joker@dc.com, heath-ledger, heath-ledger (valid)
+  \item TEST, test@notest.com, 12345678, 12345678 (used username)
+  \item ITEM, test@test.com, 12345678, 12345678 (used email)
+  \item hi, hi, 12345678, 12345678 (invalid email address)
+  \item hihi, hihi@hihi.net, qwer, qwer (\(\text{password length}<8\))
+  \item (empty), incognito@test.com, 12345678, 12345678 (empty username)
+  \item hihihi, (empty), 12345678, 12345678 (empty email)
+  \item @\#\$xyz, linus@god.com, 12345678, 12345678 (invalid username)
+  \item hi, hi@hi.net, 12345678, 456789123 (incorrect re-type of password)
+\end{enumerate}
+
+\subsubsection{User Account Authentication and User Data Retrieval}
+Used testcase:
+\begin{enumerate}
+  \item ADMIN, CSCI3100GRP18 (valid normal account)
+  \item Joker, 12345678 (wrong password)
+  \item AD, CSCI3100GRP18 (invalid username/email)
+  \item test@test.com, ABC (valid teacher account using email login)
+  \item abc, 11111111 (valid student account)
+  \item Joker, Heath-Ledger (different case)
+  \item `` or ''``='', a OR 1=1 (SQL injection)
+  \item *c*, * (SQL injection)
+  \item idk, ``;SELECT * FROM USER WHERE USERNAME=''ADMIN (SQL injection)
+\end{enumerate}
+
+\subsection{Expected Outputs \& Pass/Fail Criteria}
+\subsubsection{User Account Registration}
+
+Case 1 (pass):
+
+Entered Information with no warning\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-1-1}
+
+Result in shown in terminal\\
+\includegraphics[scale=0.7]{Doc/Pics/case-5-1-1(2)}
+
+User Page\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-1-1(3)}
+
+~
+
+Case 2: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-1-2}
+
+~
+
+Case 3: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-1-3}
+
+~
+
+Case 4: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-1-4}
+
+~
+
+Case 5: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-1-5}
+
+~
+
+Case 6: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-1-6}
+
+~
+
+Case 7: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-1-7}
+
+~
+
+Case 8: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-1-8}
+
+~
+
+Case 9: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-1-9}
+
+~
+
+\subsubsection{User Account Authentication and User Data Retrieval}
+Case 1: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-2-1}
+
+\paragraph{Logout}
+
+\includegraphics[scale=0.45]{Doc/Pics/logout}
+
+~
+
+Case 2: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-2-2}
+
+~
+
+Case 3: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-2-3}
+
+~
+
+Case 4: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-2-4}
+
+\paragraph{Logout}
+
+\includegraphics[scale=0.45]{Doc/Pics/logout}
+
+~
+
+Case 5: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-2-5}
+
+\paragraph{Logout}
+
+\includegraphics[scale=0.45]{Doc/Pics/logout}
+
+~
+
+Case 6: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-2-6}
+
+~
+
+Case 7: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-2-7}
+
+~
+
+Case 8: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-2-8}
+
+~
+
+Case 9: (pass)\\
+\includegraphics[scale=0.45]{Doc/Pics/case-5-2-9}
+
+~
+
+\section{Code Editing and Saving}
+
+\section{Code Compilation and Running}
+
+\section{Forum}
