@@ -375,7 +375,7 @@ class USER extends MySQLDatabase {
         console.log(`error: ${err.message}`);
         return callback('fail');
       }
-      if(res.length==1)
+      if(res.length==1 && res.PASSWORD==data.PASSWORD)
       {
         return callback('success');
       }

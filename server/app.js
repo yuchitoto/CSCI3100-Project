@@ -402,6 +402,10 @@ app.post('/login', function(req, res) {
   }
   else if(req.body.password && req.body.name){
     var data;
+    if(req.body.name.includes(';'))
+    {
+      return res.render('login', {no_user:true});
+    }
     if(req.body.name.includes('@')){
       data = {EMAIL: req.body.email, PASSWORD: req.body.password};
     }
