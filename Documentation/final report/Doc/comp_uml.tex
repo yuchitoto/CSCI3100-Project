@@ -3,7 +3,7 @@
 The following UML Diagram shows all the classes and relationships in the whole system.\newline
 The main class server uses three classes which are User, Code and Forum class. User class uses USER class, Forum class uses POST class and Code class uses compAndRun and SRC\_CODE class. USER, POST and SRC\_CODE classes are extended from MySQLDatabase class\newline
 \begin{figure}[H]
- \center{\includegraphics[width=\textwidth]  {Pics/general_class.png}} 
+ \center{\includegraphics[width=\textwidth]  {Doc/Pics/general_class.png}}
  \label{1}
  \end{figure}
 \clearpage
@@ -13,7 +13,7 @@ Personal Account System is a database to provide the identity for student user o
 
 \subsection{Use Case Diagram}
 \begin{figure}[H]
- \center{\includegraphics[width=\textwidth]  {Pics/account_use-case.png}}
+ \center{\includegraphics[width=\textwidth]  {Doc/Pics/account_use-case.png}}
  \label{2}
  \end{figure}
 For a new coming guest, Personal Account System allows he/she can either go to register or login. The register function includes verify data function to verify whether the guest's inputs are all validated. The login function includes verify password function to verify the password input by guest by finding in the database.\newline
@@ -21,25 +21,25 @@ For student and teacher user, Personal Account System allows he/she to login and
 
 \subsection{Sequence Diagram for Guest}
 \begin{figure}[H]
- \center{\includegraphics[width=\textwidth]  {Pics/account_sequence_guest.png}} 
+ \center{\includegraphics[width=\textwidth]  {Doc/Pics/account_sequence_guest.png}}
  \label{3}
  \end{figure}
 
 \subsection{Activity Diagram for Guest}
 \begin{figure}[H]
- \center{\includegraphics[width=\textwidth]  {Pics/account_activity_guest.png}} 
+ \center{\includegraphics[width=\textwidth]  {Doc/Pics/account_activity_guest.png}}
  \label{4}
  \end{figure}
 
 \subsection{Sequence Diagram for User(login and change password for both types of user)}
 \begin{figure}[H]
- \center{\includegraphics[width=\textwidth]  {Pics/account_sequence_user.png}} 
+ \center{\includegraphics[width=\textwidth]  {Doc/Pics/account_sequence_user.png}}
  \label{10}
  \end{figure}
 
 \subsection{Activity Diagram for User(login and change password for both types of user)}
 \begin{figure}[H]
- \center{\includegraphics[width=\textwidth]  {Pics/account_activity_user.png}} 
+ \center{\includegraphics[width=\textwidth]  {Doc/Pics/account_activity_user.png}}
  \label{5}
  \end{figure}
 
@@ -87,14 +87,14 @@ This is a forum like a system for users to show their codes and discuss on them.
 
 \subsection{Use Case Diagram}
 \begin{figure}[H]
- \center{\includegraphics[width=\textwidth]  {Pics/forum_use-case.png}} 
+ \center{\includegraphics[width=\textwidth]  {Doc/Pics/forum_use-case.png}}
  \label{6}
  \end{figure}
 In this system, functions are limited to a guest, guest can only view post and search post. A user is allowed to write new post and write reply. The new post function includes load user code function to list out all the codes that user wrote by finding in the database.\newline
 
 \subsection{Sequence Diagram for Writing new Post and Reply}
 \begin{figure}[H]
- \center{\includegraphics[width=\textwidth]  {Pics/forum_sequence.png}} 
+ \center{\includegraphics[width=\textwidth]  {Doc/Pics/forum_sequence.png}}
  \label{7}
  \end{figure}
 
@@ -133,19 +133,19 @@ This is a workplace like a online IDE for users to write code in a simple and vi
 
 \subsection{Use Case Diagram}
 \begin{figure}[H]
- \center{\includegraphics[width=\textwidth]  {Pics/code_use-case.png}} 
- \label{8} 
+ \center{\includegraphics[width=\textwidth]  {Doc/Pics/code_use-case.png}}
+ \label{8}
  \end{figure}
 In this system, functions are only provide to user, so guest should register a account first. User is allowed to write code. The write code function includes save code and run code functions.\newline
 
 \subsection{Sequence Diagram for Writing Code, Saving Code and Running Code}
 \begin{figure}[H]
- \center{\includegraphics[width=\textwidth]  {Pics/code_sequence.png}} 
+ \center{\includegraphics[width=\textwidth]  {Doc/Pics/code_sequence.png}}
  \label{9}
  \end{figure}
 
 \subsection{Functionality}
-The code component provides a workplace for the user to do coding online. It contains write code, save code and run code. Only user can use all these functions. 
+The code component provides a workplace for the user to do coding online. It contains write code, save code and run code. Only user can use all these functions.
 
 \subsection{Procedures and Functions}
 This component provides front-webpages, which are workplace page, code page and result page.\newline\newline
