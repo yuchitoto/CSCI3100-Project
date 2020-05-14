@@ -99,7 +99,7 @@ class Forum {
   {
     /*delete reply or post*/
     const eng = fork("connect_sql.js", ["delete_post"]);
-    eng.send(JSON.stringify({ID:id}));
+    eng.send(JSON.stringify({ID:id, USER:this.userid}));
     eng.on("message", msg => {
       if(msg=="success")
       {

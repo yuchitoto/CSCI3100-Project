@@ -111,7 +111,7 @@ app.get('/code', function(req, res) {
   }*/
   var coder = new Code();
   coder.fetch({ID:req.query['code']}, ret => {
-    if(ret=="fail")
+    if(ret=="fail" || ret.length <= 0)
     {
       return res.redirect('/404.html');
     }
@@ -293,7 +293,10 @@ app.get('/post', function(req, res) {
       user=id.toString(10);
     }
     var tmp = {post:post, CONTENT:"", url:req.originalUrl, keywords:""};
-    return res.render('post', tmp);
+    if(post.length>0)
+      return res.render('post', tmp);
+    else
+      return res.redirect('/404.html');
   });
 });
 
@@ -402,6 +405,10 @@ app.post('/login', function(req, res) {
   }
   else if(req.body.password && req.body.name){
     var data;
+    if(req.body.name.includes(';'))
+    {
+      return res.render('login', {no_user:true});
+    }
     if(req.body.name.includes('@')){
       data = {EMAIL: req.body.email, PASSWORD: req.body.password};
     }

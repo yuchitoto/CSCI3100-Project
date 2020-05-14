@@ -50,8 +50,20 @@ class User {
       check.send(JSON.stringify(this.data));
 
       check.on("message", m => {
-        if(m == "fail" || m == "no_user"){
+        if(m == "fail" || m == "no_user" || JSON.parse(m).length > 1){
           return callback(m, 0);
+        }
+        else if(this.data.USERNAME!=undefined && this.data.USERNAME!=JSON.parse(m)[0].USERNAME)
+        {
+          return callback("fail", 0);
+        }
+        else if(this.data.EMAIL!=undefined && this.data.EMAIL!=JSON.parse(m)[0].EMAIL)
+        {
+          return callback("fail", 0);
+        }
+        else if(this.data.PASSWORD != JSON.parse(m)[0].PASSWORD)
+        {
+          return callback("fail", 0);
         }
         else return callback(0, JSON.parse(m)[0]);
       })

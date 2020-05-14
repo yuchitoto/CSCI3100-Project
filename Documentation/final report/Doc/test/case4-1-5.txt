@@ -1,0 +1,23 @@
+fetch_post
+0
+[
+  {
+    USER: 'ADMIN',
+    CONTENT: 'Welcome to forum, you can post and comment on others code freely'
+  },
+  {
+    USER: 'ADMIN',
+    CONTENT: 'Website for introduction to C++\n' +
+      'https://www.tutorialspoint.com/cplusplus/index.htm\n' +
+      "Well, there are plenty of guides available on google also, so pls google it if you don't like it"
+  },
+  {
+    USER: 'ADMIN',
+    CONTENT: 'Again, tutorialspoint provide a good introduction to programming in C.\r\n' +
+      'https://www.tutorialspoint.com/cprogramming/index.htm'
+  },
+  { USER: 'ADMIN', CONTENT: 'What comment should I write' },
+  { USER: 'ADMIN', CONTENT: 'find the gcd of two int' },
+  { USER: 'TEST', CONTENT: 'Hi' },
+  { USER: 'helloworld', CONTENT: 'hello world' }
+]

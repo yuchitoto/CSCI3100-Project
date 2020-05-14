@@ -375,7 +375,7 @@ class USER extends MySQLDatabase {
         console.log(`error: ${err.message}`);
         return callback('fail');
       }
-      if(res.length==1)
+      if(res.length==1 && res.PASSWORD==data.PASSWORD)
       {
         return callback('success');
       }
@@ -484,7 +484,7 @@ class POST extends MySQLDatabase {
 
   deletePost(data, callback) {
     //delete reply or post and replies
-    this.connection.query("DELETE FROM POST WHERE ? OR ?", [{ID:data.ID}, {REPLY:data.ID}], function(err, res) {
+    this.connection.query("DELETE FROM POST WHERE (? OR ?) AND ?", [{ID:data.ID}, {REPLY:data.ID}, {USER:data.USER}], function(err, res) {
       if(err){
         console.log(`error: ${err.message}`);
         return callback('fail');
