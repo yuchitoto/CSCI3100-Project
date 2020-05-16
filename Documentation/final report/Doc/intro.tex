@@ -1,8 +1,111 @@
 \chapter{Introduction}
 \section{Project Overview}
+The Code Block Online IDE provides a place for programmers to test and share their code. It is a platform for programmers to share their knowledge on coding and learn from each others on the forum. Programmers can also prototype their code on this online IDE to test out their codes, and share it with the others.
 
 \section{Objective}
+Programming skills has become more and more inportant throughout the world. And the promotion of STEM education is now worldwide and implemented in large scale. However, while the traditional text-based coding may be efficient, but they may not be able to arouse the attention to younger kids. While there are some visualised coding platforms available, but they are not well designed for older kids to ask and discuss on a problem.
+
+~
+
+Therefore, the Code Block Online IDE is designed to adapt to the problem. Beginners in programming can learn coding using the visualised online C programming IDE. For advanced programmers, they can simply type in the textbox for higher efficiency. And they can share their code for discussions or questions using the forum. We hope that this kind of forum design, that each post must be connected to a program will help creating a platform like quora, but aimed at programming, where people can exchange their thoughts on their codes.
+
+~
+
+The IDE designed may also be a tool for rapid prototyping. Although there is a current limitation on storing the visualised code, which hindered its usage on rapid prototyping, and there is not enough libraries pre-written for prototyping. But it can still be used for the purpose by drag-and-drop functions built into suitable locations thus may help when prototyping programs.
 
 \section{Highlights}
+\subsection{Visualised Code Editor}
+The visualised code editor is one of the core highlights of the Code Block Online IDE. The visualised code editor allows beginners in programming to have a more vivid understanding on the meaning of each component of their program. Users of the editor drag suitable blocks of code into the coding area. And the corresponding code will be generated immediatly below the drag-and-drop area so that they can have an overview on the program written. Authenticated users can then choose to save the code on our platform and run it on our server or choose to copy it down and run on their local computer. The visualised code editor used here is adapted from repository lisa of dineshLL\cite{lisa}.
+
+\subsection{Forum}
+We encourage every user to share and discuss their knowledge. The forum allows authenticated users to share their code and discuss about it here. Each post must have a source code attached with it to act as an example for efficient discussion. Users can post their code and the problem they faced here, so that other users can answer and explain the problem directly and easily. Users can also share their experiences with their code here to the others. And other users interested in the topic can discuss and use the code shared to their expense. For unauthenticated guest users, they can still browse the posts in the forum to gain knowledge here.
+
+\subsection{Server-based Code Compilation and Execution}
+Like many other online program compilation and execution websites, the source code is compiled and executed at the server. This is to prevent posing security threats to client's computer by allowing an unknown excutable running on their computer. Another reason for server-based code compilation and execution, is for the ease of coding assignment verification. In programming courses, one of the biggest problemed faced by the students is the difference in output when the output of their assignment is compared with that of the standard answer's. And that is the portability problem. Server-based compilation for both standard answer from teachers and assignment hand-ins from students will solve the problem as their code will be ran on the same operating system. Therefore the protability problem is solved.
+
+\subsection{Search Engine}
+In order for efficient knowledge exchange between users, we must ensure users can find the materials they need. Therefore we provide search to all users so that they can find posts that contain the information they need. We allow users to use username, words in title, words in post content and words in reply content as search kwyword. Users can type in any keyword in the search field. The server will find the keyword in all posts for result. This way, users can have an easy access to knowledge they need.
+
+\subsection{Personal Account System}
+As we expected educational institutions to use this platform for teaching, we have classified accounts into 3 types. First, normal user accounts that are not related to any educational institutions. Second, user account for teachers, and third, student user accounts. For teacher accounts, they can check coding assignments of students using teacher accounts. They can also find out what posts their students have posted so that they can know the difficulties of students faced when studying this course. For student accounts, users of this type of accounts will can find out the posts of their teacher easily as they are also listed on their user page. Therefore, teachers can use this platform to understand the need of students by checking on the posts posted by students on different problems or as a respond on the material posted on posts by lecturers here., and release assignments or extra materials here to their student.
+
+\newpage
 
 \section{Project Statistics}
+ES6-Plato is used to generate the statistics for server and website Javascripts\cite{ES6-Plato}.
+
+\begin{tabular}{|l|l|l|}
+  \hline
+  File Name & SLOC & McCabe's Number\\
+  \hline\hline
+  \multicolumn{3}{l}{Server Node.js Scripts}\\
+  \hline\hline
+  app.js & 815 & 90\\
+  \hline
+  code.js & 119 & 9\\
+  \hline
+  compAndRun.js & 101 & 10\\
+  \hline
+  connect\_sql.js & 980 & 95\\
+  \hline
+  forum.js & 140 & 5\\
+  \hline
+  php\_parser & 44 & 2\\
+  \hline
+  user.js & 112 & 10\\
+  \hline\hline
+  \multicolumn{3}{l}{Webpage Javascripts}\\
+  \hline\hline
+  code\_result.js & 14 & 1\\
+  \hline
+  deletePost.js & 20 & 6\\
+  \hline
+  redir.js & 5 & 1\\
+  \hline
+  submitUser.js & 123 & 20\\
+  \hline
+  submitForm.js & 29 & 6\\
+  \hline\hline
+  \multicolumn{3}{l}{EJS-Written Website Templates}\\
+  \hline\hline
+  account\_header.ejs & 10 & 1\\
+  \hline
+  change\_password.ejs & 31 & 1\\
+  \hline
+  code\_result.ejs & 24 & 1\\
+  \hline
+  code.ejs & 24 & 1\\
+  \hline
+  create\_account.ejs & 33 & 1\\
+  \hline
+  forum\_header.ejs & 12 & 1\\
+  \hline
+  forum\_search.ejs & 21 & 3\\
+  \hline
+  forum.ejs & 25 & 3\\
+  \hline
+  login.ejs & 33 & 1\\
+  \hline
+  mainpage.ejs & 36 & 1\\
+  \hline
+  navbar.ejs & 51 & 3\\
+  \hline
+  new\_post.ejs & 38 & 2\\
+  \hline
+  post.ejs & 39 & 3\\
+  \hline
+  search.ejs & 16 & 1\\
+  \hline
+  student\_profile.ejs & 33 & 4\\
+  \hline
+  student.ejs & 53 & 7\\
+  \hline
+  teacher.ejs & 53 & 7\\
+  \hline
+  user\_profile.ejs & 28 & 3\\
+  \hline
+  user.ejs & 46 & 5 \\
+  \hline
+  Workspace.ejs & 231 & 1\\
+  \hline
+\end{tabular}

@@ -1,0 +1,2 @@
+fetch_code
+[{"ID":1,"NAME":"hello_world.c","USER":1,"SRC":"#include <stdio.h>\n\nint main(void)\n{\n   printf(\"Hello world\\n\");\n   return 0;\n}\n","SRC_SZ":130,"BLK":null,"BLK_SZ":3}]

@@ -1,0 +1,5 @@
+update_user
+error
+update time
+error: ER_BAD_NULL_ERROR: Column 'PASSWORD' cannot be null
+false
