@@ -8,7 +8,7 @@ var button_div = document.getElementById("submit_button");
 function submitLogin(){
     var nm = myname.value;
     var pw = password.value;
-    
+
     var alert = document.createElement("p");
     alert.setAttribute("id", "alert");
 
@@ -35,7 +35,7 @@ function submitLogin(){
         alert.appendChild(text);
         button_div.appendChild(alert);
     }
-    
+
 }
 
 function submitNewUser(){
@@ -60,7 +60,7 @@ function submitNewUser(){
     var mailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     if(!(nm && mail && pw && rePw)){
-        text = document.createTextNode("You have to fill in ALL THE BLANK!!!");
+        text = document.createTextNode("You have to fill in ALL THE BLANKS!!!");
         flag = 0;
     }
     else if(!nm.match(nameRegex)){
@@ -72,14 +72,14 @@ function submitNewUser(){
         flag = 0;
     }
     else if(pw.length < 8){
-        text = document.createTextNode("Your password should contain at least 8 char so that you can forget password easily");
+        text = document.createTextNode("Your password should be at least 8 char long so that you can forget password easily");
         flag = 0;
     }
     else if(rePw != pw){
-        text = document.createTextNode("Typo is not allow in password and retye-password");
+        text = document.createTextNode("Typo is not a good thing, especially in password so retype your password");
         flag = 0;
     }
-    
+
     // to submit
     if(flag){
         document.getElementById("user_submit").submit();
@@ -88,7 +88,7 @@ function submitNewUser(){
         alert.appendChild(text);
         button_div.appendChild(alert);
     }
-        
+
 }
 
 function submitUpdate(){
@@ -106,15 +106,17 @@ function submitUpdate(){
     }
 
     if(pw.length < 8){
-        text = document.createTextNode("Your password should contain at least 8 char so that you can forget password easily");
+        text = document.createTextNode("Your password should be at least 8 char long so that you can forget password easily");
         flag = 0;
     }
     else if(rePw != pw){
         text = document.createTextNode("Passeword should be the same as retype password");
         flag = 0;
     }
-    else
+    else{
+        window.alert("Your password will be changed");
         document.getElementById("update_submit").submit();
+    }
     alert.appendChild(text);
     button_div.appendChild(alert);
 }

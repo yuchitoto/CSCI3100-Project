@@ -39,6 +39,10 @@ class Code{
 
   save(code, block, name, callback)
   {
+    if (name.length==0)
+    {
+      return callback('fail');
+    }
     const db = fork("connect_sql.js", ["save_code"]);
     db.send(JSON.stringify({
       USER:this.userid,
@@ -66,7 +70,7 @@ return false for error, and compiler or program result
   {
     const runner = fork("compAndRun.js");
     this.fetch({ID:codeID}, msg => {
-      if(msg=='fail')
+      if(msg=='fail'||msg.length==0)
       {
         return callback(false);
       }

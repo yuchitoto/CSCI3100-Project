@@ -1,0 +1,23 @@
+fetch_code
+tmp_data\10_12.c
+error: Command failed: gcc tmp_data\10_12.c -o 12
+tmp_data\10_12.c:1:19: warning: extra tokens at end of #include directive
+ #include <stdio.h>\nint main(void)\n{\nprintf("hello world\n");\nreturn 0;\n}
+                   ^
+C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/lib/../lib/libmingw32.a(lib64_libmingw32_a-crt0_c.o):crt0_c.c:(.text.startup+0x2e): undefined reference to `WinMain'
+collect2.exe: error: ld returned 1 exit status
+
+stderr: tmp_data\10_12.c:1:19: warning: extra tokens at end of #include directive
+ #include <stdio.h>\nint main(void)\n{\nprintf("hello world\n");\nreturn 0;\n}
+                   ^
+C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/lib/../lib/libmingw32.a(lib64_libmingw32_a-crt0_c.o):crt0_c.c:(.text.startup+0x2e): undefined reference to `WinMain'
+collect2.exe: error: ld returned 1 exit status
+
+{
+  comp: 'tmp_data\\10_12.c:1:19: warning: extra tokens at end of #include directive\n' +
+    ' #include <stdio.h>\\nint main(void)\\n{\\nprintf("hello world\\n");\\nreturn 0;\\n}\n' +
+    '                   ^\n' +
+    "C:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/lib/../lib/libmingw32.a(lib64_libmingw32_a-crt0_c.o):crt0_c.c:(.text.startup+0x2e): undefined reference to `WinMain'\r\n" +
+    'collect2.exe: error: ld returned 1 exit status\n',
+  prog: ''
+}

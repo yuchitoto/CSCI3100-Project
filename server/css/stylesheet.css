@@ -24,7 +24,7 @@ body{
 
 .button1 {
     margin-top: 5px;
-    background-color: #004080;
+    background-color: #0066cc;
     border: none;
     color: ghostwhite;
     padding: 10px 30px;
@@ -33,6 +33,7 @@ body{
     display: inline-block;
     font-size: 16px;
     transition: all 0.5s;
+    box-shadow: 4px 6px 20px -5px rgba(0,0,0,0.75);
 }
 
 .button1:hover{

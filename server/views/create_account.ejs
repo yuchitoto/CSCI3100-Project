@@ -9,7 +9,7 @@
   <body>
     <%- include ('account_header.ejs') %>
     <div class="create_account">
-      <div class="block">
+      <div class="block" style="height: 425px;">
         <div>
           <h2 class="title" >Create new account</h2>
         </div>
@@ -23,8 +23,8 @@
           <div id="submit_button">
             <button class="button1" type="submit" onclick=<%-"submitNewUser()"%> value="Create" />Submit
             <script src="submitUser.js" charset="utf-8"></script>
-            <p style="<%= (locals.same_email)? 'display:block;color:#8b0000;':'display:none'%>">This email has been registor</p>
-            <p style="<%= (locals.same_name)? 'display:block;color:#8b0000;':'display:none'%>">This username has been registor</p>
+            <p style="<%= (locals.same_email)? 'display:block;color:#8b0000;':'display:none'%>">This email has been registered</p>
+            <p style="<%= (locals.same_name)? 'display:block;color:#8b0000;':'display:none'%>">This username has been registered</p>
           </div>
         </div>
       </div>

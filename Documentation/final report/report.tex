@@ -7,8 +7,22 @@
 %\usepackage{indentfirst}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
+\usepackage[backend=bibtex, style=ieee]{biblatex}
+\usepackage{verbatim}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage{listings}
+\usepackage{float}
 
-\title{\huge{Code Block Online IDE}\\
+\addbibresource{bib.bib}
+
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  keepspaces=true,
+}
+
+\title{\huge{Code Block Online IDE\\
+Final Report}\\
 ~\\
 \large{CSCI3100 Group 18}}
 \author{
@@ -20,9 +34,6 @@ SID:1155110663
 \and
 LEE Tsz Yan\\
 SID:1155110177
-\and
-WONG Tsz Ching\\
-SID:1155109143
 \and
 YU Chi To\\
 SID:1155110447}
@@ -55,5 +66,9 @@ SID:1155110447}
   \input{Doc/ui}
   \input{Doc/test}
   \input{Doc/concl}
+
+  \newpage
+  \chapter{Reference}
+  \printbibliography[heading=none]
 
 \end{document}

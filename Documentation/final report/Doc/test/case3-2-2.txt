@@ -1,0 +1,3 @@
+fetch_code
+tmp_data\1_5.c
+{ comp: '', prog: 'GCD of 98 and 56 is 14 ' }

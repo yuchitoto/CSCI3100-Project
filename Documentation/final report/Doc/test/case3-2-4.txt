@@ -1,0 +1,20 @@
+fetch_code
+tmp_data\1_4.c
+error: Command failed: gcc tmp_data\1_4.c -o 4
+tmp_data\1_4.c:1:10: fatal error: iostream: No such file or directory
+ #include <iostream>
+          ^~~~~~~~~~
+compilation terminated.
+
+stderr: tmp_data\1_4.c:1:10: fatal error: iostream: No such file or directory
+ #include <iostream>
+          ^~~~~~~~~~
+compilation terminated.
+
+{
+  comp: 'tmp_data\\1_4.c:1:10: fatal error: iostream: No such file or directory\n' +
+    ' #include <iostream>\n' +
+    '          ^~~~~~~~~~\n' +
+    'compilation terminated.\r\n',
+  prog: ''
+}

@@ -1,0 +1,4 @@
+new_user
+0
+error: ER_TRUNCATED_WRONG_VALUE_FOR_FIELD: Incorrect integer value: 'no' for column 'ACC_TYPE' at row 1
+fail
