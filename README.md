@@ -5,4 +5,4 @@ Please change the username, password etc, and setup the mysql database before ru
 
 The server is based on node.js, and pages based on ejs.
 
-The visualised code editor is from (dineshLL/lisa)[https://github.com/dineshLL/lisa]
+The visualised code editor is from [dineshLL/lisa](https://github.com/dineshLL/lisa)
