@@ -1,0 +1,29 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "complexity-report":"./node_modules/.bin/es6-plato -r -d ./report server_script"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "blockly": "^3.20200402.1",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "ejs": "^3.0.2",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "fs": "0.0.1-security",
+    "jquery": "^3.5.0",
+    "mysql": "^2.18.1",
+    "nedb-session-store": "^1.1.2",
+    "php-express": "0.0.3"
+  },
+  "devDependencies": {
+    "es6-plato": "^1.2.3"
+  },
+  "description": ""
+}
