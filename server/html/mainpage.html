@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Code Block</title>
+    <link href="/css/forum_header.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div class="navbar">
+        <img src="/image/logo.png" class="navbar_logo"/>
+        <ul class="navbar_list">
+            <li class="navbar_item">
+                <a href="/forum" class="navbar_link">Forum</a>
+            </li>
+            <li class="navbar_item">
+                <a href=<%-"/post/new?user="+user%> class="navbar_link">New Post</a>
+            </li>
+            <li class="navbar_item">
+                <a href="/" class="navbar_link">Home</a>
+            </li>
+            <li class="navbar_item navbar_submenu-container">
+                <button class="navbar_link">Account</button>
+                <ul class="navbar_submenu">
+                    <li class="navbar_submenu-item">
+                        <a href="/auth/login" class="navbar_submenu-link">Login</a>
+                    </li>
+                    <li class="navbar_submenu-item">
+                        <a href="/auth/register" class="navbar_submenu-link">Register</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="intro">
+      <h2>This is an online visualised code editor</h2>
+      <p>The knowledge of programming become more and more important for poeple of all ages in this
+      era of information.</p>
+    </div>
+  </body>
+</html>
